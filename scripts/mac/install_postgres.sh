@@ -2,20 +2,22 @@
 brew install postgresql
 
 # Install ruby interface for Postgres
-# from brew: "When installing the postgres gem, including ARCHFLAGS is recommended:"
+# from brew: "When installing the postgres gem, including ARCHFLAGS is
+# recommended:"
 ARCHFLAGS="-arch x86_64" gem install pg
+
+# Create a database
+initdb /usr/local/var/postgres -E utf8
 
 # NOTE! https://coderwall.com/p/rjioeg
 # Yosemite problems:
 # for some reasons yosemite cleaned up some files/directories in /usr/local
-# for postgres installed via homebrew the following directories were missing to start postgres properly:
-mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
+# for postgres installed via homebrew the following directories were missing to
+# start postgres properly:
+sudo mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
 # May also need this.
-chmod -R 700 /usr/local/var/postgres
-chown -R ${USER} /usr/local/var/postgres
-
-# Create a database
-initdb /usr/local/var/postgres -E utf8
+sudo chmod -R 700 /usr/local/var/postgres
+sudo chown -R ${USER} /usr/local/var/postgres
 
 # Ensure that Postgres launches whenever we login
 mkdir -p ~/Library/LaunchAgents
