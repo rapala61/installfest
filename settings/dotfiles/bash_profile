@@ -145,11 +145,14 @@ alias rogue='lsof -i TCP:3000 -i TCP:4567 -i TCP:8000 -i TCP:8888 -i TCP:6379'
 alias chrome='open -a "Google Chrome"'
 
 # =================
-# rbenv
+# rvm
 # =================
 
-# start rbenv (our Ruby environment and version manager) on open
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+# =================
+# node
+# =================
+export NVM_DIR=$(brew --prefix)/var/nvm
+
 
 # =================
 # Functions
