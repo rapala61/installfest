@@ -47,10 +47,6 @@ mac/set_up_heroku
 
 mac/install_postgres
 
-## currently not using
-# install_vim_plugins
-# install_oh_my_zsh
-
 mac/run_osx_tweeks
 
 create_student_folders

@@ -42,8 +42,6 @@ ubuntu/install_apps
 ubuntu/install_postgres
 
 # currently not using
-# install_vim_plugins
-# install_oh_my_zsh
 
 create_student_folders
 copy_over_dotfiles
