@@ -34,14 +34,13 @@ set_global_ruby_version
 
 keep_alive_password
 
-ubuntu/install_node_and_npm
+ubuntu/install_nvm
+install_node_and_npm
 
 ubuntu/install_apps
 # ubuntu/install_atom
 
 ubuntu/install_postgres
-
-# currently not using
 
 create_student_folders
 copy_over_dotfiles

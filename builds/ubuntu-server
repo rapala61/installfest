@@ -265,10 +265,11 @@ REPO="godot_instructors"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=master
+BRANCH=melville
 
 # capture the user's password
-sudo -p "${BG_GREEN}Enter your computer's password so that we can make the necessary changes: ${RESET}" echo "Thank you."
+sudo -p "${BG_GREEN}Enter your computer's password \
+  so that we can make the necessary changes: ${RESET}" echo "Thank you."
 
 
 
@@ -401,7 +402,10 @@ quoth_the_bard "${HOW_NOW_SSH_KEYS[@]}"
 # `https://help.github.com/articles/generating-ssh-keys`
 
 # SSH Keygen
-pause_awhile "Generate an SSH key. When you see the prompt 'Enter a file in which to save the key', just press Enter! Your passphrase can be anything that's memorable."
+pause_awhile "Generating an SSH key to establish a secure connection between \
+  your computer and GitHub. When you see the prompt \
+  'Enter a file in which to save the key', just press Enter! \
+  Your passphrase can be anything that's memorable."
 
 ssh-keygen -t rsa -C $github_email
 ssh-add id_rsa
@@ -449,9 +453,9 @@ pause_awhile "downloading the installfest repo"
 
 if [[ $os_version == *10.6** ]]; then
   # 10.6 doesn't have git so download the zip and rename it installfest
-  curl -LO https://github.com/ga-instructors/installfest_script/archive/master.zip
-  unzip "master.zip" -d ~/.wdi
-  mv ~/.wdi/installfest_script-master/ ~/.wdi/installfest
+  curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
+  unzip $BRANCH.zip -d ~/.wdi
+  mv ~/.wdi/installfest_script-$BRANCH/ ~/.wdi/installfest
 else
   if [[ ! -d $SRC_DIR ]]; then
     echo 'Downloading Installfest repo...'
@@ -640,14 +644,25 @@ quoth_the_bard "${HOW_NOW_NODE[@]}"
 
 pause_awhile "install Node and npm"
 
-# Event-driven I/O server-side JavaScript environment based on V8
-sudo apt-get -y install nodejs
+# NVM dependencies
+sudo apt-get install build-essential libssl-dev
 
-# Node package manager
-sudo apt-get -y install npm
+git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
 
-# For programs that still depend on calling the "node" binary, run:
-sudo apt-get -y install nodejs-legacy
+source ~/.nvm/nvm.sh
+
+# Install latest version of Node
+nvm install stable
+
+# Install iojs
+nvm install iojs
+
+# Use iojs
+# (phlco) could set this with ~/.nvmrc
+nvm use iojs
+
+# Ensure we have the most recent version of npm
+npm install npm -g
 
 
 

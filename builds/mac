@@ -1,34 +1,5 @@
 #!/usr/bin/env bash
 
-#
-#  _           _        _ _  __           _
-# (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
-# | | '_ \/ __| __/ _` | | | |_ / _ \/ __| __|
-# | | | | \__ \ || (_| | | |  _|  __/\__ \ |_
-# |_|_| |_|___/\__\__,_|_|_|_|  \___||___/\__|
-#
-# Installation, Setup and Dotfile Creation Script
-# for Students of General Assemb.ly's WDI Program
-
-# Author: Phillip Lamplugh, GA Instructor (2014)
-# Contributions: PJ Hughes, GA Instructor (2014)
-
-# Resources:
-#
-# https://github.com/thoughtbot/laptop
-# https://github.com/toranb/ubuntu-development-machine
-# https://github.com/divio/osx-bootstrap
-# https://github.com/paulirish/dotfiles
-# https://github.com/mathiasbynens/dotfiles/
-# https://github.com/ndbroadbent/dotfiles
-
-# References:
-#
-# http://www.sudo.ws/
-# http://www.gnu.org/software/bash/manual/bashref.html
-# http://www.shellcheck.net
-# http://explainshell.com/
-
 #-------------------------------------------------------------------------------
 # Handle Command Line Options
 #-------------------------------------------------------------------------------
@@ -127,148 +98,6 @@ NOUNDERLINE=$(tput rmul)
 BOLD=$(       tput bold)
 ITALIC=$(     tput sitm)
 
-
-function quoth_the_bard () {
-  local message=$1
-  local attribution=$2
-  echo ""
-  echo "${RED}${message}${RESET}"
-  echo "${BLUE}${attribution}${RESET}"
-  echo ""
-}
-
-# TODO (phlco) move these to a better place like utils
-
-function pause_awhile () {
-  echo ""
-  read -p "${BG_YELLOW}>>>>    $*. Press <Enter> to continue.${RESET}"
-}
-
-function inform () {
-  echo ""
-  echo "${BG_GREEN}>>>>    $* ${RESET}"
-}
-
-function warn () {
-  echo ""
-  echo "${BG_RED}${WHITE}>>>>    $* ${RESET}"
-}
-
-function backup () {
-  local timestamp=$(date +%s)
-  local file=$1
-  if [ -a "$file" ]; then
-    cp -r $file{,-$timestamp.backup}
-  fi
-}
-
-function install_zip () {
-  local file_name="$1"
-  mkdir "$file_name"
-  unzip "$file_name.zip" -d "$file_name"
-  mv $file_name/*.app /Applications
-}
-
-THE_PLAYS_THE_THING="The play's the thing..."
-HOW_NOW_SSH_KEYS=(
-"Double, double toil and trouble; Fire burn, and caldron bubble."
-"--Macbeth (IV.i)"
-)
-HOW_NOW_RVM=(
-"Woe, destruction, ruin, and decay; the worst is death and death will have his day."
-"--Richard II (III.ii)"
-)
-HOW_NOW_BREW=(
-"PISTOL: The plain-song is most just: for humours do abound:
-Knocks go and come; God's vassals drop and die;
-And sword and shield,
-In bloody field,
-Doth win immortal fame.
-
-Boy: Would I were in an alehouse in London! I would give
-all my fame for a pot of ale and safety."
-"--Henry V (III.ii)"
-)
-HOW_NOW_TERMINAL=(
-"I have touch'd the highest point of all my greatness;
-And, from that full meridian of my glory,
-I haste now to my setting: I shall fall
-Like a bright exhalation in the evening,
-And no man see me more."
-"--Henry VIII (III.ii)"
-)
-HOW_NOW_RUBY=(
-"Once more the ruby-colour'd portal open'd,"
-"--Venus and Adonis (1593)"
-)
-HOW_NOW_GIT=(
-"MARIA: This and these pearls to me sent Longaville:
-The letter is too long by half a mile.
-
-PRINCESS OF FRANCE: I think no less. Dost thou not wish in heart
-The chain were longer and the letter short?"
-"--Love's Labour Lost (V.ii)"
-)
-HOW_NOW_APPS=(
-"Lend me an arm; the rest have worn me out
-With several applications..."
-"--All's Well That Ends Well (I.ii)"
-)
-HOW_NOW_CONFIGURE=(
-"Suit the action to the word, the word to the action,
-with this special observance that you o'erstep not the modesty of nature."
-"--Hamlet (III.ii)"
-)
-HOW_NOW_GEMS=(
-"Making a couplement of proud compare,
-With sun and moon, with earth and sea's rich gems,
-With April's first-born flowers, and all things rare
-That heaven's air in this huge rondure hems."
-"--Sonnet 21"
-)
-HOW_NOW_DB=(
-"'Tis in my memory lock'd, And you yourself shall keep the key of it."
-"--Hamlet (I.iii)"
-)
-HOW_NOW_FINISH=(
-"Once more unto the breach, dear friends, once more;
-Or close the wall up with our English dead."
-"--Henry V (III.i)"
-)
-HOW_NOW_NODE=(
-"But that my heart's on future mischief set,
-I would speak blasphemy ere bid you fly:
-But fly you must; uncurable discomfit
-Reigns in the hearts of all our present parts."
-"--Henry VI, Part 2 (V.ii)"
-)
-HOW_NOW_GIT=(
-"HAMLET: ... for you yourself, sir,
-should be old as I am if, like a crab, you could go backward.
-
-POLONIUS: [aside] Though this be madness, yet there is a method in't.-
-Will You walk out of the air, my lord?"
-"--Hamlet (II.ii)"
-)
-
-clear
-
-echo "Welcome to Installfest
-
-Throughout the script you will be asked to enter your password. Unless otherwise
-stated, this is asking for your ${BOLD}computer's password${RESET}.
-
-This will install or update files and applications that you will use in class."
-echo ""
-
-
-
-echo "${GREEN}The play's the thing...${GREEN}"
-
-
-
-quoth_the_bard "${HOW_NOW_TERMINAL[@]}"
-
 #-------------------------------------------------------------------------------
 # Functions
 #-------------------------------------------------------------------------------
@@ -285,20 +114,6 @@ allow_control() {
   else
     echo "allow_control works only on Mavericks"
   fi
-}
-
-# set FORCE (do not quit on error) to true if it is not loaded, as a default
-: ${FORCE=true} # TODO (h4w5) since we are testing for null, this will always happen
-                # switch to true/false
-
-# use an empty function for assertions...
-assert_that() {
-  echo "" > /dev/null
-}
-
-# use an empty function for assertions...
-assert_package_installed() {
-  echo "" > /dev/null
 }
 
 
@@ -335,10 +150,11 @@ MINIMUM_OS="10.7.0"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=master
+BRANCH=melville
 
 # capture the user's password
-sudo -p "${BG_GREEN}Enter your computer's password so that we can make the necessary changes: ${RESET}" echo "Thank you."
+sudo -p "${BG_GREEN}Enter your computer's password \
+  so that we can make the necessary changes: ${RESET}" echo "Thank you."
 
 # Determine OS version
 os_version=$(sw_vers -productVersion)
@@ -394,10 +210,6 @@ else
   exit 1 # TODO (phlco) maybe just type 'done' instead of rerunning?
 fi
 
-
-
-quoth_the_bard "${HOW_NOW_RVM[@]}"
-
 # uninstall rvm, so that we can use rbenv
 # http://stackoverflow.com/questions/3950260/howto-uninstall-rvm
 if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
@@ -436,10 +248,6 @@ else
   echo "Macports is not installed. Moving on..."
 fi
 
-
-
-quoth_the_bard "${HOW_NOW_GIT[@]}"
-
 echo "Please register for an account on github.com if you haven't already done so."
 
 read -p "Enter your First Name: "    fname
@@ -448,16 +256,15 @@ read -p "Github Username: "          github_name
 read -p "Github Email: "             github_email
 read -s -p "Github Password: "       github_password
 
-
-
-quoth_the_bard "${HOW_NOW_SSH_KEYS[@]}"
-
 # SSH keys establish a secure connection between your computer and GitHub
 # This script follows these instructions
 # `https://help.github.com/articles/generating-ssh-keys`
 
 # SSH Keygen
-pause_awhile "Generate an SSH key. When you see the prompt 'Enter a file in which to save the key', just press Enter! Your passphrase can be anything that's memorable."
+pause_awhile "Generating an SSH key to establish a secure connection between \
+  your computer and GitHub. When you see the prompt \
+  'Enter a file in which to save the key', just press Enter! \
+  Your passphrase can be anything that's memorable."
 
 ssh-keygen -t rsa -C $github_email
 ssh-add id_rsa
@@ -478,9 +285,9 @@ pause_awhile "downloading the installfest repo"
 
 if [[ $os_version == *10.6** ]]; then
   # 10.6 doesn't have git so download the zip and rename it installfest
-  curl -LO https://github.com/ga-instructors/installfest_script/archive/master.zip
-  unzip "master.zip" -d ~/.wdi
-  mv ~/.wdi/installfest_script-master/ ~/.wdi/installfest
+  curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
+  unzip $BRANCH.zip -d ~/.wdi
+  mv ~/.wdi/installfest_script-$BRANCH/ ~/.wdi/installfest
 else
   if [[ ! -d $SRC_DIR ]]; then
     echo 'Downloading Installfest repo...'
@@ -493,10 +300,6 @@ else
     git pull origin $BRANCH
   fi
 fi
-
-
-
-quoth_the_bard "${HOW_NOW_BREW[@]}"
 
 # Installs Homebrew, our package manager
 # http://brew.sh/
@@ -614,10 +417,6 @@ git config --global push.default current
 # set global gitignore
 git config --global core.excludesfile ~/.gitignore_global
 
-
-
-quoth_the_bard "${HOW_NOW_GEMS[@]}"
-
 # Our Ruby version manager
 # brew install rbenv
 git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
@@ -678,10 +477,6 @@ for gem in ${gemlist[@]}; do
   echo "${gem}" >> ~/.rbenv/default-gems
 done
 
-
-
-quoth_the_bard "${HOW_NOW_RUBY[@]}"
-
 ruby_check=$(rbenv versions | grep $BELOVED_RUBY_VERSION)
 
 if [[ "$ruby_check" == *$BELOVED_RUBY_VERSION* ]]; then
@@ -697,57 +492,27 @@ rbenv global $BELOVED_RUBY_VERSION
 assert_that "Ruby version is now '${BELOVED_RUBY_VERSION}'" \
             "ruby -v | grep -q ${BELOVED_RUBY_VERSION} && echo 'true'" "true"
 
+# Remove any brew installation
+brew remove --force node
+rm -r /usr/local/lib/node_modules
 
+# Node Version Manager
+brew install nvm
+export NVM_DIR=$(brew --prefix)/var/nvm
+source $(brew --prefix nvm)/nvm.sh
 
-quoth_the_bard "${HOW_NOW_NODE[@]}"
+# Install latest version of Node
+nvm install stable
 
-if [[ $os_version == *10.6* ]]; then
-  # skipping node for now.
-  echo "skipping node"
-else
-  # Event-driven I/O server-side JavaScript environment based on V8
-  brew install node
+# Install iojs
+nvm install iojs
 
-  # CLI tool for scaffolding out Yeoman projects
-  # npm install -g yo
+# Use iojs
+# (phlco) could set this with ~/.nvmrc
+nvm use iojs
 
-  # Scaffold out a front-end web app
-  # npm install -g generator-webapp
-
-  # Yeoman generator for Backbone.js
-  # npm install -g generator-backbone
-
-  # Yeoman generator for AngularJS
-  # npm install -g generator-angular
-
-  # The grunt command line interface.
-  npm install -g grunt-cli
-
-  # The browser package manager
-  npm install -g bower
-
-  # Static analysis tool for JavaScript
-  npm install -g jshint
-
-  # Unfancy JavaScript
-  npm install -g coffee-script
-
-  # Code Coverage tool for JavaScript
-  # npm install -g istanbul
-
-  # Fast, unopinionated, minimalist web framework
-  npm install -g express
-
-  # TODO (phlco) Add or remove
-  # npm install -g less
-  # npm install -g gulp
-  # npm install -g browserify
-  # npm install -g generator-gulp-webapp
-fi
-
-
-
-quoth_the_bard "${HOW_NOW_APPS[@]}"
+# Ensure we have the most recent version of npm
+npm install npm -g
 
 # a CLI workflow for the administration of Mac applications
 # distributed as binaries
@@ -756,17 +521,17 @@ brew install brew-cask
 
 # The Browser
 brew cask install google-chrome
+brew cask install google-chrome-canary
 
 # A Browser
 brew cask install firefox
+brew cask install firefox-nightly
 
 # The Text Editor, Sublime Text 2
+# (phlco) sublime text 3 is still in beta, therefore we'll stick to stable.
+# (phlco) atom won't support files over 2mb therefore we'll hold off.
 brew cask install sublime-text
 
-# # Markdown Editor
-# brew cask install mou # NOTE (phlco) we can remove this and just use atom.
-
-# NOTE (phlco) Necessary?
 # Flux, makes the color of your computer's display adapt to the time of day
 # brew cask install flux
 
@@ -783,37 +548,22 @@ brew cask install sublime-text
 
 # Git extensions to provide high-level repository operations
 # brew install git-flow
-
 if [[ $os_version == *10.6** ]]; then
   # spectacle
   curl -OL https://s3.amazonaws.com/spectacle/downloads/Spectacle+0.7.zip
   unzip Spectacle+0.7.zip
   mv Spectacle.app/ /Applications
   rm Spectacle+0.7.zip
-  # mou for markdown
-  curl -OL http://25.io/mou/download/Mou_0.6.6.zip
-  unzip Mou_0.6.6.zip
-  mv Mou.app/ /Applications
-  rm Mou_0.6.6.zip
-  echo "Warning! Your OS doesn't support the HipChat desktop application."
-  pause_awhile "HipChat is a vital class tool. You must use the web-based client or upgrade your OS."
-else
-  # Instant search documentation offline
-  # requires 10.7 or higher
-  brew cask install dash
 
-  # The Chat Client
-  # requires 10.7 or higher
-  brew cask install hipchat
+  echo "Slack requires 10.7 or higher. Please bookmark and use the browser version."
 
-  # Github's Text Editor
-  # requires 10.7 or higher
-  brew cask install atom
-
+ else
   # The Window Manager
   brew cask install spectacle
-  # allow spectacle to control computer
   # allow_control Spectacle NOTE (phlco) just set up by hand?
+
+  # Our class chat client
+  brew cask install slack
 
   # The X Window Server
   brew cask install xquartz
@@ -918,28 +668,26 @@ echo "Heroku. This will allow you to deploy code to all of your apps."
 # PL: holding off for user interaction
 heroku keys:add
 
-
-
-quoth_the_bard "${HOW_NOW_DB[@]}"
-
 # Set up Postgres
 brew install postgresql
 
 # Install ruby interface for Postgres
-# from brew: "When installing the postgres gem, including ARCHFLAGS is recommended:"
+# from brew: "When installing the postgres gem, including ARCHFLAGS is
+# recommended:"
 ARCHFLAGS="-arch x86_64" gem install pg
+
+# Create a database
+initdb /usr/local/var/postgres -E utf8
 
 # NOTE! https://coderwall.com/p/rjioeg
 # Yosemite problems:
 # for some reasons yosemite cleaned up some files/directories in /usr/local
-# for postgres installed via homebrew the following directories were missing to start postgres properly:
-mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
+# for postgres installed via homebrew the following directories were missing to
+# start postgres properly:
+sudo mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
 # May also need this.
-chmod -R 700 /usr/local/var/postgres
-chown -R ${USER} /usr/local/var/postgres
-
-# Create a database
-initdb /usr/local/var/postgres -E utf8
+sudo chmod -R 700 /usr/local/var/postgres
+sudo chown -R ${USER} /usr/local/var/postgres
 
 # Ensure that Postgres launches whenever we login
 mkdir -p ~/Library/LaunchAgents
@@ -1002,10 +750,6 @@ defaults write com.apple.terminal StringEncodings -array 4
 # -e 'tell application "Terminal" to do script "open ~/.wdi-installfest/settings/sublime/MyMonokai.terminal" in tab 2 of front window'
 # -e 'tell application "System Events" to tell process "Terminal" to keystroke "w" using command down'
 # -e 'tell application "System Events" to tell process "Terminal" to tell window 1 to close'
-
-
-
-quoth_the_bard "${HOW_NOW_CONFIGURE[@]}"
 
 echo "Creating directory for wdi: ~/dev/wdi"
 
@@ -1081,13 +825,4 @@ curl "https://api.github.com/repos/$OWNER/$REPO/contents/logs/installfest/$user_
   -H "Accept: application/vnd.github.v3+json" \
   -u "$github_name:$github_password" \
   -d "$(ruby -rjson -e "j=$payload; puts j.to_json")"
-
-
-
-quoth_the_bard "${HOW_NOW_FINISH[@]}"
-
-inform "We're done!"
-echo "Please quit and re-open your terminal!"
-echo "#-- fin -- #"
-#TODO(phlco) maybe make the welcome prompt load up additional checks to run.
 

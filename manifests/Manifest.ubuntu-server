@@ -56,7 +56,8 @@ keep_alive_password
 
 # -> quoth_the_bard "${HOW_NOW_NODE[@]}"
 # -> pause_awhile "install Node and npm"
-ubuntu/install_node_and_npm
+ubuntu/install_nvm
+install_node_and_npm
 
 # -> quoth_the_bard "${HOW_NOW_DB[@]}"
 # -> pause_awhile "install PostgreSQL"
