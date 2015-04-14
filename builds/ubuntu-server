@@ -640,14 +640,21 @@ quoth_the_bard "${HOW_NOW_NODE[@]}"
 
 pause_awhile "install Node and npm"
 
-# Event-driven I/O server-side JavaScript environment based on V8
-sudo apt-get -y install nodejs
+# NVM dependencies
+sudo apt-get install build-essential libssl-dev
 
-# Node package manager
-sudo apt-get -y install npm
+git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
 
-# For programs that still depend on calling the "node" binary, run:
-sudo apt-get -y install nodejs-legacy
+source ~/.nvm/nvm.sh
+
+# Install latest version of Node
+nvm install stable
+
+# Install iojs
+nvm install iojs
+
+# Ensure we have the most recent version of npm
+npm install npm -g
 
 
 

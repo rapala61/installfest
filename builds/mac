@@ -701,49 +701,23 @@ assert_that "Ruby version is now '${BELOVED_RUBY_VERSION}'" \
 
 quoth_the_bard "${HOW_NOW_NODE[@]}"
 
-if [[ $os_version == *10.6* ]]; then
-  # skipping node for now.
-  echo "skipping node"
-else
-  # Event-driven I/O server-side JavaScript environment based on V8
-  brew install node
+# Remove any brew installation
+brew remove --force node
+rm -r /usr/local/lib/node_modules
 
-  # CLI tool for scaffolding out Yeoman projects
-  # npm install -g yo
+# Node Version Manager
+brew install nvm
+export NVM_DIR=$(brew --prefix)/var/nvm
+source $(brew --prefix nvm)/nvm.sh
 
-  # Scaffold out a front-end web app
-  # npm install -g generator-webapp
+# Install latest version of Node
+nvm install stable
 
-  # Yeoman generator for Backbone.js
-  # npm install -g generator-backbone
+# Install iojs
+nvm install iojs
 
-  # Yeoman generator for AngularJS
-  # npm install -g generator-angular
-
-  # The grunt command line interface.
-  npm install -g grunt-cli
-
-  # The browser package manager
-  npm install -g bower
-
-  # Static analysis tool for JavaScript
-  npm install -g jshint
-
-  # Unfancy JavaScript
-  npm install -g coffee-script
-
-  # Code Coverage tool for JavaScript
-  # npm install -g istanbul
-
-  # Fast, unopinionated, minimalist web framework
-  npm install -g express
-
-  # TODO (phlco) Add or remove
-  # npm install -g less
-  # npm install -g gulp
-  # npm install -g browserify
-  # npm install -g generator-gulp-webapp
-fi
+# Ensure we have the most recent version of npm
+npm install npm -g
 
 
 
@@ -926,20 +900,22 @@ quoth_the_bard "${HOW_NOW_DB[@]}"
 brew install postgresql
 
 # Install ruby interface for Postgres
-# from brew: "When installing the postgres gem, including ARCHFLAGS is recommended:"
+# from brew: "When installing the postgres gem, including ARCHFLAGS is
+# recommended:"
 ARCHFLAGS="-arch x86_64" gem install pg
+
+# Create a database
+initdb /usr/local/var/postgres -E utf8
 
 # NOTE! https://coderwall.com/p/rjioeg
 # Yosemite problems:
 # for some reasons yosemite cleaned up some files/directories in /usr/local
-# for postgres installed via homebrew the following directories were missing to start postgres properly:
-mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
+# for postgres installed via homebrew the following directories were missing to
+# start postgres properly:
+sudo mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
 # May also need this.
-chmod -R 700 /usr/local/var/postgres
-chown -R ${USER} /usr/local/var/postgres
-
-# Create a database
-initdb /usr/local/var/postgres -E utf8
+sudo chmod -R 700 /usr/local/var/postgres
+sudo chown -R ${USER} /usr/local/var/postgres
 
 # Ensure that Postgres launches whenever we login
 mkdir -p ~/Library/LaunchAgents
