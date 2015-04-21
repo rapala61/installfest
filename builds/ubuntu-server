@@ -233,9 +233,8 @@ assert_package_installed() {
   echo "" > /dev/null
 }
 
-
-BELOVED_RUBY_VERSION="2.1.2"
-CURRENT_STABLE_RUBY_VERSION="2.1.2"
+BELOVED_RUBY_VERSION="2.2.0"
+CURRENT_STABLE_RUBY_VERSION="2.2.0"
 
 # TODO (pj) decide what the python versions should really be...
 #   and maybe come up with a bigger, better place to hang this info
@@ -261,14 +260,15 @@ INSTALL_REPO=https://github.com/ga-instructors/installfest_script.git
 # `MACHTYPE` system type in cpu-company-system
 # `SECONDS` number of seconds since the shell was started.
 OWNER="ga-students"
-REPO="godot_instructors"
+REPO="wdi_melville_instructors"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=master
+BRANCH=melville
 
 # capture the user's password
-sudo -p "${BG_GREEN}Enter your computer's password so that we can make the necessary changes: ${RESET}" echo "Thank you."
+sudo -p "${BG_GREEN}Enter your computer's password \
+  so that we can make the necessary changes: ${RESET}" echo "Thank you."
 
 
 
@@ -401,7 +401,10 @@ quoth_the_bard "${HOW_NOW_SSH_KEYS[@]}"
 # `https://help.github.com/articles/generating-ssh-keys`
 
 # SSH Keygen
-pause_awhile "Generate an SSH key. When you see the prompt 'Enter a file in which to save the key', just press Enter! Your passphrase can be anything that's memorable."
+pause_awhile "Generating an SSH key to establish a secure connection between \
+  your computer and GitHub. When you see the prompt \
+  'Enter a file in which to save the key', just press Enter! \
+  Your passphrase can be anything that's memorable."
 
 ssh-keygen -t rsa -C $github_email
 ssh-add id_rsa
@@ -449,9 +452,9 @@ pause_awhile "downloading the installfest repo"
 
 if [[ $os_version == *10.6** ]]; then
   # 10.6 doesn't have git so download the zip and rename it installfest
-  curl -LO https://github.com/ga-instructors/installfest_script/archive/master.zip
-  unzip "master.zip" -d ~/.wdi
-  mv ~/.wdi/installfest_script-master/ ~/.wdi/installfest
+  curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
+  unzip $BRANCH.zip -d ~/.wdi
+  mv ~/.wdi/installfest_script-$BRANCH/ ~/.wdi/installfest
 else
   if [[ ! -d $SRC_DIR ]]; then
     echo 'Downloading Installfest repo...'
@@ -559,10 +562,10 @@ gemlist=(
   # pry-coolline    # live syntax highlighting for the Pry REPL
   # rails           # full stack, Web application framework
   # rspec           # testing tool for Ruby
-  sinatra         # a DSL for quickly creating web applications in Ruby
-  sinatra-contrib # common Sinatra extensions
+  # sinatra         # a DSL for quickly creating web applications in Ruby
+  # sinatra-contrib # common Sinatra extensions
   github_api      # Ruby interface to github API v3
-  hipchat         # HipChat HTTP API Wrapper
+  # hipchat         # HipChat HTTP API Wrapper
   awesome_print   # pretty print your Ruby objects with style
   rainbow         # colorizing printed text on ANSI terminals
 )

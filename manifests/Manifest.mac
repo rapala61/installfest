@@ -1,17 +1,9 @@
 shebang
 
-commentary/header
 handle_options_and_start_logging
 
 define_terminal_colors
-commentary/quoth_the_bard
-commentary/instructions
-# -> echo "${GREEN}The play's the thing...${GREEN}"
-
-# -> quoth_the_bard "${HOW_NOW_TERMINAL[@]}"
 mac/define_script_helper_functions
-# tests/add_assert_functions
-tests/mock_assert_functions
 set_env_vars
 mac/set_env_vars
 set_script_branch
@@ -22,18 +14,14 @@ mac/determine_os_version
 mac/update_software
 mac/install_commandline_tools
 
-# -> quoth_the_bard "${HOW_NOW_RVM[@]}"
 remove_rvm
 mac/remove_macports
 
-# -> quoth_the_bard "${HOW_NOW_GIT[@]}"
 capture_github_credentials
 
-# -> quoth_the_bard "${HOW_NOW_SSH_KEYS[@]}"
 add_ssh_key_to_github
 clone_script_repo
 
-# -> quoth_the_bard "${HOW_NOW_BREW[@]}"
 mac/install_homebrew
 mac/install_git
 mac/install_compilation_tools
@@ -41,19 +29,15 @@ mac/install_compilation_tools
 install_git_completion
 configure_git
 
-# -> quoth_the_bard "${HOW_NOW_GEMS[@]}"
 mac/install_rbenv
 set_default_gems_with_rbenv
 
-# -> quoth_the_bard "${HOW_NOW_RUBY[@]}"
 install_beloved_ruby_version
 set_global_ruby_version
 
-# -> quoth_the_bard "${HOW_NOW_NODE[@]}"
 mac/install_nvm
 install_node_and_npm
 
-# -> quoth_the_bard "${HOW_NOW_APPS[@]}"
 mac/install_apps
 mac/configure_sublime
 
@@ -61,22 +45,15 @@ mac/configure_sublime
 mac/install_system_packages
 mac/set_up_heroku
 
-# -> quoth_the_bard "${HOW_NOW_DB[@]}"
 mac/install_postgres
-
-## currently not using
-# install_vim_plugins
-# install_oh_my_zsh
 
 mac/run_osx_tweeks
 
-# -> quoth_the_bard "${HOW_NOW_CONFIGURE[@]}"
 create_student_folders
 copy_over_dotfiles
 
 capture_mac_address
 report_log
 
-# -> quoth_the_bard "${HOW_NOW_FINISH[@]}"
 commentary/fin
 

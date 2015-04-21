@@ -15,7 +15,7 @@ The script comes in three basic flavors: the default full install for Mac OS, th
 Paste this script into a Terminal prompt:
 
 ```
-bash <(curl -sL https://raw.githubusercontent.com/ga-instructors/installfest_script/master/builds/mac)
+bash <(curl -sL https://raw.githubusercontent.com/ga-instructors/installfest_script/melville/builds/mac)
 ```
 
 ##### For Ubuntu Linux

@@ -18,8 +18,8 @@ welcome_msg() {
     echo $(brew -v)
   fi
   echo $(ruby -v)
+  echo $(node --version)
   echo $(psql --version)
-  echo $(rails -v)
   echo $(heroku --version)
   echo "------------------------------------------"
   echo "type ${BOLD}unwelcome${RESET} to remove this message"

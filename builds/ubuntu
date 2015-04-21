@@ -1,34 +1,5 @@
 #!/usr/bin/env bash
 
-#
-#  _           _        _ _  __           _
-# (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
-# | | '_ \/ __| __/ _` | | | |_ / _ \/ __| __|
-# | | | | \__ \ || (_| | | |  _|  __/\__ \ |_
-# |_|_| |_|___/\__\__,_|_|_|_|  \___||___/\__|
-#
-# Installation, Setup and Dotfile Creation Script
-# for Students of General Assemb.ly's WDI Program
-
-# Author: Phillip Lamplugh, GA Instructor (2014)
-# Contributions: PJ Hughes, GA Instructor (2014)
-
-# Resources:
-#
-# https://github.com/thoughtbot/laptop
-# https://github.com/toranb/ubuntu-development-machine
-# https://github.com/divio/osx-bootstrap
-# https://github.com/paulirish/dotfiles
-# https://github.com/mathiasbynens/dotfiles/
-# https://github.com/ndbroadbent/dotfiles
-
-# References:
-#
-# http://www.sudo.ws/
-# http://www.gnu.org/software/bash/manual/bashref.html
-# http://www.shellcheck.net
-# http://explainshell.com/
-
 #-------------------------------------------------------------------------------
 # Handle Command Line Options
 #-------------------------------------------------------------------------------
@@ -127,173 +98,8 @@ NOUNDERLINE=$(tput rmul)
 BOLD=$(       tput bold)
 ITALIC=$(     tput sitm)
 
-
-function quoth_the_bard () {
-  local message=$1
-  local attribution=$2
-  echo ""
-  echo "${RED}${message}${RESET}"
-  echo "${BLUE}${attribution}${RESET}"
-  echo ""
-}
-
-# TODO (phlco) move these to a better place like utils
-
-function pause_awhile () {
-  echo ""
-  read -p "${BG_YELLOW}>>>>    $*. Press <Enter> to continue.${RESET}"
-}
-
-function inform () {
-  echo ""
-  echo "${BG_GREEN}>>>>    $* ${RESET}"
-}
-
-function warn () {
-  echo ""
-  echo "${BG_RED}${WHITE}>>>>    $* ${RESET}"
-}
-
-function backup () {
-  local timestamp=$(date +%s)
-  local file=$1
-  if [ -a "$file" ]; then
-    cp -r $file{,-$timestamp.backup}
-  fi
-}
-
-function install_zip () {
-  local file_name="$1"
-  mkdir "$file_name"
-  unzip "$file_name.zip" -d "$file_name"
-  mv $file_name/*.app /Applications
-}
-
-THE_PLAYS_THE_THING="The play's the thing..."
-HOW_NOW_SSH_KEYS=(
-"Double, double toil and trouble; Fire burn, and caldron bubble."
-"--Macbeth (IV.i)"
-)
-HOW_NOW_RVM=(
-"Woe, destruction, ruin, and decay; the worst is death and death will have his day."
-"--Richard II (III.ii)"
-)
-HOW_NOW_BREW=(
-"PISTOL: The plain-song is most just: for humours do abound:
-Knocks go and come; God's vassals drop and die;
-And sword and shield,
-In bloody field,
-Doth win immortal fame.
-
-Boy: Would I were in an alehouse in London! I would give
-all my fame for a pot of ale and safety."
-"--Henry V (III.ii)"
-)
-HOW_NOW_TERMINAL=(
-"I have touch'd the highest point of all my greatness;
-And, from that full meridian of my glory,
-I haste now to my setting: I shall fall
-Like a bright exhalation in the evening,
-And no man see me more."
-"--Henry VIII (III.ii)"
-)
-HOW_NOW_RUBY=(
-"Once more the ruby-colour'd portal open'd,"
-"--Venus and Adonis (1593)"
-)
-HOW_NOW_GIT=(
-"MARIA: This and these pearls to me sent Longaville:
-The letter is too long by half a mile.
-
-PRINCESS OF FRANCE: I think no less. Dost thou not wish in heart
-The chain were longer and the letter short?"
-"--Love's Labour Lost (V.ii)"
-)
-HOW_NOW_APPS=(
-"Lend me an arm; the rest have worn me out
-With several applications..."
-"--All's Well That Ends Well (I.ii)"
-)
-HOW_NOW_CONFIGURE=(
-"Suit the action to the word, the word to the action,
-with this special observance that you o'erstep not the modesty of nature."
-"--Hamlet (III.ii)"
-)
-HOW_NOW_GEMS=(
-"Making a couplement of proud compare,
-With sun and moon, with earth and sea's rich gems,
-With April's first-born flowers, and all things rare
-That heaven's air in this huge rondure hems."
-"--Sonnet 21"
-)
-HOW_NOW_DB=(
-"'Tis in my memory lock'd, And you yourself shall keep the key of it."
-"--Hamlet (I.iii)"
-)
-HOW_NOW_FINISH=(
-"Once more unto the breach, dear friends, once more;
-Or close the wall up with our English dead."
-"--Henry V (III.i)"
-)
-HOW_NOW_NODE=(
-"But that my heart's on future mischief set,
-I would speak blasphemy ere bid you fly:
-But fly you must; uncurable discomfit
-Reigns in the hearts of all our present parts."
-"--Henry VI, Part 2 (V.ii)"
-)
-HOW_NOW_GIT=(
-"HAMLET: ... for you yourself, sir,
-should be old as I am if, like a crab, you could go backward.
-
-POLONIUS: [aside] Though this be madness, yet there is a method in't.-
-Will You walk out of the air, my lord?"
-"--Hamlet (II.ii)"
-)
-
-clear
-
-echo "Welcome to Installfest
-
-Throughout the script you will be asked to enter your password. Unless otherwise
-stated, this is asking for your ${BOLD}computer's password${RESET}.
-
-This will install or update files and applications that you will use in class."
-echo ""
-
-
-
-pause_awhile "begin"
-
-
-
-echo "${GREEN}The play's the thing...${GREEN}"
-
-
-
-quoth_the_bard "${HOW_NOW_TERMINAL[@]}"
-
-
-
-pause_awhile "define environmental variables for the install"
-
-# set FORCE (do not quit on error) to true if it is not loaded, as a default
-: ${FORCE=true} # TODO (h4w5) since we are testing for null, this will always happen
-                # switch to true/false
-
-# use an empty function for assertions...
-assert_that() {
-  echo "" > /dev/null
-}
-
-# use an empty function for assertions...
-assert_package_installed() {
-  echo "" > /dev/null
-}
-
-
-BELOVED_RUBY_VERSION="2.1.2"
-CURRENT_STABLE_RUBY_VERSION="2.1.2"
+BELOVED_RUBY_VERSION="2.2.0"
+CURRENT_STABLE_RUBY_VERSION="2.2.0"
 
 # TODO (pj) decide what the python versions should really be...
 #   and maybe come up with a bigger, better place to hang this info
@@ -319,18 +125,15 @@ INSTALL_REPO=https://github.com/ga-instructors/installfest_script.git
 # `MACHTYPE` system type in cpu-company-system
 # `SECONDS` number of seconds since the shell was started.
 OWNER="ga-students"
-REPO="godot_instructors"
+REPO="wdi_melville_instructors"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=master
+BRANCH=melville
 
 # capture the user's password
-sudo -p "${BG_GREEN}Enter your computer's password so that we can make the necessary changes: ${RESET}" echo "Thank you."
-
-
-
-pause_awhile "update your OS with necessary tools"
+sudo -p "${BG_GREEN}Enter your computer's password \
+  so that we can make the necessary changes: ${RESET}" echo "Thank you."
 
 # TODO (phlco) remove the description part with a regex capture group
 os_version=$(lsb_release -a | grep -i Description)
@@ -437,14 +240,6 @@ sudo apt-get -y install ${packagelist[@]}
 
 assert_package_installed ${packagelist[@]}
 
-
-
-quoth_the_bard "${HOW_NOW_GIT[@]}"
-
-
-
-pause_awhile "add GitHub credentials to our keychain"
-
 echo "Please register for an account on github.com if you haven't already done so."
 
 read -p "Enter your First Name: "    fname
@@ -453,16 +248,15 @@ read -p "Github Username: "          github_name
 read -p "Github Email: "             github_email
 read -s -p "Github Password: "       github_password
 
-
-
-quoth_the_bard "${HOW_NOW_SSH_KEYS[@]}"
-
 # SSH keys establish a secure connection between your computer and GitHub
 # This script follows these instructions
 # `https://help.github.com/articles/generating-ssh-keys`
 
 # SSH Keygen
-pause_awhile "Generate an SSH key. When you see the prompt 'Enter a file in which to save the key', just press Enter! Your passphrase can be anything that's memorable."
+pause_awhile "Generating an SSH key to establish a secure connection between \
+  your computer and GitHub. When you see the prompt \
+  'Enter a file in which to save the key', just press Enter! \
+  Your passphrase can be anything that's memorable."
 
 ssh-keygen -t rsa -C $github_email
 ssh-add id_rsa
@@ -510,9 +304,9 @@ pause_awhile "downloading the installfest repo"
 
 if [[ $os_version == *10.6** ]]; then
   # 10.6 doesn't have git so download the zip and rename it installfest
-  curl -LO https://github.com/ga-instructors/installfest_script/archive/master.zip
-  unzip "master.zip" -d ~/.wdi
-  mv ~/.wdi/installfest_script-master/ ~/.wdi/installfest
+  curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
+  unzip $BRANCH.zip -d ~/.wdi
+  mv ~/.wdi/installfest_script-$BRANCH/ ~/.wdi/installfest
 else
   if [[ ! -d $SRC_DIR ]]; then
     echo 'Downloading Installfest repo...'
@@ -566,14 +360,6 @@ sudo apt-get install -y heroku-toolbelt
 # run this before or after long chunks of the script to update the sudo timestamp
 sudo -nv
 
-
-
-quoth_the_bard "${HOW_NOW_GEMS[@]}"
-
-
-
-pause_awhile "install rbenv and Gem list"
-
 # uninstall rvm, so that we can use rbenv
 # http://stackoverflow.com/questions/3950260/howto-uninstall-rvm
 if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
@@ -620,10 +406,10 @@ gemlist=(
   # pry-coolline    # live syntax highlighting for the Pry REPL
   # rails           # full stack, Web application framework
   # rspec           # testing tool for Ruby
-  sinatra         # a DSL for quickly creating web applications in Ruby
-  sinatra-contrib # common Sinatra extensions
+  # sinatra         # a DSL for quickly creating web applications in Ruby
+  # sinatra-contrib # common Sinatra extensions
   github_api      # Ruby interface to github API v3
-  hipchat         # HipChat HTTP API Wrapper
+  # hipchat         # HipChat HTTP API Wrapper
   awesome_print   # pretty print your Ruby objects with style
   rainbow         # colorizing printed text on ANSI terminals
 )
@@ -638,14 +424,6 @@ echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 
 source ~/.bashrc
-
-
-
-quoth_the_bard "${HOW_NOW_RUBY[@]}"
-
-
-
-pause_awhile "install Ruby with rbenv"
 
 ruby_check=$(rbenv versions | grep $BELOVED_RUBY_VERSION)
 
@@ -662,22 +440,8 @@ rbenv global $BELOVED_RUBY_VERSION
 assert_that "Ruby version is now '${BELOVED_RUBY_VERSION}'" \
             "ruby -v | grep -q ${BELOVED_RUBY_VERSION} && echo 'true'" "true"
 
-
-# check for gems
-for gem in ${gemlist[@]}; do
-  assert_that "$gem gem is installed" "gem list $gem -i" "true"
-done
-
 # run this before or after long chunks of the script to update the sudo timestamp
 sudo -nv
-
-
-
-quoth_the_bard "${HOW_NOW_NODE[@]}"
-
-
-
-pause_awhile "install Node and npm"
 
 # NVM dependencies
 sudo apt-get install build-essential libssl-dev
@@ -698,14 +462,6 @@ nvm use iojs
 
 # Ensure we have the most recent version of npm
 npm install npm -g
-
-
-
-quoth_the_bard "${HOW_NOW_APPS[@]}"
-
-
-
-pause_awhile "install classroom applications"
 
 # Google Chrome.........The Browser
 # HipChat...............The Chat Client
@@ -748,14 +504,6 @@ sudo apt-get -y install vim
 # emacs
 # sudo apt-get -y install emacs
 
-
-
-quoth_the_bard "${HOW_NOW_DB[@]}"
-
-
-
-pause_awhile "install PostgreSQL"
-
 # open source object-relational database management system
 # https://www.digitalocean.com/community/articles/how-to-install-and-use-postgresql-on-ubuntu-12-04
 # TODO phlco set up user
@@ -779,14 +527,6 @@ createdb $USER
 
 # Install ruby interface for Postgres
 gem install pg
-
-
-quoth_the_bard "${HOW_NOW_CONFIGURE[@]}"
-
-
-
-pause_awhile "do final configurations"
-
 echo "Creating directory for wdi: ~/dev/wdi"
 
 STUDENT_FOLDER="$HOME/dev/wdi"
@@ -865,14 +605,4 @@ curl "https://api.github.com/repos/$OWNER/$REPO/contents/logs/installfest/$user_
   -H "Accept: application/vnd.github.v3+json" \
   -u "$github_name:$github_password" \
   -d "$(ruby -rjson -e "j=$payload; puts j.to_json")"
-
-
-
-quoth_the_bard "${HOW_NOW_FINISH[@]}"
-
-# inform "We're done!"
-echo "We're done!"
-echo "Please quit and re-open your terminal!"
-echo "#-- fin -- #"
-#TODO(phlco) maybe make the welcome prompt load up additional checks to run.
 

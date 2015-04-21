@@ -1,6 +1,5 @@
-
-BELOVED_RUBY_VERSION="2.1.2"
-CURRENT_STABLE_RUBY_VERSION="2.1.2"
+BELOVED_RUBY_VERSION="2.2.0"
+CURRENT_STABLE_RUBY_VERSION="2.2.0"
 
 # TODO (pj) decide what the python versions should really be...
 #   and maybe come up with a bigger, better place to hang this info
@@ -26,4 +25,4 @@ INSTALL_REPO=https://github.com/ga-instructors/installfest_script.git
 # `MACHTYPE` system type in cpu-company-system
 # `SECONDS` number of seconds since the shell was started.
 OWNER="ga-students"
-REPO="godot_instructors"
+REPO="wdi_melville_instructors"
