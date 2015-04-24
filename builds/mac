@@ -149,7 +149,7 @@ MINIMUM_OS="10.7.0"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=melville
+BRANCH=austin
 
 # capture the user's password
 sudo -p "${BG_GREEN}Enter your computer's password \
@@ -493,7 +493,7 @@ assert_that "Ruby version is now '${BELOVED_RUBY_VERSION}'" \
 
 # Remove any brew installation
 brew remove --force node
-rm -r /usr/local/lib/node_modules
+sudo rm -r /usr/local/lib/node_modules
 
 # Node Version Manager
 brew install nvm
