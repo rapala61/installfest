@@ -152,11 +152,16 @@ alias chrome='open -a "Google Chrome"'
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 # =================
-# node
+# node (Mac first, then Ubuntu)
 # =================
 
-export NVM_DIR=$(brew --prefix)/var/nvm
-source $(brew --prefix nvm)/nvm.sh
+if which brew >/dev/null; then
+  export NVM_DIR=$(brew --prefix)/var/nvm
+  source $(brew --prefix nvm)/nvm.sh
+else
+  export NVM_DIR=~/.nvm
+  source ~/.nvm/nvm.sh
+fi
 
 # =================
 # Functions
