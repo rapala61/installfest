@@ -1,6 +1,6 @@
 # Remove any brew installation
 brew remove --force node
-rm -r /usr/local/lib/node_modules
+sudo rm -rf /usr/local/lib/node_modules
 
 # Node Version Manager
 brew install nvm
