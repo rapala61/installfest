@@ -15,7 +15,7 @@ The script comes in three basic flavors: the default full install for Mac OS, th
 Paste this script into a Terminal prompt:
 
 ```
-bash <(curl -sL https://raw.githubusercontent.com/ga-instructors/installfest_script/melville/builds/mac)
+bash <(curl -sL https://raw.githubusercontent.com/ga-instructors/installfest_script/austin/builds/mac)
 ```
 
 ##### For Ubuntu Linux
@@ -23,8 +23,9 @@ bash <(curl -sL https://raw.githubusercontent.com/ga-instructors/installfest_scr
 Paste this script into a Terminal prompt:
 
 ```
-bash <(wget -qO- https://raw.githubusercontent.com/ga-instructors/installfest_script/master/builds/ubuntu)
+bash <(wget -qO- https://raw.githubusercontent.com/ga-instructors/installfest_script/austin/builds/ubuntu)
 ```
+
 ## Step 2
 
 ##### Reload the terminal screen
