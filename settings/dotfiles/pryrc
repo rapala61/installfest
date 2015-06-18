@@ -1,16 +1,3 @@
-# awesome print
-begin
-  require "awesome_print"
-  AwesomePrint.pry!
-rescue LoadError => e
-  puts "ap gem not found."
-  if ( ENV['RAILS_ENV'] || defined? Rails )
-    puts "Try adding awesome_print to your Gemfile"
-  else
-    puts "Try typing 'gem install awesome_print' to get super-fancy output."
-  end
-end
-
 # colors
 red    = "\e[0;31m"
 reset  = "\e[0m"
