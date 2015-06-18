@@ -755,9 +755,9 @@ defaults write com.apple.terminal StringEncodings -array 4
 # -e 'tell application "System Events" to tell process "Terminal" to keystroke "w" using command down'
 # -e 'tell application "System Events" to tell process "Terminal" to tell window 1 to close'
 
-echo "Creating directory for wdi: ~/dev/wdi"
+echo "Creating directory for wdi: ~/code/wdi"
 
-STUDENT_FOLDER="$HOME/dev/wdi"
+STUDENT_FOLDER="$HOME/code/wdi"
 mkdir -p $STUDENT_FOLDER
 
 SRC_DIR=~/.wdi/installfest

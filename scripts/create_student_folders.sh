@@ -1,4 +1,4 @@
-echo "Creating directory for wdi: ~/dev/wdi"
+echo "Creating directory for wdi: ~/code/wdi"
 
-STUDENT_FOLDER="$HOME/dev/wdi"
+STUDENT_FOLDER="$HOME/code/wdi"
 mkdir -p $STUDENT_FOLDER
