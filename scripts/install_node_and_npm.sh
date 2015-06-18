@@ -1,3 +1,6 @@
+# load nvm command
+source ~/.nvm/nvm.sh
+
 # Install latest version of Node
 nvm install stable
 
