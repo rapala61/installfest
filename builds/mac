@@ -161,13 +161,6 @@ os_version=$(sw_vers -productVersion)
 # Check for recommended software updates
 sudo softwareupdate -i -r --ignore iTunes
 
-# Ensure user has full control over their folder
-sudo chown -R ${USER} ~
-
-# Repair disk permission
-diskutil repairPermissions /
-
-
 
 # Check that command line tools are installed
 case $os_version in
@@ -209,6 +202,11 @@ else
   exit 1 # TODO (phlco) maybe just type 'done' instead of rerunning?
 fi
 
+# Ensure user has full control over their folder
+sudo chown -R ${USER} ~
+
+# Repair disk permission
+diskutil repairPermissions /
 # uninstall rvm, so that we can use rbenv
 # http://stackoverflow.com/questions/3950260/howto-uninstall-rvm
 if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
