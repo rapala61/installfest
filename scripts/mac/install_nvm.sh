@@ -2,7 +2,5 @@
 brew remove --force node
 sudo rm -r /usr/local/lib/node_modules
 
-# Node Version Manager
-brew install nvm
-export NVM_DIR=$(brew --prefix)/var/nvm
-source $(brew --prefix nvm)/nvm.sh
+# install Node Version Manager
+git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`

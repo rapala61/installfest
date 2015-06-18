@@ -36,6 +36,7 @@
 # --------------------
 #  Application Aliases
 #  rbenv
+#  nvm
 # --------------------
 # Other Settings
 # --------------------
@@ -152,16 +153,12 @@ alias chrome='open -a "Google Chrome"'
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 # =================
-# node (Mac first, then Ubuntu)
+# nvm (load io.js as node)
 # =================
 
-if which brew >/dev/null; then
-  export NVM_DIR=$(brew --prefix)/var/nvm
-  source $(brew --prefix nvm)/nvm.sh
-else
-  export NVM_DIR=~/.nvm
-  source ~/.nvm/nvm.sh
-fi
+export NVM_DIR=~/.nvm
+source ~/.nvm/nvm.sh
+nvm use iojs-v1.6.2 2&> /dev/null
 
 # =================
 # Functions
