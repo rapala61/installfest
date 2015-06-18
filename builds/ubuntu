@@ -129,7 +129,7 @@ REPO="wdi_melville_instructors"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=austin
+BRANCH=master
 
 # capture the user's password
 sudo -p "${BG_GREEN}Enter your computer's password \
@@ -299,6 +299,15 @@ git config --global push.default current
 # set global gitignore
 git config --global core.excludesfile ~/.gitignore_global
 
+# add some useful shortcuts
+git config --global alias.sha 'rev-parse HEAD'
+git config --global alias.last 'log -1 HEAD --pretty=oneline'
+git config --global alias.lastid 'rev-parse --short HEAD'
+git config --global alias.shalog 'log --pretty=oneline'
+git config --global alias.set-master 'branch --set-upstream-to=origin/master master'
+git config --global alias.back 'reset --soft HEAD~1'
+git config --global alias.again 'commit -c ORIG_HEAD'
+git config --global alias.deploy 'subtree push --prefix dist/ origin gh-pages'
 pause_awhile "downloading the installfest repo"
 # download the repo for the absolute paths
 
@@ -448,17 +457,15 @@ sudo apt-get install build-essential libssl-dev
 
 git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
 
-source ~/.nvm/nvm.sh
-
 # Install latest version of Node
 nvm install stable
 
 # Install iojs
-nvm install iojs
+nvm install iojs-v1.6.2
 
 # Use iojs
 # (phlco) could set this with ~/.nvmrc
-nvm use iojs
+nvm use iojs-v.1.6.2
 
 # Ensure we have the most recent version of npm
 npm install npm -g

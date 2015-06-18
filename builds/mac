@@ -149,7 +149,7 @@ MINIMUM_OS="10.7.0"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=austin
+BRANCH=master
 
 # capture the user's password
 sudo -p "${BG_GREEN}Enter your computer's password \
@@ -416,6 +416,15 @@ git config --global push.default current
 # set global gitignore
 git config --global core.excludesfile ~/.gitignore_global
 
+# add some useful shortcuts
+git config --global alias.sha 'rev-parse HEAD'
+git config --global alias.last 'log -1 HEAD --pretty=oneline'
+git config --global alias.lastid 'rev-parse --short HEAD'
+git config --global alias.shalog 'log --pretty=oneline'
+git config --global alias.set-master 'branch --set-upstream-to=origin/master master'
+git config --global alias.back 'reset --soft HEAD~1'
+git config --global alias.again 'commit -c ORIG_HEAD'
+git config --global alias.deploy 'subtree push --prefix dist/ origin gh-pages'
 # Our Ruby version manager
 # brew install rbenv
 git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
@@ -495,20 +504,18 @@ assert_that "Ruby version is now '${BELOVED_RUBY_VERSION}'" \
 brew remove --force node
 sudo rm -r /usr/local/lib/node_modules
 
-# Node Version Manager
-brew install nvm
-export NVM_DIR=$(brew --prefix)/var/nvm
-source $(brew --prefix nvm)/nvm.sh
+# install Node Version Manager
+git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
 
 # Install latest version of Node
 nvm install stable
 
 # Install iojs
-nvm install iojs
+nvm install iojs-v1.6.2
 
 # Use iojs
 # (phlco) could set this with ~/.nvmrc
-nvm use iojs
+nvm use iojs-v.1.6.2
 
 # Ensure we have the most recent version of npm
 npm install npm -g
