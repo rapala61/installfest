@@ -3,7 +3,7 @@
   [
     "BracketHighlighter",
     "ColorPicker",
-    "CopyToHipChat",
+    // "CopyToHipChat",
     "Dotfiles Syntax Highlighting",
     "EditorConfig",
     // "Emmet"
