@@ -65,7 +65,7 @@ Make sure that there are no errors (on the load page)!
 
 ## Step 3
 
-##### Final Set-up
+##### Final Set-up, Mac OS
 
 1. **Spectacle** (for Macs): open Spectacle using Spotlight, by pressing `⌘-Space`
    and typing `spec`, and then pressing `Return`. It will direct you to change
