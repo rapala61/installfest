@@ -23,6 +23,3 @@ echo "code changes."
 echo "The first time you run the heroku command, you’ll be prompted for your "
 echo "credentials. Your public key will then be automatically uploaded to"
 echo "Heroku. This will allow you to deploy code to all of your apps."
-
-# PL: holding off for user interaction
-heroku keys:add
