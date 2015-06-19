@@ -81,3 +81,8 @@ Make sure that there are no errors (on the load page)!
    by typing `subl .` Make sure that Sublime Text opens.
 4. **Slack**: ensure that you can open Slack (`⌘-Space`, and type `sla`) and 
    communicate with your classmates!
+5. **Files**: in your terminal, type `cd ~/code`. You should now have a 
+   directory here where you can store all of your programming projects! When
+   you then type `ls` to list the contents of that directory, you should see
+   a directory named `wdi` — this is where you can store all of your class
+   work.
