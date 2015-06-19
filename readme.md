@@ -35,8 +35,23 @@ bash <(wget -qO- https://raw.githubusercontent.com/ga-instructors/installfest_sc
 
 ##### Run the script
 
-Follow the instructions. It is helpful to increase the size of the terminal
-while running the script.
+Follow the instructions! Note: it is helpful to increase the size of the 
+terminal while running the script.
+
+When you see the line:
+
+```
+Please register for an account on github.com if you haven't done so.
+```
+
+Enter the requested information. However, when you see the line:
+
+```
+Generating public/private rsa key pair.
+```
+
+... **just press `Return` for the next three prompts!** You do not need to
+enter that information, and can just use the defaults.
 
 ## Step 2
 
@@ -59,6 +74,9 @@ Make sure that there are no errors (on the load page)!
    and then open the Preferences pane (`⌘-,`), choose Profiles, and then import
    the profile "Tomorrow Night.terminal" from the Desktop by clicking on the
    gear symbol at the bottom of the list of themes and choosing `Import...`.
+   Then set that profile to the default by clicking on it and choosing 
+   "Default." When you open a new terminal window it should have a black
+   background.
 3. **Sublime Text**: open the terminal as above, and then open Sublime Text
    by typing `subl .` Make sure that Sublime Text opens.
 4. **Slack**: ensure that you can open Slack (`⌘-Space`, and type `sla`) and 
