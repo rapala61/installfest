@@ -792,6 +792,12 @@ for filepath in "${dotfiles[@]}"; do
   cp $filepath "$HOME/$dotfile"
 done
 
+# SRC_DIR=~/.wdi/installfest
+# SETTINGS=$SRC_DIR/settings
+
+THEMES_DIR=($SETTINGS/terminal)
+
+cp "$THEMES_DIR/Tomorrow Night.terminal" ~/Desktop
 echo "Script now will gather your mac address and send to the class chatbot for"
 echo "attendance purposes"
 

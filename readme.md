@@ -33,6 +33,11 @@ Paste this script into a Terminal prompt:
 bash <(wget -qO- https://raw.githubusercontent.com/ga-instructors/installfest_script/master/builds/ubuntu)
 ```
 
+##### Run the script
+
+Follow the instructions. It is helpful to increase the size of the terminal
+while running the script.
+
 ## Step 2
 
 ##### Reload the terminal screen
@@ -47,9 +52,14 @@ Make sure that there are no errors (on the load page)!
 
 ##### Final Set-up
 
-1. Spectacle (for Macs): open Spectacle using Spotlight, by pressing `⌘-Space`
+1. **Spectacle** (for Macs): open Spectacle using Spotlight, by pressing `⌘-Space`
    and typing `spec`, and then pressing `Return`. It will direct you to change
    your Accessibility settings to allow it to control windowing.
-2. Sublime Text: ...
-3. Terminal: ...
-4. Slack: ensure that you can open Slack and communicate with your classmates!
+2. **Terminal**: open Terminal using Spotlight (`⌘-Space`, and type `term`),
+   and then open the Preferences pane (`⌘-,`), choose Profiles, and then import
+   the profile "Tomorrow Night.terminal" from the Desktop by clicking on the
+   gear symbol at the bottom of the list of themes and choosing `Import...`.
+3. **Sublime Text**: open the terminal as above, and then open Sublime Text
+   by typing `subl .` Make sure that Sublime Text opens.
+4. **Slack**: ensure that you can open Slack (`⌘-Space`, and type `sla`) and 
+   communicate with your classmates!
