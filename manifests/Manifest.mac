@@ -46,7 +46,7 @@ mac/configure_sublime
 # TODO (phlco) are these *system* packages?
 mac/install_system_packages
 mac/set_up_heroku
-# mac/add_heroku_key
+mac/add_heroku_key
 
 mac/install_postgres
 
