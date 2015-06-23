@@ -1,10 +1,10 @@
 {
   "bold_folder_labels": true,
   "close_windows_when_empty": true,
-  "color_scheme": "Packages/Color Scheme - Default/Solarized (Dark).tmTheme",
+  "color_scheme": "Packages/Color Scheme - Default/Solarized (Light).tmTheme",
   "default_line_ending": "LF",
   "drag_text": false,
-  "draw_white_space": "all",
+  "draw_white_space": "selection",
   "ensure_newline_at_eof_on_save": true,
   "font_face": "Menlo",
     "font_options": [
