@@ -15,6 +15,7 @@ brew cask install firefox-nightly
 # (phlco) sublime text 3 is still in beta, therefore we'll stick to stable.
 # (phlco) atom won't support files over 2mb therefore we'll hold off.
 brew cask install sublime-text
+brew cask install atom
 
 # Flux, makes the color of your computer's display adapt to the time of day
 # brew cask install flux

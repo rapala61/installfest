@@ -187,7 +187,7 @@ REPO="wdi_melville_instructors"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=master
+BRANCH=pluto
 
 # capture the user's password
 sudo -p "${BG_GREEN}Enter your computer's password \
