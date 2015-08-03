@@ -143,13 +143,13 @@ INSTALL_REPO=https://github.com/ga-instructors/installfest_script.git
 # `MACHTYPE` system type in cpu-company-system
 # `SECONDS` number of seconds since the shell was started.
 OWNER="ga-students"
-REPO="wdi_melville_instructors"
+REPO="pluto"
 
 MINIMUM_OS="10.7.0"
 
 
 # This refers to the branch of our repo that we are using (for cloning).
-BRANCH=pluto
+BRANCH=instructor
 
 # capture the user's password
 sudo -p "${BG_GREEN}Enter your computer's password \
@@ -804,6 +804,7 @@ echo "attendance purposes"
 
 # Get MAC address for attendance
 # TODO (phlco) do we need sudo here again?
+#TODO (CentroDL) hook this up to meraki for wdi pluto
 mac_address=$(sudo ifconfig en0 | grep ether | sed -e 's/^[ \t|ether|\s|\n]*//')
 
 # cat "$HOME/.wdi/install.log"> $EMAILMESSAGE
