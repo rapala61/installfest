@@ -31,8 +31,9 @@ payload='{
 }'
 
 timestamp=$(date +%s)
-
-curl "https://api.github.com/repos/$OWNER/$REPO/contents/logs/installfest/$user_name-$timestamp.json" \
+# remove /branches/instructor
+# GET /repos/:owner/:repo/branches/:branch
+curl "https://api.github.com/repos/$OWNER/$REPO/branches/instructor/contents/logs/installfest/$user_name-$timestamp.json" \
   -X "PUT" \
   -H "User-Agent: WDIInstallFest" \
   -H "Accept: application/vnd.github.v3+json" \
