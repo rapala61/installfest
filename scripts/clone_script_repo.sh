@@ -6,7 +6,7 @@
 # TODO (PJ) this needs to be more robust, BY FAR!
 SETTINGS=$SRC_DIR/settings
 INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
-BRANCH=dtla-06
+BRANCH=master
 
 pause_awhile "Downloading the Installfest repo..."
 # download the repo for the absolute paths
