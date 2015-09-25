@@ -12,8 +12,20 @@ current and standardized install of Ruby is being used.
 
 **Warning**: in their default form, these scripts are very invasive, 
 overwriting settings and versions for applications and tools used in the 
-course. If you have dearly loved dotfiles, ensure that you back them up before 
-running the script.
+course. **If you have dearly loved dotfiles, ensure that you back them up before 
+running the script!** *(We will back them up too, but just in case...)*
+
+## Step 0 (Preparation)
+
+Make sure you have your GitHub account information with you, including:
+
+- the email address you used to sign up,
+- your GitHub username, and
+- your GitHub password.
+
+Note: on Mac, you need to run the script as a User with Administrator
+priviliges. If you only have a single user, then this is fine. If you
+have multiple users, let the instructors know!
 
 ## Step 1
 
@@ -35,23 +47,25 @@ bash <(wget -qO- https://raw.githubusercontent.com/ga-instructors/installfest_sc
 
 ##### Run the script
 
-Follow the instructions! Note: it is helpful to increase the size of the 
-terminal while running the script.
+Follow the instructions! **Note: it is helpful to increase the size of the 
+terminal while running the script.**
 
-When you see the line:
+Helpful hint:
 
-```
-Please register for an account on github.com if you haven't done so.
-```
-
-Enter the requested information. However, when you see the line:
-
-```
-Generating public/private rsa key pair.
-```
-
-... **just press `Return` for the next three prompts!** You do not need to
-enter that information, and can just use the defaults.
+> When you see the line:
+> 
+> ```
+> Please register for an account on github.com if you haven't done so.
+> ```
+> 
+> Enter the requested information. However, when you see the line:
+> 
+> ```
+> Generating public/private rsa key pair.
+> ```
+> 
+> ... **just press `Return` for the next three prompts!** You do not need to
+> enter that information, and can just use the defaults.
 
 ## Step 2
 
