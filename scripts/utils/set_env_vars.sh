@@ -31,3 +31,5 @@ SRC_DIR=~/.wdi/installfest
 # TODO (PJ) update how reporting is done?
 # OWNER="ga-students"
 # REPO="wdi_melville_instructors"
+
+MINIMUM_MAC_OS="10.7.0"

@@ -145,24 +145,6 @@ function pause_awhile () {
 }
 
 #-------------------------------------------------------------------------------
-# Functions
-#-------------------------------------------------------------------------------
-
-# Allow apps to control your computer
-allow_control() {
-  if [[ "$OSTYPE" =~ ^darwin13.*$ ]]; then
-    for app; do
-      APP_ID="$(osascript -e "id of app \"$app\"")"
-      if [[ -n "$APP_ID" ]]; then
-        sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or REPLACE INTO access values ('kTCCServiceAccessibility', '$APP_ID', 0, 1, 0, NULL);"
-      fi
-    done
-  else
-    warn "allow_control works only on Mavericks or newer..."
-  fi
-}
-
-#-------------------------------------------------------------------------------
 # Set up basic env vars (utils/set_env_vars.sh)
 #-------------------------------------------------------------------------------
 
@@ -196,7 +178,7 @@ SRC_DIR=~/.wdi/installfest
 # OWNER="ga-students"
 # REPO="wdi_melville_instructors"
 
-MINIMUM_OS="10.7.0"
+MINIMUM_MAC_OS="10.7.0"
 
 #-------------------------------------------------------------------------------
 # We Begin! (utils/screen_instructions.sh)
@@ -221,17 +203,27 @@ sudo -p "${BG_GREEN}Enter your computer's password\
 
 echo ""
 
+# mac/determine_os_version.sh
+
 # Determine OS version
-os_version=$(sw_vers -productVersion)
+OS_VERSION=$(sw_vers -productVersion)
+MINIMUM_MAC_OS="10.7.0"
+
+#-------------------------------------------------------------------------------
+# Update software on Mac (mac/update_software.sh)
+#-------------------------------------------------------------------------------
 
 # Check for recommended software updates
-sudo softwareupdate -i -r --ignore iTunes
+inform "Running software update on Mac OS..."
 
+sudo softwareupdate -i -r --ignore iTunes > /dev/null 2>&1
 
-# mac/install_commandline_tools.sh
+#-------------------------------------------------------------------------------
+# Check for & install commandline tools (mac/install_commandline_tools.sh)
+#-------------------------------------------------------------------------------
 
 # Check that command line tools are installed
-case $os_version in
+case $OS_VERSION in
   *10.11*) cmdline_version="CLTools_Executables" ;; # El Capitan
   *10.10*) cmdline_version="CLTools_Executables" ;; # Yosemite
   *10.9*)  cmdline_version="CLTools_Executables" ;; # Mavericks
@@ -240,39 +232,48 @@ case $os_version in
   *10.6*)  cmdline_version="DeveloperToolsCLILeo"
            warn "Outdated OS. Considering upgrading before continuing.";; # Snow Leopard
            # Force the user to upgrade if they're below 10.6
-  *) warn "Sorry! You'll have to upgrade your OS to $MINIMUM_OS or above."; exit 1;;
+  *) warn "Sorry! You'll have to upgrade your OS to $MINIMUM_MAC_OS or above."; exit 1;;
 esac
 
 # Check for Command Line Tools based on OS versions
 if [ ! -z $(pkgutil --pkgs=com.apple.pkg.$cmdline_version) ]; then
   inform "Command Line Tools are installed!";
-elif [[ $os_version == *10.6** ]]; then
+elif [[ $OS_VERSION == *10.6** ]]; then
   warn "Command Line Tools are not installed!"
   warn "  Downloading and installing the GCC compiler."
-  warn "  When you're done rerun this script..."
+  warn "  When you're done rerun this script (the installfest)..."
   curl -OLk https://github.com/downloads/kennethreitz/osx-gcc-installer/GCC-10.6.pkg
   open GCC-10.6.pkg
   exit 1
-elif [[ $os_version == *10.7* ]] || [[ $os_version == *10.8* ]]; then
+elif [[ $OS_VERSION == *10.7* ]] || [[ $OS_VERSION == *10.8* ]]; then
   warn "Command Line Tools are not installed!"
   warn "Register for a Developer Account"
   warn "  Download the Command Lion Tools from:"
   warn "    https://developer.apple.com/downloads/index.action"
-  warn "  and then rerun this script..."
+  warn "  and then rerun this script (the installfest)..."
   exit 1
 else
   warn "Command Line Tools are not installed!"
   warn "  Running 'xcode-select --install' Please click continue!"
-  warn "  After installing please rerun this script."
+  warn "  After installing please rerun this script (the installfest)..."
   xcode-select --install
   exit 1
 fi
 
+#-------------------------------------------------------------------------------
+# Repair disk permissions (mac/repair_disk_permissions.sh)
+#-------------------------------------------------------------------------------
+
 # Ensure user has full control over their folder
+inform "Ensuring the current user owns their home folder."
+
 sudo chown -R ${USER} ~
 
 # Repair disk permission
+inform "Running repair permissions... This may take a VERY LONG TIME!"
+
 diskutil repairPermissions /
+
 # uninstall rvm, so that we can use rbenv
 # http://stackoverflow.com/questions/3950260/howto-uninstall-rvm
 if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
@@ -280,7 +281,7 @@ if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
   rm -rf ~/.rvm
 fi
 
-assert_that "RVM has been removed or was not installed" "command -v rvm" ""
+# assert_that "RVM has been removed or was not installed" "command -v rvm" ""
 
 # Because we're going to use rbenv and homebrew we need to remove RVM and MacPorts
 # This script checks for and removes previous installs of macports and RVM
@@ -411,12 +412,20 @@ sudo chmod -R g+w /Library/Caches/Homebrew
 # Make sure we're using the latest Homebrew
 brew update
 
+#-------------------------------------------------------------------------------
+# Install brew version (updated) of git (mac/install_git.sh)
+#-------------------------------------------------------------------------------
+
 # Version Control
 brew install git
 
 # additional git commands
 brew install hub
 
+#-------------------------------------------------------------------------------
+# Use brew to install basic libs and compilation tools
+# (mac/install_compilation_tools.sh)
+#-------------------------------------------------------------------------------
 
 # Upgrade any already-installed formulae
 brew upgrade
@@ -467,7 +476,6 @@ packagelist=(
 
   # Adds history for node repl
   readline
-
 )
 
 brew install ${packagelist[@]}
@@ -589,7 +597,7 @@ else
   rbenv install $BELOVED_RUBY_VERSION
 fi
 
-assert_that "Ruby is installed and links to rbenv" "which ruby" "$HOME/.rbenv/shims/ruby"
+# assert_that "Ruby is installed and links to rbenv" "which ruby" "$HOME/.rbenv/shims/ruby"
 
 rbenv global $BELOVED_RUBY_VERSION
 rbenv rehash
@@ -597,9 +605,13 @@ rbenv rehash
 # assert_that "Ruby version is now '${BELOVED_RUBY_VERSION}'" \
 #             "ruby -v | grep -q ${BELOVED_RUBY_VERSION} && echo 'true'" "true"
 
+#-------------------------------------------------------------------------------
+# Install NVM (mac/install_nvm.sh)
+#-------------------------------------------------------------------------------
+
 # Remove any brew installation
 brew remove --force node
-sudo rm -r /usr/local/lib/node_modules
+sudo rm -r /usr/local/lib/node_modules >/dev/null 2>&1
 
 # install Node Version Manager
 git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
@@ -613,6 +625,10 @@ nvm use stable
 
 # Ensure we have the most recent version of npm
 npm install npm -g
+
+#-------------------------------------------------------------------------------
+# Use Brew Cask to install application images (mac/install_apps.sh)
+#-------------------------------------------------------------------------------
 
 # a CLI workflow for the administration of Mac applications
 # distributed as binaries
@@ -665,7 +681,6 @@ if [[ $os_version == *10.6** ]]; then
  else
   # The Window Manager
   brew cask install spectacle
-  # allow_control Spectacle NOTE (phlco) just set up by hand?
 
   # Our class chat client
   brew cask install slack
@@ -711,6 +726,10 @@ brew install ${packagelist[@]}
 # List of useful Quick Look plugins for developers
 # NOTE (phlco) necessary?
 # brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql webp-quicklook suspicious-package
+
+#-------------------------------------------------------------------------------
+# Install Postgres (mac/install_postgres.sh)
+#-------------------------------------------------------------------------------
 
 # Set up Postgres
 brew install postgresql
@@ -824,12 +843,15 @@ for filepath in "${dotfiles[@]}"; do
   cp $filepath "$HOME/$dotfile"
 done
 
-# SRC_DIR=~/.wdi/installfest
-# SETTINGS=$SRC_DIR/settings
+#-------------------------------------------------------------------------------
+# Copy over the terminal theme (mac/copy_terminal_theme.sh)
+#-------------------------------------------------------------------------------
+
+inform "Copying terminal theme to ~/Desktop..."
 
 THEMES_DIR=($SETTINGS/terminal)
-
 cp "$THEMES_DIR/Tomorrow Night.terminal" ~/Desktop
+
 #-------------------------------------------------------------------------------
 # We're done! (utils/fin.sh)
 #-------------------------------------------------------------------------------

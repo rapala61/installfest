@@ -1,3 +1,7 @@
+#-------------------------------------------------------------------------------
+# Use Brew Cask to install application images (mac/install_apps.sh)
+#-------------------------------------------------------------------------------
+
 # a CLI workflow for the administration of Mac applications
 # distributed as binaries
 brew tap phinze/homebrew-cask
@@ -49,7 +53,6 @@ if [[ $os_version == *10.6** ]]; then
  else
   # The Window Manager
   brew cask install spectacle
-  # allow_control Spectacle NOTE (phlco) just set up by hand?
 
   # Our class chat client
   brew cask install slack

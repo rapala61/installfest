@@ -5,4 +5,4 @@ if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
   rm -rf ~/.rvm
 fi
 
-assert_that "RVM has been removed or was not installed" "command -v rvm" ""
+# assert_that "RVM has been removed or was not installed" "command -v rvm" ""

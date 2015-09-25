@@ -1,2 +1,5 @@
+# mac/determine_os_version.sh
+
 # Determine OS version
-os_version=$(sw_vers -productVersion)
+OS_VERSION=$(sw_vers -productVersion)
+MINIMUM_MAC_OS="10.7.0"

@@ -178,6 +178,8 @@ SRC_DIR=~/.wdi/installfest
 # OWNER="ga-students"
 # REPO="wdi_melville_instructors"
 
+MINIMUM_MAC_OS="10.7.0"
+
 #-------------------------------------------------------------------------------
 # We Begin! (utils/screen_instructions.sh)
 #-------------------------------------------------------------------------------
@@ -461,7 +463,7 @@ if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
   rm -rf ~/.rvm
 fi
 
-assert_that "RVM has been removed or was not installed" "command -v rvm" ""
+# assert_that "RVM has been removed or was not installed" "command -v rvm" ""
 
 # Our ruby version manager
 
@@ -527,7 +529,7 @@ else
   rbenv install $BELOVED_RUBY_VERSION
 fi
 
-assert_that "Ruby is installed and links to rbenv" "which ruby" "$HOME/.rbenv/shims/ruby"
+# assert_that "Ruby is installed and links to rbenv" "which ruby" "$HOME/.rbenv/shims/ruby"
 
 rbenv global $BELOVED_RUBY_VERSION
 rbenv rehash

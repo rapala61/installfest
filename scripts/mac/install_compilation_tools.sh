@@ -1,3 +1,8 @@
+#-------------------------------------------------------------------------------
+# Use brew to install basic libs and compilation tools
+# (mac/install_compilation_tools.sh)
+#-------------------------------------------------------------------------------
+
 # Upgrade any already-installed formulae
 brew upgrade
 
@@ -47,7 +52,6 @@ packagelist=(
 
   # Adds history for node repl
   readline
-
 )
 
 brew install ${packagelist[@]}

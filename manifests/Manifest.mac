@@ -4,9 +4,7 @@ utils/define_terminal_colors
 utils/handle_options_and_start_logging
 utils/screen_logging
 
-mac/define_script_helper_functions
 utils/set_env_vars
-mac/set_env_vars
 
 utils/screen_instructions
 utils/capture_password
