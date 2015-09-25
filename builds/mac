@@ -584,15 +584,9 @@ git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git check
 # load nvm command
 source ~/.nvm/nvm.sh
 
-# Install latest version of Node
+# Install and use the latest version of Node
 nvm install stable
-
-# Install iojs
-nvm install iojs-v1.6.2
-
-# Use iojs
-# (phlco) could set this with ~/.nvmrc
-nvm use iojs-v1.6.2
+nvm use stable
 
 # Ensure we have the most recent version of npm
 npm install npm -g
@@ -729,34 +723,6 @@ brew install ${packagelist[@]}
 # NOTE (phlco) necessary?
 # brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql webp-quicklook suspicious-package
 
-#  _                    _
-# | |__   ___ _ __ ___ | | ___   _
-# | '_ \ / _ \ '__/ _ \| |/ / | | |
-# | | | |  __/ | | (_) |   <| |_| |
-# |_| |_|\___|_|  \___/|_|\_\\__,_|
-# https://devcenter.heroku.com/articles/keys
-
-echo "Heroku is a cloud platform as a service (PaaS) supporting several"
-echo "programming languages."
-
-# Heroku command-line tooling for working with the Heroku platform
-brew install heroku-toolbelt
-
-echo "If you don’t already use SSH, you’ll need to create a public/private key"
-echo "pair to deploy code to Heroku. This keypair is used for the strong"
-echo "cryptography and that uniquely identifies you as a developer when pushing"
-echo "code changes."
-
-# shouldn't need to generate because of generation for github
-# ssh-keygen -t rsa
-# autogenerate without prompt
-# ssh-keygen -f id_rsa -t rsa -N ''
-echo "The first time you run the heroku command, you’ll be prompted for your "
-echo "credentials. Your public key will then be automatically uploaded to"
-echo "Heroku. This will allow you to deploy code to all of your apps."
-
-# PL: holding off for user interaction
-heroku keys:add
 # Set up Postgres
 brew install postgresql
 
