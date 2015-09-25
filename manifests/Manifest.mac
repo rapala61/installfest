@@ -42,7 +42,9 @@ mac/install_nvm
 install_node_and_npm
 
 mac/install_apps
-mac/configure_sublime
+
+# FIXME (PJ) NOT WORKING!
+# mac/configure_sublime
 
 # TODO (phlco) are these *system* packages?
 mac/install_system_packages
