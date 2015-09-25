@@ -1,3 +1,11 @@
+#-------------------------------------------------------------------------------
+# Install Homebrew (mac/install_homebrew.sh)
+#-------------------------------------------------------------------------------
+
+# Set up ownership for /usr/local to anyone with admin permissions!
+sudo chgrp -R admin /usr/local
+sudo chmod -R g+w /usr/local
+
 # Installs Homebrew, our package manager
 # http://brew.sh/
 
@@ -8,6 +16,9 @@ if [[ $? != 0 ]]; then
   echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
+# Set up ownership for /usr/local to anyone with admin permissions!
+sudo chgrp -R admin /Library/Caches/Homebrew
+sudo chmod -R g+w /Library/Caches/Homebrew
+
 # Make sure we're using the latest Homebrew
 brew update
-

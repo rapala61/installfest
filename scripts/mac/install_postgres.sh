@@ -16,7 +16,7 @@ initdb /usr/local/var/postgres -E utf8
 # start postgres properly:
 sudo mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
 # May also need this.
-sudo chmod -R 700 /usr/local/var/postgres
+sudo chmod -R 0700 /usr/local/var/postgres
 sudo chown -R ${USER} /usr/local/var/postgres
 
 # Ensure that Postgres launches whenever we login
