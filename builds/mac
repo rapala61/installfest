@@ -374,6 +374,14 @@ else
   fi
 fi
 
+#-------------------------------------------------------------------------------
+# Install Homebrew (mac/install_homebrew.sh)
+#-------------------------------------------------------------------------------
+
+# Set up ownership for /usr/local to anyone with admin permissions!
+sudo chgrp -R admin /usr/local
+sudo chmod -R g+w /usr/local
+
 # Installs Homebrew, our package manager
 # http://brew.sh/
 
@@ -384,9 +392,12 @@ if [[ $? != 0 ]]; then
   echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
+# Set up ownership for /usr/local to anyone with admin permissions!
+sudo chgrp -R admin /Library/Caches/Homebrew
+sudo chmod -R g+w /Library/Caches/Homebrew
+
 # Make sure we're using the latest Homebrew
 brew update
-
 
 # Version Control
 brew install git
@@ -596,18 +607,23 @@ npm install npm -g
 brew tap phinze/homebrew-cask
 brew install brew-cask
 
+brew tap caskroom/versions
+
 # The Browser
 brew cask install google-chrome
-brew cask install google-chrome-canary
+# brew cask install google-chrome-canary
 
 # A Browser
 brew cask install firefox
-brew cask install firefox-nightly
+# brew cask install firefox-nightly
 
 # The Text Editor, Sublime Text 2
 # (phlco) sublime text 3 is still in beta, therefore we'll stick to stable.
 # (phlco) atom won't support files over 2mb therefore we'll hold off.
-brew cask install sublime-text
+# brew cask install sublime-text
+
+# PJ: fuck it, v3
+brew cask install sublime-text3
 
 # Flux, makes the color of your computer's display adapt to the time of day
 # brew cask install flux
@@ -645,45 +661,6 @@ if [[ $os_version == *10.6** ]]; then
   # The X Window Server
   brew cask install xquartz
 fi
-
-# SRC_DIR=~/.wdi/installfest
-# SETTINGS=$SRC_DIR/settings
-
-# SUBLIME_SETTINGS_DIR=($SETTINGS/sublime/)
-
-if [[ $os_version == *10.6* ]]; then
-  # skip for now
-  subl_app_support="/Users/$USER/Library/Application\ Support/Sublime\ Text\ 2"
-else
-  # Setup Sublime Preferences
-  subl_app_support="${HOME}/Library/Application\ Support/Sublime\ Text\ 2"
-fi
-
-subl_preferences="Preferences.sublime-settings"
-subl_keybindings="FindReplace.sublime-keymap"
-pkg_control="Package Control.sublime-package"
-
-pkg_url="https://sublime.wbond.net/Package%20Control.sublime-package"
-pkg_settings="Package Control.sublime-settings"
-
-backup "$subl_app_support/Packages/User/$subl_preferences"
-backup "$subl_app_support/Installed Packages/$pkg_settings"
-
-# ensure files exist before copying for 10.6
-mkdir -p "$subl_app_support/Packages/User/"
-mkdir -p "$subl_app_support/Installed Packages/"
-
-# copy over
-cp -f "$SRC_DIR/settings/sublime/$subl_preferences" "$subl_app_support/Packages/User/$subl_preferences"
-cp -f "$SRC_DIR/settings/sublime/$subl_preferences" "$subl_app_support/Packages/User/$subl_preferences"
-cp -f "$SRC_DIR/settings/sublime/$pkg_settings"     "$subl_app_support/Installed Packages/$pkg_settings"
-
-# Installing Package Control
-# NOTE (phlco) curling then mving because curl gave a malformed url in 10.6
-mkdir -p "$SRC_DIR/../packages"
-
-curl -O "$SRC_DIR/../packages" $pkg_url
-mv "$SRC_DIR/../packages" "$subl_app_support/Installed\ Packages/$pkg_control"
 
 # Useful packages
 packagelist=(
@@ -741,7 +718,7 @@ initdb /usr/local/var/postgres -E utf8
 # start postgres properly:
 sudo mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
 # May also need this.
-sudo chmod -R 700 /usr/local/var/postgres
+sudo chmod -R 0700 /usr/local/var/postgres
 sudo chown -R ${USER} /usr/local/var/postgres
 
 # Ensure that Postgres launches whenever we login
