@@ -3,10 +3,11 @@
 # `https://help.github.com/articles/generating-ssh-keys`
 
 # SSH Keygen
-pause_awhile "Generating an SSH key to establish a secure connection between \
-  your computer and GitHub. When you see the prompt \
-  'Enter a file in which to save the key', just press Enter! \
-  Your passphrase can be anything that's memorable."
+pause_awhile "Generating an SSH key to establish a secure connection between\
+  your computer and GitHub. When you see the prompts\
+  'Enter a file in which to save the key', or\
+  'Enter passphrase (empty for no passphrase)',\
+  just press Enter!"
 
 ssh-keygen -t rsa -C $github_email
 ssh-add id_rsa
