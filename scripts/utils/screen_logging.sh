@@ -6,8 +6,8 @@ function inform () {
 }
 
 function warn () {
-  echo ""
-  echo "${BG_RED}${WHITE}>>>>    $* ${RESET}"
+  # echo ""
+  echo "${BG_WHITE}${RED}>>>>    $* ${RESET}"
 }
 
 function pause_awhile () {
