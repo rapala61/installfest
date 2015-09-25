@@ -195,8 +195,9 @@ echo ""
 # utils/capture_password.sh
 
 # capture the user's password
-sudo -p "${BG_GREEN}Enter your computer's password \
-  so that we can make the necessary changes: ${RESET}" echo "Thank you."
+sudo -p "${BG_GREEN}Enter your computer's password\
+  so that we can make the necessary changes.\
+  The password will not be visible as yout type: ${RESET}" echo "Thank you."
 
 echo ""
 
@@ -305,13 +306,18 @@ sudo apt-get -y install ${packagelist[@]}
 
 assert_package_installed ${packagelist[@]}
 
+inform "Enter information to set up your GitHub configurations."
+
 echo "Please register for an account on github.com if you haven't already done so."
+echo ""
 
 read -p "Enter your First Name: "    fname
 read -p "Enter your Last Name: "     lname
 read -p "Github Username: "          github_name
 read -p "Github Email: "             github_email
 read -s -p "Github Password: "       github_password
+
+echo ""
 
 # SSH keys establish a secure connection between your computer and GitHub
 # This script follows these instructions
@@ -324,12 +330,15 @@ pause_awhile "Generating an SSH key to establish a secure connection between\
   'Enter passphrase (empty for no passphrase)',\
   just press Enter!"
 
-ssh-keygen -t rsa -C $github_email
-ssh-add id_rsa
+ssh-keygen -t rsa -b 4096 -C $github_email
+ssh-add ~/.ssh/id_rsa
 
 public_key=$(cat ~/.ssh/id_rsa.pub)
 
 # Upload to github
+echo ""
+echo "Uploading ssh key to GitHub..."
+
 curl https://api.github.com/user/keys \
   -H "User-Agent: WDIInstallFest" \
   -H "Accept: application/vnd.github.v3+json" \
@@ -337,6 +346,7 @@ curl https://api.github.com/user/keys \
   -d '{"title":"WDI Installfest", "key":"'"$public_key"'"}'
 
 # TODO (h4w5) add assertion around ... "ssh -T git@github.com"
+echo ""
 
 # Add user's github info to gitconfig
 # https://www.kernel.org/pub/software/scm/git/docs/git-config.html

@@ -50,23 +50,6 @@ bash <(wget -qO- https://raw.githubusercontent.com/ga-instructors/installfest_sc
 Follow the instructions! **Note: it is helpful to increase the size of the 
 terminal while running the script.**
 
-Helpful hint:
-
-> When you see the line:
-> 
-> ```
-> Please register for an account on github.com if you haven't done so.
-> ```
-> 
-> Enter the requested information. However, when you see the line:
-> 
-> ```
-> Generating public/private rsa key pair.
-> ```
-> 
-> ... **just press `Return` for the next three prompts!** You do not need to
-> enter that information, and can just use the defaults.
-
 ## Step 2
 
 ##### Reload the terminal screen

@@ -9,12 +9,15 @@ pause_awhile "Generating an SSH key to establish a secure connection between\
   'Enter passphrase (empty for no passphrase)',\
   just press Enter!"
 
-ssh-keygen -t rsa -C $github_email
-ssh-add id_rsa
+ssh-keygen -t rsa -b 4096 -C $github_email
+ssh-add ~/.ssh/id_rsa
 
 public_key=$(cat ~/.ssh/id_rsa.pub)
 
 # Upload to github
+echo ""
+echo "Uploading ssh key to GitHub..."
+
 curl https://api.github.com/user/keys \
   -H "User-Agent: WDIInstallFest" \
   -H "Accept: application/vnd.github.v3+json" \
@@ -22,3 +25,4 @@ curl https://api.github.com/user/keys \
   -d '{"title":"WDI Installfest", "key":"'"$public_key"'"}'
 
 # TODO (h4w5) add assertion around ... "ssh -T git@github.com"
+echo ""

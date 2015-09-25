@@ -3,6 +3,7 @@
 #-------------------------------------------------------------------------------
 
 # Set up ownership for /usr/local to anyone with admin permissions!
+sudo mkdir -p /usr/local
 sudo chgrp -R admin /usr/local
 sudo chmod -R g+w /usr/local
 
@@ -17,6 +18,7 @@ if [[ $? != 0 ]]; then
 fi
 
 # Set up ownership for /usr/local to anyone with admin permissions!
+mkdir -p /Library/Caches/Homebrew
 sudo chgrp -R admin /Library/Caches/Homebrew
 sudo chmod -R g+w /Library/Caches/Homebrew
 
