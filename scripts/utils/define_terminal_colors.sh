@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Set text formatting
+# Set text formatting (utils/define_terminal_colors.sh)
 #-------------------------------------------------------------------------------
 
 # set 256 color profile where possible

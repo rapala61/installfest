@@ -12,6 +12,6 @@ allow_control() {
       fi
     done
   else
-    echo "allow_control works only on Mavericks"
+    warn "allow_control works only on Mavericks or newer..."
   fi
 }

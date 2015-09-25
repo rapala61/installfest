@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Handle Command Line Options
+# Handle Command Line Options (utils/handle_options_and_start_logging.sh)
 #-------------------------------------------------------------------------------
 
 while getopts "vf" FLAG; do
@@ -11,7 +11,7 @@ while getopts "vf" FLAG; do
 done
 
 #-------------------------------------------------------------------------------
-# Logging
+# Logging (utils/handle_options_and_start_logging.sh)
 #-------------------------------------------------------------------------------
 
 # set up logfile

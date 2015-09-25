@@ -1,13 +1,12 @@
-shebang
+utils/script_header
 
-handle_options_and_start_logging
+utils/define_terminal_colors
+utils/handle_options_and_start_logging
+utils/screen_logging
+utils/set_env_vars
 
-define_terminal_colors
-
-set_env_vars
-set_script_branch
-
-capture_password
+utils/screen_instructions
+utils/capture_password
 
 ubuntu/determine_os_version
 ubuntu/update_software
@@ -47,6 +46,4 @@ copy_over_dotfiles
 
 ubuntu/install_mailutils
 
-capture_mac_address
-report_log
-
+utils/fin

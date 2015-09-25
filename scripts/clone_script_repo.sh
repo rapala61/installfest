@@ -1,4 +1,14 @@
-pause_awhile "downloading the installfest repo"
+# ------------------------------------------------------------------------------
+# Clone the script repo locally in order to copy dotfiles etc. directly from it.
+# (clone_script_repo.sh)
+# ------------------------------------------------------------------------------
+
+# TODO (PJ) this needs to be more robust, BY FAR!
+SETTINGS=$SRC_DIR/settings
+INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
+BRANCH=master
+
+pause_awhile "Downloading the Installfest repo..."
 # download the repo for the absolute paths
 
 if [[ $os_version == *10.6** ]]; then

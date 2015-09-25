@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -8,8 +10,8 @@
 # Installation, Setup and Dotfile Creation Script
 # for Students of General Assemb.ly's WDI Program
 
-# Author: Phillip Lamplugh, GA Instructor (2014)
-# Contributions: PJ Hughes, GA Instructor (2014)
+# Authors: Phillip Lamplugh, GA Instructor (2014),
+#          PJ Hughes, GA Instructor (2014 & 2015)
 
 # Resources:
 #

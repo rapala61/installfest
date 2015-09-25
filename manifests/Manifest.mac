@@ -1,14 +1,15 @@
-shebang
+utils/script_header
 
-handle_options_and_start_logging
+utils/define_terminal_colors
+utils/handle_options_and_start_logging
+utils/screen_logging
 
-define_terminal_colors
 mac/define_script_helper_functions
-set_env_vars
+utils/set_env_vars
 mac/set_env_vars
-set_script_branch
 
-capture_password
+utils/screen_instructions
+utils/capture_password
 
 mac/determine_os_version
 mac/update_software
@@ -56,8 +57,5 @@ create_student_folders
 copy_over_dotfiles
 mac/copy_terminal_theme
 
-capture_mac_address
-report_log
-
-commentary/fin
+utils/fin
 
