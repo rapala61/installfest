@@ -192,6 +192,8 @@ stated, this is asking for your ${BOLD}computer's password${RESET}.
 This will install or update files and applications that you will use in class."
 echo ""
 
+# utils/capture_password.sh
+
 # capture the user's password
 sudo -p "${BG_GREEN}Enter your computer's password \
   so that we can make the necessary changes: ${RESET}" echo "Thank you."
@@ -376,7 +378,7 @@ git config --global alias.deploy 'subtree push --prefix dist/ origin gh-pages'
 # TODO (PJ) this needs to be more robust, BY FAR!
 SETTINGS=$SRC_DIR/settings
 INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
-BRANCH=master
+BRANCH=dtla-06
 
 pause_awhile "Downloading the Installfest repo..."
 # download the repo for the absolute paths
