@@ -4,5 +4,4 @@
 
 inform "Copying terminal theme to ~/Desktop..."
 
-THEMES_DIR=($SETTINGS/terminal)
 cp "$THEMES_DIR/Tomorrow Night.terminal" ~/Desktop

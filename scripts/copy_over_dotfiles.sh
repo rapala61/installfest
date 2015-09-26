@@ -1,21 +1,13 @@
-SRC_DIR=~/.wdi/installfest
-SETTINGS=$SRC_DIR/settings
+TIMESTAMP=$(date +%s)
+mkdir -p "$HOME/.wdi/backups_$TIMESTAMP"
 
-dotfiles=($SETTINGS/dotfiles/*)
+for FILEPATH in "${DOTFILES[@]}"; do
 
-timestamp=$(date +%s)
+  DOTFILE=".$(basename $FILEPATH)"
 
-mkdir -p $HOME/.wdi/backups_$timestamp
-
-for filepath in "${dotfiles[@]}"; do
-
-  dotfile=".$(basename $filepath)"
-
-  if [[ -a "$HOME/$dotfile" ]] && [[ ! $dotfile == *"NOT-USING"* ]]; then
-
-    cp "$HOME/$dotfile" "$HOME/.wdi/backups_$timestamp/$dotfile"
-
+  if [[ -a "$HOME/$DOTFILE" ]] && [[ ! $DOTFILE == *"NOT-USING"* ]]; then
+    cp "$HOME/$DOTFILE" "$HOME/.wdi/backups_$timestamp/$DOTFILE"
   fi
 
-  cp $filepath "$HOME/$dotfile"
+  cp "$FILEPATH" "$HOME/$DOTFILE"
 done

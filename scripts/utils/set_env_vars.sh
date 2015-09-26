@@ -17,19 +17,28 @@ CURRENT_STABLE_RUBY_VERSION="2.2.3"
 BELOVED_PYTHON_VERSION="anaconda-2.0.1"
 CURRENT_STABLE_PYTHON_VERSION="3.4.1"
 
+# NOT BEING USED YET, BUT SHOULD!
+NODE_VERSION="stable" # using nvm's language...
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
   SYSTEM="mac"
   BASH_FILE=".bash_profile"
+  MINIMUM_MAC_OS="10.7.0"
 else
   SYSTEM="ubuntu"
   BASH_FILE=".bashrc"
 fi
 
-SRC_DIR=~/.wdi/installfest
+# the downloaded repo
+SRC_DIR="$HOME/.wdi/installfest"
+SETTINGS="$SRC_DIR/settings"
+DOTFILES=("$SETTINGS/dotfiles/*")
+THEMES_DIR=("$SETTINGS/terminal")
+
+# the working folder
+STUDENT_FOLDER="$HOME/code/wdi"
 
 # Deprecated as part of the utils/report_log.sh system...
 # TODO (PJ) update how reporting is done?
 # OWNER="ga-students"
 # REPO="wdi_melville_instructors"
-
-MINIMUM_MAC_OS="10.7.0"

@@ -1,6 +1,5 @@
 # create_student_folders.sh
 
-inform "Creating directory for wdi: ~/code/wdi"
+inform "Creating directory for wdi: $STUDENT_FOLDER" true
 
-STUDENT_FOLDER="$HOME/code/wdi"
 mkdir -p $STUDENT_FOLDER
