@@ -218,9 +218,13 @@ inform "Running software update on Mac OS..."
 
 sudo softwareupdate -i -r --ignore iTunes > /dev/null 2>&1
 
+echo "Software updated!"
+
 #-------------------------------------------------------------------------------
 # Check for & install commandline tools (mac/install_commandline_tools.sh)
 #-------------------------------------------------------------------------------
+
+inform "Checking for XCode Command Line Tools..." true
 
 # Check that command line tools are installed
 case $OS_VERSION in
@@ -241,7 +245,7 @@ if [ ! -z $(pkgutil --pkgs=com.apple.pkg.$cmdline_version) ]; then
 elif [[ $OS_VERSION == *10.6** ]]; then
   warn "Command Line Tools are not installed!"
   warn "  Downloading and installing the GCC compiler."
-  warn "  When you're done rerun this script (the installfest)..."
+  warn "  When you're done rerun the Installfest script..."
   curl -OLk https://github.com/downloads/kennethreitz/osx-gcc-installer/GCC-10.6.pkg
   open GCC-10.6.pkg
   exit 1
@@ -250,12 +254,12 @@ elif [[ $OS_VERSION == *10.7* ]] || [[ $OS_VERSION == *10.8* ]]; then
   warn "Register for a Developer Account"
   warn "  Download the Command Lion Tools from:"
   warn "    https://developer.apple.com/downloads/index.action"
-  warn "  and then rerun this script (the installfest)..."
+  warn "  and then rerun the Installfest script..."
   exit 1
 else
   warn "Command Line Tools are not installed!"
   warn "  Running 'xcode-select --install' Please click continue!"
-  warn "  After installing please rerun this script (the installfest)..."
+  warn "  After installing please rerun the Installfest script..."
   xcode-select --install
   exit 1
 fi

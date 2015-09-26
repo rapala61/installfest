@@ -1,16 +1,21 @@
 # utils/screen_logging.sh
 
+function show () {
+  echo -e "${BG_WHITE}${BLACK}> $* ${RESET}"
+}
+
 function inform () {
-  echo ""
-  echo "${BG_GREEN}${BLACK}${BOLD}>>>>    $* ${RESET}"
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_GREEN}${BLACK}${BOLD}>>>>  $1 ${RESET}"
 }
 
 function warn () {
-  # echo ""
-  echo "${BG_RED}${WHITE}${BOLD}>>>>    $* ${RESET}"
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_RED}${WHITE}${BOLD}>>>>  $1 ${RESET}"
 }
 
 function pause_awhile () {
-  echo ""
-  read -p "${BG_YELLOW}${WHITE}${BOLD}>>>>    $*. Press <Enter> to continue.${RESET}"
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_YELLOW}${WHITE}${BOLD}>>>>  $1 ${RESET}"
+  read -p "${BG_YELLOW}${WHITE}${BOLD}Press <Enter> to continue.${RESET}"
 }
