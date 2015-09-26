@@ -25,6 +25,9 @@ git config --global push.default current
 # set global gitignore
 git config --global core.excludesfile ~/.gitignore_global
 
+# add commit template
+git config --global commit.template ~/.gitmessage.txt
+
 # add some useful shortcuts
 git config --global alias.sha 'rev-parse HEAD'
 git config --global alias.last 'log -1 HEAD --oneline --decorate'
