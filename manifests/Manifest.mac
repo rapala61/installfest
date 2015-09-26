@@ -1,9 +1,8 @@
 utils/script_header
 
 utils/define_terminal_colors
-utils/handle_options_and_start_logging
+utils/logging
 utils/screen_logging
-
 utils/set_env_vars
 
 utils/screen_instructions
@@ -19,8 +18,8 @@ rbenv_remove_rvm
 mac/remove_macports
 
 capture_github_credentials
-
 add_ssh_key_to_github
+
 clone_script_repo
 
 mac/install_homebrew
@@ -39,6 +38,8 @@ rbenv_set_version
 mac/setup_nvm
 nvm_install
 nvm_install_version
+
+# WORKING UP UNTIL HERE...
 
 mac/install_apps
 

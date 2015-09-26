@@ -1,4 +1,9 @@
-# Add user's github info to gitconfig
+#-------------------------------------------------------------------------------
+# Add user's Git info to ~/.gitconfig (configure_git.sh)
+#-------------------------------------------------------------------------------
+
+inform "Setting Git configurations..." true
+
 # https://www.kernel.org/pub/software/scm/git/docs/git-config.html
 git config --global user.name    "$fname $lname"
 git config --global user.github  $github_name
@@ -36,3 +41,5 @@ git config --global alias.set-master 'branch --set-upstream-to=origin/master mas
 git config --global alias.back 'reset --soft HEAD~1'
 git config --global alias.again 'commit -c ORIG_HEAD'
 git config --global alias.deploy 'subtree push --prefix dist/ origin gh-pages'
+
+show "Complete!"

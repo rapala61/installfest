@@ -1,7 +1,7 @@
 utils/script_header
 
 utils/define_terminal_colors
-utils/handle_options_and_start_logging
+utils/logging
 utils/screen_logging
 utils/set_env_vars
 

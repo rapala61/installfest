@@ -6,6 +6,9 @@
 Dir["manifests/Manifest*"].each do |manifest|
   filename = manifest.gsub(/manifest./i, '')
   File.open("builds/#{filename}", 'w') do |file|
+    file << "#!/usr/bin/env bash\n"
+    file << "\n"
+    file << "COMPILED_AT='#{Time.now.strftime "%a %b %d %H:%M:%S %Z %Y"}'\n"
     File.read(manifest).each_line do |line|
       unless line.start_with?("#") || line.strip == ""
         file_path = (line =~ /^tests\// ? "#{line.chomp}.sh" : "scripts/#{line.chomp}.sh")

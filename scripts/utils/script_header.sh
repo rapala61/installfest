@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 
 #
 #  _           _        _ _  __           _

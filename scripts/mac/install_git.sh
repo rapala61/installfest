@@ -1,9 +1,8 @@
 #-------------------------------------------------------------------------------
-# Install brew version (updated) of git (mac/install_git.sh)
+# Install Homebrew version of Git & Hub (mac/install_git.sh)
 #-------------------------------------------------------------------------------
 
-# Version Control
+inform "Installing Git & Hub via Homebrew..." true
 brew install git
-
-# additional git commands
-brew install hub
+brew install hub # additional Git commands
+show "Complete!"

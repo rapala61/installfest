@@ -1,11 +1,17 @@
-# Our gems to install
-# skip documentation
+#-------------------------------------------------------------------------------
+# Set default gems to install by rbenv (rbenv_set_default_gems.sh)
+#-------------------------------------------------------------------------------
+
+inform "Setting default gems to install with Ruby versions..." true
+
+# Make sure we skip documentation installation during install...
+# There is a more full .gemrc that will be installed with dotfiles later.
 echo "gem: --no-ri --no-rdoc" > ~/.gemrc
 
-# TODO (phlco) replace ~/.rbenv with $RBENV_ROOT
-touch ~/.rbenv/default-gems
+touch "${RBENV_DIR}/default-gems"
 
-gemlist=(
+# Our gems to install
+GEMLIST=(
   bundler         # Maintains a consistent environment for ruby applications.
   # capybara        # Acceptance test framework for web applications
   # guard           # handle events on file system modifications
@@ -22,6 +28,8 @@ gemlist=(
   rainbow         # colorizing printed text on ANSI terminals
 )
 
-for gem in ${gemlist[@]}; do
-  echo "${gem}" >> ~/.rbenv/default-gems
+for gem in ${GEMLIST[@]}; do
+  echo "${gem}" >> "${RBENV_DIR}/default-gems"
 done
+
+show "Complete!"

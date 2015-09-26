@@ -19,7 +19,7 @@ esac
 
 # Check for Command Line Tools based on OS versions
 if [ ! -z $(pkgutil --pkgs=com.apple.pkg.$cmdline_version) ]; then
-  inform "Command Line Tools are installed!" true
+  echo "Command Line Tools are installed!"
 elif [[ $OS_VERSION == *10.6** ]]; then
   warn "Command Line Tools are not installed!" true
   warn "  Downloading and installing the GCC compiler."

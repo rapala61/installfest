@@ -1,34 +1,50 @@
-# Our Ruby version manager
-# brew install rbenv
-git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+#-------------------------------------------------------------------------------
+# Install rbenv (rbenv_install.sh)
+#-------------------------------------------------------------------------------
 
-# Use homebrew's directories instead of rbenv's
-# echo 'export RBENV_ROOT=/usr/local/var/rbenv' >> ~/.bash_profile
-# export RBENV_ROOT="/usr/local/var/rbenv"
+inform "Installing rbenv, our Ruby version manager..." true
 
-# Add to bash_profile
-# echo '# added by installfest script' >> ~/.bash_profile
-# echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
-# echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' >> ~/.bash_profile
+RBENV_DIR="$HOME/.rbenv"
 
-# enable shims and autocompletion
-export PATH="$HOME/.rbenv/bin:$PATH"
+if [[ -e "$RBENV_DIR" ]]; then
+  echo "Already installed! Moving on..."
+else
+  # Not using brew install (on Mac) because it is problematic...
+  git clone https://github.com/sstephenson/rbenv.git "$RBENV_DIR"
+fi
+
+# enable shims and autocompletion for the rest of this script...
+# this also needs to run in the bash_profile
+export PATH="${RBENV_DIR}/bin:$PATH"
 eval "$(rbenv init -)"
 
-# brew install rbenv-gem-rehash
-git clone https://github.com/sstephenson/rbenv-gem-rehash.git ~/.rbenv/plugins/rbenv-gem-rehash
+inform "Installing rbenv plugins..." true
 
-# Automatically install gems every time you install a new version of Ruby
-# brew install rbenv-default-gems
-git clone https://github.com/sstephenson/rbenv-default-gems.git ~/.rbenv/plugins/rbenv-default-gems
+RBENV_REHASH="${RBENV_DIR}/plugins/rbenv-gem-rehash"
+RBENV_DEFAULT="${RBENV_DIR}/plugins/rbenv-default-gems"
+RBENV_BUILD="${RBENV_DIR}/plugins/rbenv-gem-rehash"
 
-# automatically runs rbenv rehash every time you install or uninstall a gem
-git clone https://github.com/sstephenson/rbenv-gem-rehash.git ~/.rbenv/plugins/rbenv-gem-rehash
+if [[ -e "$RBENV_REHASH" ]]; then
+  echo "Rehash plugin already installed! Moving on..."
+else
+  # Automatically install gems every time you install a new version of Ruby
+  git clone https://github.com/sstephenson/rbenv-default-gems.git "$RBENV_REHASH"
+fi
 
-# # Provides an `rbenv install` command
-# # ruby-build is a dependency of rbenv-default-gems, so it gets installed
-# brew install ruby-build
-git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+if [[ -e "$RBENV_DEFAULT" ]]; then
+  echo "Default gems plugin installed! Moving on..."
+else
+  # Automatically runs rbenv rehash every time you install or uninstall a gem
+  git clone https://github.com/sstephenson/rbenv-gem-rehash.git "$RBENV_DEFAULT"
+fi
 
-# rbenv rehash
-# source ~/.bash_profile
+if [[ -e "$RBENV_BUILD" ]]; then
+  echo "Ruby build plugin already installed! Moving on..."
+else
+  # Provides an `rbenv install` command
+  # ruby-build is a dependency of rbenv-default-gems, so it gets installed
+  # TODO (PJ) remove then?
+  git clone https://github.com/sstephenson/ruby-build.git "$RBENV_BUILD"
+fi
+
+show "Complete!"

@@ -4,14 +4,13 @@
 # ------------------------------------------------------------------------------
 
 # TODO (PJ) this needs to be more robust, BY FAR!
-SETTINGS=$SRC_DIR/settings
 INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
 BRANCH=master
 
-pause_awhile "Downloading the Installfest repo..."
+inform "Downloading the Installfest repo..." true
 # download the repo for the absolute paths
 
-if [[ $os_version == *10.6** ]]; then
+if [[ $OS_VERSION == *10.6** ]]; then
   # 10.6 doesn't have git so download the zip and rename it installfest
   curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
   unzip $BRANCH.zip -d ~/.wdi
@@ -28,3 +27,5 @@ else
     git pull origin $BRANCH
   fi
 fi
+
+echo "Repo downloaded!"

@@ -1,15 +1,9 @@
 #-------------------------------------------------------------------------------
-# Use brew to install basic libs and compilation tools
+# Use Homebrew to install basic libs and compilation tools
 # (mac/install_compilation_tools.sh)
 #-------------------------------------------------------------------------------
 
-# Upgrade any already-installed formulae
-brew upgrade
-
-# These formulae duplicate software provided by OS X
-# though may provide more recent or bugfix versions.
-brew tap homebrew/dupes
-
+inform "Installing basic libraries and tools via Homebrew..." true
 packagelist=(
   # Autoconf is an extensible package of M4 macros that produce shell scripts to
   # automatically configure software source code packages.
@@ -55,13 +49,4 @@ packagelist=(
 )
 
 brew install ${packagelist[@]}
-
-# Tap a new formula repository from GitHub, or list existing taps.
-brew tap homebrew/versions
-
-# Ensures all tapped formula are symlinked into Library/Formula
-# and prunes dead formula from Library/Formula.
-brew tap --repair
-
-# Remove outdated versions from the cellar
-brew cleanup
+show "Complete!"

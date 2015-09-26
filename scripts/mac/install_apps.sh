@@ -41,7 +41,7 @@ brew cask install sublime-text3
 
 # Git extensions to provide high-level repository operations
 # brew install git-flow
-if [[ $os_version == *10.6** ]]; then
+if [[ $OS_VERSION == *10.6** ]]; then
   # spectacle
   curl -OL https://s3.amazonaws.com/spectacle/downloads/Spectacle+0.7.zip
   unzip Spectacle+0.7.zip

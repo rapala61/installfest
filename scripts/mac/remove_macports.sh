@@ -1,7 +1,8 @@
-# Because we're going to use rbenv and homebrew we need to remove RVM and MacPorts
-# This script checks for and removes previous installs of macports and RVM
+# mac/remove_macports.sh
 
-# Uninstall Macports
+inform "Removing Macports..." true
+
+# Uninstall Macports b/c we are using Homebrew
 # http://guide.macports.org/chunked/installing.macports.uninstalling.html
 if hash port 2>/dev/null || [[ $(find /opt/local -iname macports 2>/dev/null) ]]; then
   echo "Removing MacPorts"
@@ -24,5 +25,5 @@ if hash port 2>/dev/null || [[ $(find /opt/local -iname macports 2>/dev/null) ]]
     ~/.macports
     sudo find / | grep macports | sudo xargs rm
 else
-  echo "Macports is not installed. Moving on..."
+  echo "Macports is not installed. Moving on."
 fi

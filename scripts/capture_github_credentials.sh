@@ -1,12 +1,12 @@
-inform "Enter information to set up your GitHub configurations."
+#-------------------------------------------------------------------------------
+# Capture GitHub credentials (capture_github_credentials.sh)
+#-------------------------------------------------------------------------------
 
-echo "Please register for an account on github.com if you haven't already done so."
+inform "Enter information to set up your GitHub configuration." true
+
+read -p "Enter your Github Username: "    github_name
+read -p "Enter your Github Email: "       github_email
+read -s -p "Enter your Github Password: " github_password
 echo ""
-
-read -p "Enter your First Name: "    fname
-read -p "Enter your Last Name: "     lname
-read -p "Github Username: "          github_name
-read -p "Github Email: "             github_email
-read -s -p "Github Password: "       github_password
-
-echo ""
+read -p "Enter your (real) first name: "  fname
+read -p "Enter your (real) last name: "   lname

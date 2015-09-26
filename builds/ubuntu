@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+COMPILED_AT='Sat Sep 26 16:44:40 PDT 2015'
+
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -70,78 +72,43 @@ BOLD=$(       tput bold)
 ITALIC=$(     tput sitm)
 
 #-------------------------------------------------------------------------------
-# Handle Command Line Options (utils/handle_options_and_start_logging.sh)
+# Logging (utils/logging.sh)
 #-------------------------------------------------------------------------------
 
-while getopts "vf" FLAG; do
-  case $FLAG in
-    f ) FORCE=true;;
-    v ) VERBOSE=true;;
-    ? ) exit 2;;
-  esac
-done
-
-#-------------------------------------------------------------------------------
-# Logging (utils/handle_options_and_start_logging.sh)
-#-------------------------------------------------------------------------------
+clear
 
 # set up logfile
-LOGFOLDER="$HOME/.wdi"; mkdir -p $LOGFOLDER
+LOGFOLDER="$HOME/.wdi";
 LOGFILE="$LOGFOLDER/install.log"
 
-# if we are logging verbosely
-#   echo_log() & assert_that() -> stderr -> stdout -> *logfile* -> console
-# else we are only logging assertions ([- n "$verbose" ] == false)
-#   echo_log() & assert_that() -> stderr -> *logfile* -> stdout -> console
-# this is done by:
-#   a. directing echo_log() & assert_that() to stderr, via
-#      {echo "" >&2}, and ...
-echo_log() {
-  echo "$1" >&2
-}
+mkdir -p $LOGFOLDER
 
-if [ -n "$VERBOSE" ]; then
-#     b. executing the script so that stdout 'tee's to logfile, via
-#        {exec 1> >(tee logfile)} | {exec > >(tee logfile)}
-#     c. executing the script so that stderr redirects to stdout, via
-#        {exec 2>&1}
-  exec > >(tee $LOGFILE); exec 2>&1
-else
-#     b. executing the script so that stderr 'tee's to logfile, via
-#        {exec 2> >(tee logfile)}
-  exec 2> >(tee $LOGFILE)
-fi
+exec > >(tee $LOGFILE); exec 2>&1
 
-echo_log
-echo_log "Script execution begun: $(date)"
-if [ -n "$FORCE" ]; then
-  echo_log " Force option set to true: will continue script despite failed assertions."
-else
-  echo_log " Script will exit on failed assertions. Use -f option to force completion."
-fi
-
-if [ -n "$VERBOSE" ]; then
-  echo_log " Verbose logging option set to true: will log all output, not just errors, log statements and assertions."
-else
-  echo_log " Script will log errors, log statements and assertions only. Use -v option to log verbosely."
-fi
-echo_log
+echo "Script compiled at: ${COMPILED_AT}"
+echo "Script execution begun: $(date)"
+echo ""
 
 # utils/screen_logging.sh
 
+function show () {
+  echo -e "${BG_WHITE}${BLACK}> $* ${RESET}"
+}
+
 function inform () {
-  echo ""
-  echo "${BG_GREEN}${WHITE}>>>>    $* ${RESET}"
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_GREEN}${BLACK}${BOLD}>>>>  $1 ${RESET}"
 }
 
 function warn () {
-  # echo ""
-  echo "${BG_RED}${WHITE}>>>>    $* ${RESET}"
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_RED}${WHITE}${BOLD}>>>>  $1 ${RESET}"
 }
 
 function pause_awhile () {
-  echo ""
-  read -p "${BG_YELLOW}${WHITE}>>>>    $*. Press <Enter> to continue.${RESET}"
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_YELLOW}${WHITE}${BOLD}>>>>  $1 ${RESET}"
+  read -p "${BG_YELLOW}${WHITE}${BOLD}Press <Enter> to continue.${RESET}"
 }
 
 #-------------------------------------------------------------------------------
@@ -163,45 +130,53 @@ CURRENT_STABLE_RUBY_VERSION="2.2.3"
 BELOVED_PYTHON_VERSION="anaconda-2.0.1"
 CURRENT_STABLE_PYTHON_VERSION="3.4.1"
 
+# NOT BEING USED YET, BUT SHOULD!
+NODE_VERSION="stable" # using nvm's language...
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
   SYSTEM="mac"
   BASH_FILE=".bash_profile"
+  MINIMUM_MAC_OS="10.7.0"
 else
   SYSTEM="ubuntu"
   BASH_FILE=".bashrc"
 fi
 
-SRC_DIR=~/.wdi/installfest
+# the downloaded repo
+SRC_DIR="$HOME/.wdi/installfest"
+SETTINGS="$SRC_DIR/settings"
+DOTFILES=("$SETTINGS/dotfiles/*")
+THEMES_DIR=("$SETTINGS/terminal")
+
+# the working folder
+STUDENT_FOLDER="$HOME/code/wdi"
 
 # Deprecated as part of the utils/report_log.sh system...
 # TODO (PJ) update how reporting is done?
 # OWNER="ga-students"
 # REPO="wdi_melville_instructors"
 
-MINIMUM_MAC_OS="10.7.0"
-
 #-------------------------------------------------------------------------------
-# We Begin! (utils/screen_instructions.sh)
+# We begin! (utils/screen_instructions.sh)
 #-------------------------------------------------------------------------------
 
-clear
-
-echo "Welcome to Installfest
-
-Throughout the script you will be asked to enter your password. Unless otherwise
-stated, this is asking for your ${BOLD}computer's password${RESET}.
-
-This will install or update files and applications that you will use in class."
-echo ""
+show "${BOLD}Welcome to the Installfest! ${RESET}"
+show ""
+show "Throughout the script you will be asked to enter your password. "
+show "Unless otherwise stated, this is asking for your "
+show "${BOLD}computer's password. ${RESET}"
+show ""
+show "This script will install, update, and configure files and "
+show "applications that you will use in class."
 
 # utils/capture_password.sh
 
 # capture the user's password
-sudo -p "${BG_GREEN}Enter your computer's password\
-  so that we can make the necessary changes.\
-  The password will not be visible as yout type: ${RESET}" echo "Thank you."
+inform "Enter your computer's password so that " true
+inform "  we can make the necessary changes. "
+inform "  The password will not be visible as you type: "
 
-echo ""
+sudo -p "Password:" echo "Thank you!"
 
 # TODO (phlco) remove the description part with a regex capture group
 os_version=$(lsb_release -a | grep -i Description)
@@ -308,38 +283,47 @@ sudo apt-get -y install ${packagelist[@]}
 
 assert_package_installed ${packagelist[@]}
 
-inform "Enter information to set up your GitHub configurations."
+#-------------------------------------------------------------------------------
+# Capture GitHub credentials (capture_github_credentials.sh)
+#-------------------------------------------------------------------------------
 
-echo "Please register for an account on github.com if you haven't already done so."
+inform "Enter information to set up your GitHub configuration." true
+
+read -p "Enter your Github Username: "    github_name
+read -p "Enter your Github Email: "       github_email
+read -s -p "Enter your Github Password: " github_password
 echo ""
+read -p "Enter your (real) first name: "  fname
+read -p "Enter your (real) last name: "   lname
 
-read -p "Enter your First Name: "    fname
-read -p "Enter your Last Name: "     lname
-read -p "Github Username: "          github_name
-read -p "Github Email: "             github_email
-read -s -p "Github Password: "       github_password
-
-echo ""
+#-------------------------------------------------------------------------------
+# Create and Upload SSH key (add_ssh_key_to_github.sh)
+#-------------------------------------------------------------------------------
 
 # SSH keys establish a secure connection between your computer and GitHub
 # This script follows these instructions
 # `https://help.github.com/articles/generating-ssh-keys`
 
 # SSH Keygen
-pause_awhile "Generating an SSH key to establish a secure connection between\
-  your computer and GitHub. When you see the prompts\
-  'Enter a file in which to save the key', or\
-  'Enter passphrase (empty for no passphrase)',\
-  just press Enter!"
+inform "Generating an SSH key to establish a secure connection " true
+inform "  your computer and GitHub. "
+
+pause_awhile "Note: when you see the prompts:
+        'Enter a file in which to save the key (...)', and
+        'Enter passphrase (empty for no passphrase)',
+      ${BOLD}just press Enter!
+" true
 
 ssh-keygen -t rsa -b 4096 -C $github_email
 ssh-add ~/.ssh/id_rsa
 
 public_key=$(cat ~/.ssh/id_rsa.pub)
 
-# Upload to github
-echo ""
-echo "Uploading ssh key to GitHub..."
+echo "SSH key created..."
+
+# Upload to GitHub
+
+inform "Uploading SSH key to GitHub..." true
 
 curl https://api.github.com/user/keys \
   -H "User-Agent: WDIInstallFest" \
@@ -347,10 +331,15 @@ curl https://api.github.com/user/keys \
   -u "$github_name:$github_password" \
   -d '{"title":"WDI Installfest", "key":"'"$public_key"'"}'
 
-# TODO (h4w5) add assertion around ... "ssh -T git@github.com"
 echo ""
+echo "Key uploaded!"
 
-# Add user's github info to gitconfig
+#-------------------------------------------------------------------------------
+# Add user's Git info to ~/.gitconfig (configure_git.sh)
+#-------------------------------------------------------------------------------
+
+inform "Setting Git configurations..." true
+
 # https://www.kernel.org/pub/software/scm/git/docs/git-config.html
 git config --global user.name    "$fname $lname"
 git config --global user.github  $github_name
@@ -389,20 +378,21 @@ git config --global alias.back 'reset --soft HEAD~1'
 git config --global alias.again 'commit -c ORIG_HEAD'
 git config --global alias.deploy 'subtree push --prefix dist/ origin gh-pages'
 
+show "Complete!"
+
 # ------------------------------------------------------------------------------
 # Clone the script repo locally in order to copy dotfiles etc. directly from it.
 # (clone_script_repo.sh)
 # ------------------------------------------------------------------------------
 
 # TODO (PJ) this needs to be more robust, BY FAR!
-SETTINGS=$SRC_DIR/settings
 INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
 BRANCH=master
 
-pause_awhile "Downloading the Installfest repo..."
+inform "Downloading the Installfest repo..." true
 # download the repo for the absolute paths
 
-if [[ $os_version == *10.6** ]]; then
+if [[ $OS_VERSION == *10.6** ]]; then
   # 10.6 doesn't have git so download the zip and rename it installfest
   curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
   unzip $BRANCH.zip -d ~/.wdi
@@ -419,6 +409,8 @@ else
     git pull origin $BRANCH
   fi
 fi
+
+echo "Repo downloaded!"
 
 # Heroku command-line tooling for working with the Heroku platform
 
@@ -457,58 +449,84 @@ sudo apt-get install -y heroku-toolbelt
 
 # heroku keys:add
 
-# uninstall rvm, so that we can use rbenv
+# rbenv_remove_rvm.sh
+
+inform "Removing RVM..." true
+
+# Uninstall RVM, so that we can use rbenv
 # http://stackoverflow.com/questions/3950260/howto-uninstall-rvm
 if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
   yes | rvm implode
   rm -rf ~/.rvm
+else
+  echo "RVM is not installed. Moving on."
 fi
 
-# assert_that "RVM has been removed or was not installed" "command -v rvm" ""
+#-------------------------------------------------------------------------------
+# Install rbenv (rbenv_install.sh)
+#-------------------------------------------------------------------------------
 
-# Our Ruby version manager
-# brew install rbenv
-git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+inform "Installing rbenv, our Ruby version manager..." true
 
-# Use homebrew's directories instead of rbenv's
-# echo 'export RBENV_ROOT=/usr/local/var/rbenv' >> ~/.bash_profile
-# export RBENV_ROOT="/usr/local/var/rbenv"
+RBENV_DIR="$HOME/.rbenv"
 
-# Add to bash_profile
-# echo '# added by installfest script' >> ~/.bash_profile
-# echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
-# echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' >> ~/.bash_profile
+if [[ -e "$RBENV_DIR" ]]; then
+  echo "Already installed! Moving on..."
+else
+  # Not using brew install (on Mac) because it is problematic...
+  git clone https://github.com/sstephenson/rbenv.git "$RBENV_DIR"
+fi
 
-# enable shims and autocompletion
-export PATH="$HOME/.rbenv/bin:$PATH"
+# enable shims and autocompletion for the rest of this script...
+# this also needs to run in the bash_profile
+export PATH="${RBENV_DIR}/bin:$PATH"
 eval "$(rbenv init -)"
 
-# brew install rbenv-gem-rehash
-git clone https://github.com/sstephenson/rbenv-gem-rehash.git ~/.rbenv/plugins/rbenv-gem-rehash
+inform "Installing rbenv plugins..." true
 
-# Automatically install gems every time you install a new version of Ruby
-# brew install rbenv-default-gems
-git clone https://github.com/sstephenson/rbenv-default-gems.git ~/.rbenv/plugins/rbenv-default-gems
+RBENV_REHASH="${RBENV_DIR}/plugins/rbenv-gem-rehash"
+RBENV_DEFAULT="${RBENV_DIR}/plugins/rbenv-default-gems"
+RBENV_BUILD="${RBENV_DIR}/plugins/rbenv-gem-rehash"
 
-# automatically runs rbenv rehash every time you install or uninstall a gem
-git clone https://github.com/sstephenson/rbenv-gem-rehash.git ~/.rbenv/plugins/rbenv-gem-rehash
+if [[ -e "$RBENV_REHASH" ]]; then
+  echo "Rehash plugin already installed! Moving on..."
+else
+  # Automatically install gems every time you install a new version of Ruby
+  git clone https://github.com/sstephenson/rbenv-default-gems.git "$RBENV_REHASH"
+fi
 
-# # Provides an `rbenv install` command
-# # ruby-build is a dependency of rbenv-default-gems, so it gets installed
-# brew install ruby-build
-git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+if [[ -e "$RBENV_DEFAULT" ]]; then
+  echo "Default gems plugin installed! Moving on..."
+else
+  # Automatically runs rbenv rehash every time you install or uninstall a gem
+  git clone https://github.com/sstephenson/rbenv-gem-rehash.git "$RBENV_DEFAULT"
+fi
 
-# rbenv rehash
-# source ~/.bash_profile
+if [[ -e "$RBENV_BUILD" ]]; then
+  echo "Ruby build plugin already installed! Moving on..."
+else
+  # Provides an `rbenv install` command
+  # ruby-build is a dependency of rbenv-default-gems, so it gets installed
+  # TODO (PJ) remove then?
+  git clone https://github.com/sstephenson/ruby-build.git "$RBENV_BUILD"
+fi
 
-# Our gems to install
-# skip documentation
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Set default gems to install by rbenv (rbenv_set_default_gems.sh)
+#-------------------------------------------------------------------------------
+
+inform "Setting default gems to install with Ruby versions..." true
+
+# Make sure we skip documentation installation during install...
+# There is a more full .gemrc that will be installed with dotfiles later.
 echo "gem: --no-ri --no-rdoc" > ~/.gemrc
 
-# TODO (phlco) replace ~/.rbenv with $RBENV_ROOT
-touch ~/.rbenv/default-gems
+touch "${RBENV_DIR}/default-gems"
 
-gemlist=(
+# Our gems to install
+GEMLIST=(
   bundler         # Maintains a consistent environment for ruby applications.
   # capybara        # Acceptance test framework for web applications
   # guard           # handle events on file system modifications
@@ -525,9 +543,11 @@ gemlist=(
   rainbow         # colorizing printed text on ANSI terminals
 )
 
-for gem in ${gemlist[@]}; do
-  echo "${gem}" >> ~/.rbenv/default-gems
+for gem in ${GEMLIST[@]}; do
+  echo "${gem}" >> "${RBENV_DIR}/default-gems"
 done
+
+show "Complete!"
 
 # For testing and simplicity with Ubuntu, add these to the .bashrc until it's
 # overwritten...
@@ -536,21 +556,25 @@ echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 
 source ~/.bashrc
 
+#-------------------------------------------------------------------------------
+# Install Ruby (rbenv_install_version.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing correct Ruby version and optimizing for your system..." true
+inform "  Note: this may take a VERY LONG TIME!"
+
 ruby_check=$(rbenv versions | grep $BELOVED_RUBY_VERSION)
 
 if [[ "$ruby_check" == *$BELOVED_RUBY_VERSION* ]]; then
-  echo "$BELOVED_RUBY_VERSION is installed"
+  echo "$BELOVED_RUBY_VERSION is installed! Moving on..."
 else
   rbenv install $BELOVED_RUBY_VERSION
 fi
 
-# assert_that "Ruby is installed and links to rbenv" "which ruby" "$HOME/.rbenv/shims/ruby"
+# rbenv_set_version.sh
 
 rbenv global $BELOVED_RUBY_VERSION
 rbenv rehash
-
-# assert_that "Ruby version is now '${BELOVED_RUBY_VERSION}'" \
-#             "ruby -v | grep -q ${BELOVED_RUBY_VERSION} && echo 'true'" "true"
 
 # ubuntu/setup_nvm.sh
 
@@ -563,18 +587,35 @@ sudo apt-get install build-essential libssl-dev
 # Install NVM (nvm_install.sh)
 #-------------------------------------------------------------------------------
 
-# install Node Version Manager
-git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
+inform "Installing nvm, our Node version manager..." true
 
-# load nvm command
+NVM_DIR="$HOME/.nvm"
+
+if [[ -e "$NVM_DIR" ]]; then
+  show "Already installed. Moving on..."
+else
+  # install Node Version Manager
+  git clone https://github.com/creationix/nvm.git "$NVM_DIR" && cd "$NVM_DIR" && git checkout `git describe --abbrev=0 --tags`
+  show "Complete!"
+fi
+
+#-------------------------------------------------------------------------------
+# Install Node (nvm_install_version.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing correct Node version and updated NPM..." true
+
+# load nvm command in the script
+# will do this and more in the bash_profile for the users
 source ~/.nvm/nvm.sh
 
-# Install and use the latest version of Node
-nvm install stable
-# nvm use stable # Does this with install...
+# Install and use version using NVM
+nvm install "$NODE_VERSION"
 
 # Ensure we have the most recent version of npm
 npm install npm -g
+
+show "Complete!"
 
 # Google Chrome.........The Browser
 # HipChat...............The Chat Client
@@ -642,31 +683,22 @@ createdb $USER
 gem install pg
 # create_student_folders.sh
 
-inform "Creating directory for wdi: ~/code/wdi"
+inform "Creating directory for wdi: $STUDENT_FOLDER" true
 
-STUDENT_FOLDER="$HOME/code/wdi"
 mkdir -p $STUDENT_FOLDER
 
-SRC_DIR=~/.wdi/installfest
-SETTINGS=$SRC_DIR/settings
+TIMESTAMP=$(date +%s)
+mkdir -p "$HOME/.wdi/backups_$TIMESTAMP"
 
-dotfiles=($SETTINGS/dotfiles/*)
+for FILEPATH in "${DOTFILES[@]}"; do
 
-timestamp=$(date +%s)
+  DOTFILE=".$(basename $FILEPATH)"
 
-mkdir -p $HOME/.wdi/backups_$timestamp
-
-for filepath in "${dotfiles[@]}"; do
-
-  dotfile=".$(basename $filepath)"
-
-  if [[ -a "$HOME/$dotfile" ]]; then
-
-    cp "$HOME/$dotfile" "$HOME/.wdi/backups_$timestamp/$dotfile"
-
+  if [[ -a "$HOME/$DOTFILE" ]] && [[ ! $DOTFILE == *"NOT-USING"* ]]; then
+    cp "$HOME/$DOTFILE" "$HOME/.wdi/backups_$timestamp/$DOTFILE"
   fi
 
-  cp $filepath "$HOME/$dotfile"
+  cp "$FILEPATH" "$HOME/$DOTFILE"
 done
 
 # Don't ask questions
