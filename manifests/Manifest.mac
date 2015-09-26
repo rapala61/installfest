@@ -15,7 +15,7 @@ mac/install_commandline_tools
 
 mac/repair_disk_permissions
 
-remove_rvm
+rbenv_remove_rvm
 mac/remove_macports
 
 capture_github_credentials
@@ -30,14 +30,15 @@ mac/install_compilation_tools
 install_git_completion
 configure_git
 
-mac/install_rbenv
-set_default_gems_with_rbenv
+rbenv_install
+rbenv_set_default_gems
 
-install_beloved_ruby_version
-set_global_ruby_version
+rbenv_install_version
+rbenv_set_version
 
-mac/install_nvm
-install_node_and_npm
+mac/setup_nvm
+nvm_install
+nvm_install_version
 
 mac/install_apps
 

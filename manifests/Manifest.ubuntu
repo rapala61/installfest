@@ -21,20 +21,21 @@ clone_script_repo
 # set up default deployment with heroku
 ubuntu/set_up_heroku
 
-keep_alive_password
+# keep_alive_password
 
-remove_rvm
-ubuntu/install_rbenv
-set_default_gems_with_rbenv
+rbenv_remove_rvm
+rbenv_install
+rbenv_set_default_gems
 ubuntu/add_rbenv_to_bashrc
 
-install_beloved_ruby_version
-set_global_ruby_version
+rbenv_install_version
+rbenv_set_version
 
-keep_alive_password
+# keep_alive_password
 
-ubuntu/install_nvm
-install_node_and_npm
+ubuntu/setup_nvm
+nvm_install
+nvm_install_version
 
 ubuntu/install_apps
 # ubuntu/install_atom

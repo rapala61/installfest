@@ -11,7 +11,7 @@ for filepath in "${dotfiles[@]}"; do
 
   dotfile=".$(basename $filepath)"
 
-  if [[ -a "$HOME/$dotfile" ]]; then
+  if [[ -a "$HOME/$dotfile" ]] && [[ ! $dotfile == *"NOT-USING"* ]]; then
 
     cp "$HOME/$dotfile" "$HOME/.wdi/backups_$timestamp/$dotfile"
 
