@@ -20,7 +20,7 @@ YELLOW=$(     tput setaf 3)
 BLUE=$(       tput setaf 4)
 MAGENTA=$(    tput setaf 5)
 CYAN=$(       tput setaf 6)
-WHITE=$(      tput setaf 9)
+WHITE=$(      tput setaf 7)
 
 # Background color
 BG_BLACK=$(   tput setab 0)
@@ -30,7 +30,7 @@ BG_YELLOW=$(  tput setab 3)
 BG_BLUE=$(    tput setab 4)
 BG_MAGENTA=$( tput setab 5)
 BG_CYAN=$(    tput setab 6)
-BG_WHITE=$(   tput setab 9)
+BG_WHITE=$(   tput setab 7)
 
 # Style
 UNDERLINE=$(  tput smul)
