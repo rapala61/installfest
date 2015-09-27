@@ -10,3 +10,5 @@ read -s -p "Enter your Github Password: " github_password
 echo ""
 read -p "Enter your (real) first name: "  fname
 read -p "Enter your (real) last name: "   lname
+
+show "Thank you!"

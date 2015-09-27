@@ -1,12 +1,12 @@
 utils/script_header
 
 utils/define_terminal_colors
-utils/logging
-utils/screen_logging
-utils/set_env_vars
+utils/log_file
+utils/log_screen
+utils/script_env_vars
 
-utils/screen_instructions
-utils/capture_password
+utils/script_instructions
+utils/password_capture
 
 mac/os_version
 mac/os_update_software
@@ -21,7 +21,7 @@ github_add_ssh_key
 
 mac/homebrew_install
 mac/homebrew_install_core_tools
-# ^ the above is used to compile languages and libs, so must come first
+# the above is used to compile languages and libs, so must come first
 
 # the below uses brew, so must come after
 mac/git_install_hb
@@ -39,9 +39,6 @@ nvm_install_version
 
 mac/homebrew_install_apps
 mac/homebrew_install_extra_tools
-
-# WORKING UP UNTIL HERE...
-
 mac/postgres_install_hb
 
 # turned off for now, since students aren't asked to sign up
@@ -51,12 +48,15 @@ mac/postgres_install_hb
 
 mac/os_configure
 
-clone_script_repo
-create_student_folders
+# WORKING UP UNTIL HERE...
 
+settings/script_repo_clone
+# utils/script_copy_function
 # FIXME (PJ) NOT WORKING!
-# mac/sublime_configure
-# copy_over_dotfiles
-# mac/copy_terminal_theme
+# settings/sublime_prefs_copy
+# settings/dotfiles_copy
+# settings/theme_tommorrow_night_copy_to_desktop
+
+code_dir_create
 
 utils/script_footer

@@ -1,4 +1,4 @@
-# ubuntu/setup_nvm.sh
+# ubuntu/nvm_setup.sh
 
 # NVM dependencies
 sudo apt-get install build-essential libssl-dev

@@ -21,12 +21,13 @@ ssh-add ~/.ssh/id_rsa
 
 public_key=$(cat ~/.ssh/id_rsa.pub)
 
-echo "SSH key created..."
+# TODO (PJ) test if this fails or not!
+show "SSH key created..."
 
 # Upload to GitHub
-
 inform "Uploading SSH key to GitHub..." true
 
+# TODO (PJ) test if this fails or not!
 curl https://api.github.com/user/keys \
   -H "User-Agent: WDIInstallFest" \
   -H "Accept: application/vnd.github.v3+json" \
@@ -34,4 +35,4 @@ curl https://api.github.com/user/keys \
   -d '{"title":"WDI Installfest", "key":"'"$public_key"'"}'
 
 echo ""
-echo "Key uploaded!"
+show "Key uploaded!" true

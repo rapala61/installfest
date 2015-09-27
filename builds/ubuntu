@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sat Sep 26 17:38:09 PDT 2015'
-
+COMPILED_AT='Sat Sep 26 19:35:09 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -72,7 +71,7 @@ BOLD=$(       tput bold)
 ITALIC=$(     tput sitm)
 
 #-------------------------------------------------------------------------------
-# Logging (utils/logging.sh)
+# Logging (utils/log_file.sh)
 #-------------------------------------------------------------------------------
 
 clear
@@ -89,7 +88,7 @@ echo "Script compiled at: ${COMPILED_AT}"
 echo "Script execution begun: $(date)"
 echo ""
 
-# utils/screen_logging.sh
+# utils/log_screen.sh
 
 function show () {
   echo -e "${BG_WHITE}${BLACK}> $* ${RESET}"
@@ -112,7 +111,7 @@ function pause_awhile () {
 }
 
 #-------------------------------------------------------------------------------
-# Set up basic env vars (utils/set_env_vars.sh)
+# Set up basic env vars (utils/script_env_vars.sh)
 #-------------------------------------------------------------------------------
 
 # Standard Bash Variables
@@ -142,6 +141,10 @@ else
   BASH_FILE=".bashrc"
 fi
 
+# TODO (PJ) this needs to be more robust, BY FAR!
+SCRIPT_REPO="https://github.com/GA-WDI/installfest_script.git"
+SCRIPT_REPO_BRANCH="master"
+
 # the downloaded repo
 SCRIPT_DIR="$HOME/.wdi/installfest"
 SCRIPT_SETTINGS="$SCRIPT_DIR/settings"
@@ -160,7 +163,7 @@ STUDENT_FOLDER="$HOME/code/wdi"
 # REPO="wdi_melville_instructors"
 
 #-------------------------------------------------------------------------------
-# We begin! (utils/screen_instructions.sh)
+# We begin! (utils/script_instructions.sh)
 #-------------------------------------------------------------------------------
 
 show "${BOLD}Welcome to the Installfest! ${RESET}"
@@ -172,14 +175,14 @@ show ""
 show "This script will install, update, and configure files and "
 show "applications that you will use in class."
 
-# utils/capture_password.sh
+# utils/password_capture.sh
 
 # capture the user's password
 inform "Enter your computer's password so that " true
 inform "  we can make the necessary changes. "
 inform "  The password will not be visible as you type: "
 
-sudo -p "Password:" show "Thank you!"
+sudo -p "Password:" echo "${BG_WHITE}> Thank you! ${RESET}"
 
 # TODO (phlco) remove the description part with a regex capture group
 os_version=$(lsb_release -a | grep -i Description)
@@ -299,6 +302,8 @@ echo ""
 read -p "Enter your (real) first name: "  fname
 read -p "Enter your (real) last name: "   lname
 
+show "Thank you!"
+
 #-------------------------------------------------------------------------------
 # Create and Upload SSH key (github_add_ssh_key.sh)
 #-------------------------------------------------------------------------------
@@ -322,12 +327,13 @@ ssh-add ~/.ssh/id_rsa
 
 public_key=$(cat ~/.ssh/id_rsa.pub)
 
-echo "SSH key created..."
+# TODO (PJ) test if this fails or not!
+show "SSH key created..."
 
 # Upload to GitHub
-
 inform "Uploading SSH key to GitHub..." true
 
+# TODO (PJ) test if this fails or not!
 curl https://api.github.com/user/keys \
   -H "User-Agent: WDIInstallFest" \
   -H "Accept: application/vnd.github.v3+json" \
@@ -335,7 +341,7 @@ curl https://api.github.com/user/keys \
   -d '{"title":"WDI Installfest", "key":"'"$public_key"'"}'
 
 echo ""
-echo "Key uploaded!"
+show "Key uploaded!" true
 
 #-------------------------------------------------------------------------------
 # Add user's Git info to ~/.gitconfig (git_configure.sh)
@@ -382,75 +388,6 @@ git config --global alias.again 'commit -c ORIG_HEAD'
 git config --global alias.deploy 'subtree push --prefix dist/ origin gh-pages'
 
 show "Complete!"
-
-# ------------------------------------------------------------------------------
-# Clone the script repo locally in order to copy dotfiles etc. directly from it.
-# (clone_script_repo.sh)
-# ------------------------------------------------------------------------------
-
-# TODO (PJ) this needs to be more robust, BY FAR!
-INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
-BRANCH=master
-
-inform "Downloading the Installfest repo..." true
-# download the repo for the absolute paths
-
-if [[ $OS_VERSION == *10.6** ]]; then
-  # 10.6 doesn't have git so download the zip and rename it installfest
-  curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
-  unzip $BRANCH.zip -d ~/.wdi
-  mv ~/.wdi/installfest_script-$BRANCH/ ~/.wdi/installfest
-else
-  if [[ ! -d $SRC_DIR ]]; then
-    echo 'Downloading Installfest repo...'
-    # autoupdate bootstrap file
-    git clone -b $BRANCH $INSTALL_REPO $SRC_DIR
-  else
-    # update repo
-    echo 'Updating repo...'
-    cd $SRC_DIR
-    git pull origin $BRANCH
-  fi
-fi
-
-echo "Repo downloaded!"
-
-# Heroku command-line tooling for working with the Heroku platform
-
-# http://eoinoc.net/install-hub-github-linux-mint/
-# wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-# from the above, but using our current environment:
-
-# add heroku repository to apt
-sudo sh -c 'echo "deb http://toolbelt.heroku.com/ubuntu ./" > /etc/apt/sources.list.d/heroku.list'
-
-# install heroku's release key for package verification
-wget -O- https://toolbelt.heroku.com/apt/release.key | sudo apt-key add -
-
-# update your sources with heroku packages
-sudo apt-get update -y
-
-# install the toolbelt
-sudo apt-get install -y heroku-toolbelt
-
-# https://devcenter.heroku.com/articles/keys
-# FIXME pj@ga.co: not working as it is -- can't find `heroku`
-# echo "Heroku is a cloud platform as a service (PaaS) supporting several"
-# echo "programming languages."
-
-# echo "If you don’t already use SSH, you’ll need to create a public/private key"
-# echo "pair to deploy code to Heroku. This keypair is used for the strong"
-# echo "cryptography and that uniquely identifies you as a developer when pushing"
-# echo "code changes."
-
-# ssh-keygen -t rsa
-
-# echo "The first time you run the heroku command, you’ll be prompted for your "
-# echo "credentials. Your public key will then be automatically uploaded to"
-# echo "Heroku. This will allow you to deploy code to all of your apps."
-# echo "Please enter your email"
-
-# heroku keys:add
 
 # rbenv_remove_rvm.sh
 
@@ -579,7 +516,7 @@ fi
 rbenv global $BELOVED_RUBY_VERSION
 rbenv rehash
 
-# ubuntu/setup_nvm.sh
+# ubuntu/nvm_setup.sh
 
 # NVM dependencies
 sudo apt-get install build-essential libssl-dev
@@ -684,39 +621,20 @@ createdb $USER
 
 # Install ruby interface for Postgres
 gem install pg
-# create_student_folders.sh
+# code_dir_create.sh
 
 inform "Creating directory for wdi: $STUDENT_FOLDER" true
-
 mkdir -p $STUDENT_FOLDER
-
-TIMESTAMP=$(date +%s)
-mkdir -p "$HOME/.wdi/backups_$TIMESTAMP"
-
-for FILEPATH in "${DOTFILES[@]}"; do
-
-  DOTFILE=".$(basename $FILEPATH)"
-
-  if [[ -a "$HOME/$DOTFILE" ]] && [[ ! $DOTFILE == *"NOT-USING"* ]]; then
-    cp "$HOME/$DOTFILE" "$HOME/.wdi/backups_$timestamp/$DOTFILE"
-  fi
-
-  cp "$FILEPATH" "$HOME/$DOTFILE"
-done
-
-# Don't ask questions
-export DEBIAN_FRONTEND=noninteractive
-sudo apt-get install -y mailutils
+show "Complete!"
 
 #-------------------------------------------------------------------------------
-# We're done! (utils/fin.sh)
+# We're done! (utils/script_footer.sh)
 #-------------------------------------------------------------------------------
 
-inform "We're done!"
-
-echo ""
-echo "Please quit and re-open your terminal!"
+inform "We're done!" true
 echo "#-- fin -- #"
 
-# TODO(phlco) maybe make the welcome prompt load up additional checks to run.
+inform "Please quit and re-open your terminal!" true
+
+# TODO (phlco) maybe make the welcome prompt load up additional checks to run.
 

@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# We begin! (utils/screen_instructions.sh)
+# We begin! (utils/script_instructions.sh)
 #-------------------------------------------------------------------------------
 
 show "${BOLD}Welcome to the Installfest! ${RESET}"

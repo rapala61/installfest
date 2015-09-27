@@ -1,4 +1,4 @@
-# utils/screen_logging.sh
+# utils/log_screen.sh
 
 function show () {
   echo -e "${BG_WHITE}${BLACK}> $* ${RESET}"

@@ -1,11 +1,10 @@
 #-------------------------------------------------------------------------------
-# We're done! (utils/fin.sh)
+# We're done! (utils/script_footer.sh)
 #-------------------------------------------------------------------------------
 
-inform "We're done!"
-
-echo ""
-echo "Please quit and re-open your terminal!"
+inform "We're done!" true
 echo "#-- fin -- #"
 
-# TODO(phlco) maybe make the welcome prompt load up additional checks to run.
+inform "Please quit and re-open your terminal!" true
+
+# TODO (phlco) maybe make the welcome prompt load up additional checks to run.

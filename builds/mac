@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sat Sep 26 17:38:09 PDT 2015'
-
+COMPILED_AT='Sat Sep 26 19:35:09 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -72,7 +71,7 @@ BOLD=$(       tput bold)
 ITALIC=$(     tput sitm)
 
 #-------------------------------------------------------------------------------
-# Logging (utils/logging.sh)
+# Logging (utils/log_file.sh)
 #-------------------------------------------------------------------------------
 
 clear
@@ -89,7 +88,7 @@ echo "Script compiled at: ${COMPILED_AT}"
 echo "Script execution begun: $(date)"
 echo ""
 
-# utils/screen_logging.sh
+# utils/log_screen.sh
 
 function show () {
   echo -e "${BG_WHITE}${BLACK}> $* ${RESET}"
@@ -112,7 +111,7 @@ function pause_awhile () {
 }
 
 #-------------------------------------------------------------------------------
-# Set up basic env vars (utils/set_env_vars.sh)
+# Set up basic env vars (utils/script_env_vars.sh)
 #-------------------------------------------------------------------------------
 
 # Standard Bash Variables
@@ -142,6 +141,10 @@ else
   BASH_FILE=".bashrc"
 fi
 
+# TODO (PJ) this needs to be more robust, BY FAR!
+SCRIPT_REPO="https://github.com/GA-WDI/installfest_script.git"
+SCRIPT_REPO_BRANCH="master"
+
 # the downloaded repo
 SCRIPT_DIR="$HOME/.wdi/installfest"
 SCRIPT_SETTINGS="$SCRIPT_DIR/settings"
@@ -160,7 +163,7 @@ STUDENT_FOLDER="$HOME/code/wdi"
 # REPO="wdi_melville_instructors"
 
 #-------------------------------------------------------------------------------
-# We begin! (utils/screen_instructions.sh)
+# We begin! (utils/script_instructions.sh)
 #-------------------------------------------------------------------------------
 
 show "${BOLD}Welcome to the Installfest! ${RESET}"
@@ -172,14 +175,14 @@ show ""
 show "This script will install, update, and configure files and "
 show "applications that you will use in class."
 
-# utils/capture_password.sh
+# utils/password_capture.sh
 
 # capture the user's password
 inform "Enter your computer's password so that " true
 inform "  we can make the necessary changes. "
 inform "  The password will not be visible as you type: "
 
-sudo -p "Password:" show "Thank you!"
+sudo -p "Password:" echo "${BG_WHITE}> Thank you! ${RESET}"
 
 # mac/os_version.sh
 
@@ -311,6 +314,8 @@ echo ""
 read -p "Enter your (real) first name: "  fname
 read -p "Enter your (real) last name: "   lname
 
+show "Thank you!"
+
 #-------------------------------------------------------------------------------
 # Create and Upload SSH key (github_add_ssh_key.sh)
 #-------------------------------------------------------------------------------
@@ -334,12 +339,13 @@ ssh-add ~/.ssh/id_rsa
 
 public_key=$(cat ~/.ssh/id_rsa.pub)
 
-echo "SSH key created..."
+# TODO (PJ) test if this fails or not!
+show "SSH key created..."
 
 # Upload to GitHub
-
 inform "Uploading SSH key to GitHub..." true
 
+# TODO (PJ) test if this fails or not!
 curl https://api.github.com/user/keys \
   -H "User-Agent: WDIInstallFest" \
   -H "Accept: application/vnd.github.v3+json" \
@@ -347,7 +353,7 @@ curl https://api.github.com/user/keys \
   -d '{"title":"WDI Installfest", "key":"'"$public_key"'"}'
 
 echo ""
-echo "Key uploaded!"
+show "Key uploaded!" true
 
 #-------------------------------------------------------------------------------
 # Install Homebrew (mac/homebrew_install.sh)
@@ -798,17 +804,24 @@ show "Complete!"
 # Install Postgres (mac/postgres_install_hb.sh)
 #-------------------------------------------------------------------------------
 
-# Set up Postgres
+inform "Installing Postgres RDBMS via Homewbrew..." true
 brew install postgresql
+show "Complete!"
 
-# Install ruby interface for Postgres
+
+inform "Installing Ruby interface/genm for Postgres..." true
 # from brew: "When installing the postgres gem, including ARCHFLAGS is
 # recommended:"
 ARCHFLAGS="-arch x86_64" gem install pg
+show "Complete!"
 
-# Create a database
-initdb /usr/local/var/postgres -E utf8
+inform "Creating Postgres data directory..." true
+PGDATA="/usr/local/var/postgres"
+initdb "$PGDATA" -E utf8
+# TODO (PJ) set PGDATA env var in bash_profile?
+show "Data directory initialized in ${PGDATA}"
 
+inform "Attempting further configurations to ensure Postgres runs correctly..." true
 # NOTE! https://coderwall.com/p/rjioeg
 # Yosemite problems:
 # for some reasons yosemite cleaned up some files/directories in /usr/local
@@ -818,116 +831,87 @@ sudo mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
 # May also need this.
 sudo chmod -R 0700 /usr/local/var/postgres
 sudo chown -R ${USER} /usr/local/var/postgres
+show "Complete!"
 
-# Ensure that Postgres launches whenever we login
+inform "Setting Postgres to launch at login..." true
 mkdir -p ~/Library/LaunchAgents
 cp /usr/local/Cellar/postgresql/9.*/homebrew.mxcl.postgresql.plist ~/Library/LaunchAgents/
+show "Complete!"
 
-# Start Postgres now
+
+inform "Starting Postgres now..." true
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
-
 # give postgres time to load
 sleep 5s
+show "Complete!"
 
+inform "Creating a default user for Postgres..." true
 # create db matching user name so we can log in by just typing psql
 createdb ${USER}
+show "Complete!"
+
+# ------------------------------------------------------------------------------
+# Final OS-specific Mac tweeks (mac/os_configure.sh)
+# ------------------------------------------------------------------------------
+
+inform "Setting OS configurations..."
 
 # # Disable the "Are you sure you want to open this application?" dialog
 # defaults write com.apple.LaunchServices LSQuarantine -bool false
 
-# # Reveal IP address, hostname, OS version, etc. when clicking the clock
-# # in the login window
-# sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
+# Reveal IP address, hostname, OS version, etc. when clicking the clock
+# in the login window
+sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
 
-# # Disable the warning when changing a file extension
-# defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-
-# # Only use UTF-8 in Terminal.app
-# defaults write com.apple.terminal StringEncodings -array 4
-
-# # Use a modified version of the Pro theme by default in Terminal.app
-# open "${HOME}/init/Mathias.terminal"
-# sleep 1 # Wait a bit to make sure the theme is loaded
-# defaults write com.apple.terminal "Default Window Settings" -string "Mathias"
-# defaults write com.apple.terminal "Startup Window Settings" -string "Mathias"
-
-# # Install Sublime Text settings
-# cp -r init/Preferences.sublime-settings ~/Library/Application\ Support/Sublime\ Text*/Packages/User/Preferences.sublime-settings 2> /dev/null
-
-# spectacle
-# http://support.apple.com/kb/HT5914
-# codesign -s - --resource-rules=/Users/YourUserNameHere/ResourceRules-ignoring-Scripts.plist /path/to/applet.app
-
-# https://github.com/chytreg/dotfiles/blob/c532970fb63a78b2507141b4de26b3c8e25c2bfc/bin/bootstrap
-
-# also look into brew cask for installing applications
-# https://github.com/Homebrew/homebrew/wiki/External-Commands
-
-####################################################################################
-# Download and set Terminal colors to MyMonokai
-####################################################################################
-# TODO(phlco): Make these open in the background
+# Disable the warning when changing a file extension
+sudo defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
 # Only use UTF-8 in Terminal.app
-defaults write com.apple.terminal StringEncodings -array 4
+sudo defaults write com.apple.terminal StringEncodings -array 4
 
-# echo "Settings MyMonokai for Terminal..."
-# open -g "${HOME}/.wdi-installfest/settings/sublime/MyMonokai.terminal"
-# echo "done"
-
-# osascript -e 'tell application "Terminal" to activate' \
-# -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down' \
-# -e 'tell application "Terminal" to do script "open ~/.wdi-installfest/settings/sublime/MyMonokai.terminal" in tab 2 of front window'
-# -e 'tell application "System Events" to tell process "Terminal" to keystroke "w" using command down'
-# -e 'tell application "System Events" to tell process "Terminal" to tell window 1 to close'
+show "Complete!"
 
 # ------------------------------------------------------------------------------
 # Clone the script repo locally in order to copy dotfiles etc. directly from it.
-# (clone_script_repo.sh)
+# (settings/script_repo_clone.sh)
 # ------------------------------------------------------------------------------
 
-# TODO (PJ) this needs to be more robust, BY FAR!
-INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
-BRANCH=master
-
-inform "Downloading the Installfest repo..." true
+inform "Downloading the Installfest repo, in order to copy files..." true
 # download the repo for the absolute paths
 
 if [[ $OS_VERSION == *10.6** ]]; then
   # 10.6 doesn't have git so download the zip and rename it installfest
-  curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
-  unzip $BRANCH.zip -d ~/.wdi
-  mv ~/.wdi/installfest_script-$BRANCH/ ~/.wdi/installfest
+  curl -LO https://github.com/ga-instructors/installfest_script/archive/$SCRIPT_REPO_BRANCH.zip
+  unzip $SCRIPT_REPO_BRANCH.zip -d ~/.wdi
+  mv ~/.wdi/installfest_script-$SCRIPT_REPO_BRANCH/ "$SCRIPT_DIR"
 else
-  if [[ ! -d $SRC_DIR ]]; then
-    echo 'Downloading Installfest repo...'
+  if [[ ! -d $SCRIPT_DIR ]]; then
     # autoupdate bootstrap file
-    git clone -b $BRANCH $INSTALL_REPO $SRC_DIR
+    git clone -b $SCRIPT_REPO_BRANCH $SCRIPT_REPO $SCRIPT_DIR
   else
     # update repo
-    echo 'Updating repo...'
-    cd $SRC_DIR
-    git pull origin $BRANCH
+    echo 'Repo already downloaded; updating...'
+    cd $SCRIPT_DIR
+    git pull origin $SCRIPT_REPO_BRANCH
   fi
 fi
 
-echo "Repo downloaded!"
+show "Repo downloaded!"
 
-# create_student_folders.sh
+# code_dir_create.sh
 
 inform "Creating directory for wdi: $STUDENT_FOLDER" true
-
 mkdir -p $STUDENT_FOLDER
+show "Complete!"
 
 #-------------------------------------------------------------------------------
-# We're done! (utils/fin.sh)
+# We're done! (utils/script_footer.sh)
 #-------------------------------------------------------------------------------
 
-inform "We're done!"
-
-echo ""
-echo "Please quit and re-open your terminal!"
+inform "We're done!" true
 echo "#-- fin -- #"
 
-# TODO(phlco) maybe make the welcome prompt load up additional checks to run.
+inform "Please quit and re-open your terminal!" true
+
+# TODO (phlco) maybe make the welcome prompt load up additional checks to run.
 

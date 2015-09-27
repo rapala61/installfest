@@ -58,6 +58,17 @@ Commentary beyond code explanation (simple comments) is stored in `scripts/comme
 └── readme.md
 ```
 
+### Naming
+
+Files: Noun first, then verb. TODO (PJ) update this...
+
+Vars: local whenever possible, use long names to avoid collisions, check
+the builds with find, all caps with underscores.
+
+### Linting
+
+Run the bash linter (not available yet...)
+
 ### Testing and logging
 
 The script downloads from [https//raw.githubusercontent.com](). Be aware: **it caches resources for one minute**, so you may not see your changes to the script immediately.

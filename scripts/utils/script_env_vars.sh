@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Set up basic env vars (utils/set_env_vars.sh)
+# Set up basic env vars (utils/script_env_vars.sh)
 #-------------------------------------------------------------------------------
 
 # Standard Bash Variables
@@ -28,6 +28,10 @@ else
   SYSTEM="ubuntu"
   BASH_FILE=".bashrc"
 fi
+
+# TODO (PJ) this needs to be more robust, BY FAR!
+SCRIPT_REPO="https://github.com/GA-WDI/installfest_script.git"
+SCRIPT_REPO_BRANCH="master"
 
 # the downloaded repo
 SCRIPT_DIR="$HOME/.wdi/installfest"
