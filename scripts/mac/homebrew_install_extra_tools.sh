@@ -1,3 +1,9 @@
+#-------------------------------------------------------------------------------
+# Use Brew to install a final set of tools (mac/homebrew_install_extra_tools.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing extra libraries via Homebrew..." true
+
 # Useful packages
 packagelist=(
   # ASCII ART!!!!
@@ -35,3 +41,5 @@ brew install ${packagelist[@]}
 # List of useful Quick Look plugins for developers
 # NOTE (phlco) necessary?
 # brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql webp-quicklook suspicious-package
+
+show "Complete!"

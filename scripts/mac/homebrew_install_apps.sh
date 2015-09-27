@@ -1,13 +1,18 @@
 #-------------------------------------------------------------------------------
-# Use Brew Cask to install application images (mac/install_apps.sh)
+# Use Brew Cask to install application images (mac/homebrew_install_apps.sh)
 #-------------------------------------------------------------------------------
 
+inform "Installing Homebrew Cask, to handle Mac binaries (apps)..." true
 # a CLI workflow for the administration of Mac applications
 # distributed as binaries
 brew tap phinze/homebrew-cask
 brew install brew-cask
 
+# load a tap of different versions of apps (for Sublime Text 3)
 brew tap caskroom/versions
+show "Complete!"
+
+inform "Using Homebrew Cask to install apps..." true
 
 # The Browser
 brew cask install google-chrome
@@ -60,3 +65,5 @@ if [[ $OS_VERSION == *10.6** ]]; then
   # The X Window Server
   brew cask install xquartz
 fi
+
+show "Complete!"

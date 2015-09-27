@@ -12,10 +12,11 @@ ubuntu/determine_os_version
 ubuntu/update_software
 ubuntu/install_system_packages
 
-capture_github_credentials
+github_capture_credentials
 
-add_ssh_key_to_github
-configure_git
+github_add_ssh_key
+git_configure
+
 clone_script_repo
 
 # set up default deployment with heroku
@@ -47,4 +48,4 @@ copy_over_dotfiles
 
 ubuntu/install_mailutils
 
-utils/fin
+utils/script_footer

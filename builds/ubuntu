@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sat Sep 26 16:44:40 PDT 2015'
+COMPILED_AT='Sat Sep 26 17:38:09 PDT 2015'
 
 #
 #  _           _        _ _  __           _
@@ -143,10 +143,13 @@ else
 fi
 
 # the downloaded repo
-SRC_DIR="$HOME/.wdi/installfest"
-SETTINGS="$SRC_DIR/settings"
-DOTFILES=("$SETTINGS/dotfiles/*")
-THEMES_DIR=("$SETTINGS/terminal")
+SCRIPT_DIR="$HOME/.wdi/installfest"
+SCRIPT_SETTINGS="$SCRIPT_DIR/settings"
+
+SCRIPT_DOTFILES=($SCRIPT_SETTINGS/dotfiles/*)
+SCRIPT_FONTS=($SCRIPT_SETTINGS/fonts/*)
+SCRIPT_SUBL_PREFS=($SCRIPT_SETTINGS/sublime/*)
+SCRIPT_THEMES=($SCRIPT_SETTINGS/terminal/*)
 
 # the working folder
 STUDENT_FOLDER="$HOME/code/wdi"
@@ -176,7 +179,7 @@ inform "Enter your computer's password so that " true
 inform "  we can make the necessary changes. "
 inform "  The password will not be visible as you type: "
 
-sudo -p "Password:" echo "Thank you!"
+sudo -p "Password:" show "Thank you!"
 
 # TODO (phlco) remove the description part with a regex capture group
 os_version=$(lsb_release -a | grep -i Description)
@@ -284,7 +287,7 @@ sudo apt-get -y install ${packagelist[@]}
 assert_package_installed ${packagelist[@]}
 
 #-------------------------------------------------------------------------------
-# Capture GitHub credentials (capture_github_credentials.sh)
+# Capture GitHub credentials (github_capture_credentials.sh)
 #-------------------------------------------------------------------------------
 
 inform "Enter information to set up your GitHub configuration." true
@@ -297,7 +300,7 @@ read -p "Enter your (real) first name: "  fname
 read -p "Enter your (real) last name: "   lname
 
 #-------------------------------------------------------------------------------
-# Create and Upload SSH key (add_ssh_key_to_github.sh)
+# Create and Upload SSH key (github_add_ssh_key.sh)
 #-------------------------------------------------------------------------------
 
 # SSH keys establish a secure connection between your computer and GitHub
@@ -335,7 +338,7 @@ echo ""
 echo "Key uploaded!"
 
 #-------------------------------------------------------------------------------
-# Add user's Git info to ~/.gitconfig (configure_git.sh)
+# Add user's Git info to ~/.gitconfig (git_configure.sh)
 #-------------------------------------------------------------------------------
 
 inform "Setting Git configurations..." true
@@ -459,7 +462,7 @@ if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
   yes | rvm implode
   rm -rf ~/.rvm
 else
-  echo "RVM is not installed. Moving on."
+  show "RVM is not installed. Moving on."
 fi
 
 #-------------------------------------------------------------------------------
@@ -471,7 +474,7 @@ inform "Installing rbenv, our Ruby version manager..." true
 RBENV_DIR="$HOME/.rbenv"
 
 if [[ -e "$RBENV_DIR" ]]; then
-  echo "Already installed! Moving on..."
+  show "Already installed! Moving on..."
 else
   # Not using brew install (on Mac) because it is problematic...
   git clone https://github.com/sstephenson/rbenv.git "$RBENV_DIR"
@@ -489,21 +492,21 @@ RBENV_DEFAULT="${RBENV_DIR}/plugins/rbenv-default-gems"
 RBENV_BUILD="${RBENV_DIR}/plugins/rbenv-gem-rehash"
 
 if [[ -e "$RBENV_REHASH" ]]; then
-  echo "Rehash plugin already installed! Moving on..."
+  show "Rehash plugin already installed! Moving on..."
 else
   # Automatically install gems every time you install a new version of Ruby
   git clone https://github.com/sstephenson/rbenv-default-gems.git "$RBENV_REHASH"
 fi
 
 if [[ -e "$RBENV_DEFAULT" ]]; then
-  echo "Default gems plugin installed! Moving on..."
+  show "Default gems plugin installed! Moving on..."
 else
   # Automatically runs rbenv rehash every time you install or uninstall a gem
   git clone https://github.com/sstephenson/rbenv-gem-rehash.git "$RBENV_DEFAULT"
 fi
 
 if [[ -e "$RBENV_BUILD" ]]; then
-  echo "Ruby build plugin already installed! Moving on..."
+  show "Ruby build plugin already installed! Moving on..."
 else
   # Provides an `rbenv install` command
   # ruby-build is a dependency of rbenv-default-gems, so it gets installed
@@ -566,7 +569,7 @@ inform "  Note: this may take a VERY LONG TIME!"
 ruby_check=$(rbenv versions | grep $BELOVED_RUBY_VERSION)
 
 if [[ "$ruby_check" == *$BELOVED_RUBY_VERSION* ]]; then
-  echo "$BELOVED_RUBY_VERSION is installed! Moving on..."
+  show "$BELOVED_RUBY_VERSION is installed! Moving on..."
 else
   rbenv install $BELOVED_RUBY_VERSION
 fi

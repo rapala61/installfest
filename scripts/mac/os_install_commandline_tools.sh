@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Check for & install commandline tools (mac/install_commandline_tools.sh)
+# Check for & install commandline tools (mac/os_install_commandline_tools.sh)
 #-------------------------------------------------------------------------------
 
 inform "Checking for XCode Command Line Tools..." true
@@ -19,7 +19,7 @@ esac
 
 # Check for Command Line Tools based on OS versions
 if [ ! -z $(pkgutil --pkgs=com.apple.pkg.$cmdline_version) ]; then
-  echo "Command Line Tools are installed!"
+  show "Command Line Tools are installed!"
 elif [[ $OS_VERSION == *10.6** ]]; then
   warn "Command Line Tools are not installed!" true
   warn "  Downloading and installing the GCC compiler."

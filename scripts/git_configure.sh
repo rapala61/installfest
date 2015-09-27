@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Add user's Git info to ~/.gitconfig (configure_git.sh)
+# Add user's Git info to ~/.gitconfig (git_configure.sh)
 #-------------------------------------------------------------------------------
 
 inform "Setting Git configurations..." true

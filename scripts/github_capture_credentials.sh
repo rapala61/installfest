@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Capture GitHub credentials (capture_github_credentials.sh)
+# Capture GitHub credentials (github_capture_credentials.sh)
 #-------------------------------------------------------------------------------
 
 inform "Enter information to set up your GitHub configuration." true

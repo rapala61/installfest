@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # Use Homebrew to install basic libs and compilation tools
-# (mac/install_compilation_tools.sh)
+# (mac/homebrew_install_core_tools.sh)
 #-------------------------------------------------------------------------------
 
 inform "Installing basic libraries and tools via Homebrew..." true

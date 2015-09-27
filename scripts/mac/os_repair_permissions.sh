@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Repair disk permissions (mac/repair_disk_permissions.sh)
+# Repair disk permissions (mac/os_repair_permissions.sh)
 #-------------------------------------------------------------------------------
 
 # Ensure user has full control over their folder

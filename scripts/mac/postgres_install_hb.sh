@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Install Postgres (mac/install_postgres.sh)
+# Install Postgres (mac/postgres_install_hb.sh)
 #-------------------------------------------------------------------------------
 
 # Set up Postgres

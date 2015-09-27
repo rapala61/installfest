@@ -8,5 +8,5 @@ if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
   yes | rvm implode
   rm -rf ~/.rvm
 else
-  echo "RVM is not installed. Moving on."
+  show "RVM is not installed. Moving on."
 fi

@@ -1,11 +1,10 @@
-# mac/remove_macports.sh
+# mac/macports_remove.sh
 
 inform "Removing Macports..." true
 
 # Uninstall Macports b/c we are using Homebrew
 # http://guide.macports.org/chunked/installing.macports.uninstalling.html
 if hash port 2>/dev/null || [[ $(find /opt/local -iname macports 2>/dev/null) ]]; then
-  echo "Removing MacPorts"
     macports=$(find /opt/local -iname macports)
     for f in $macports; do
       rm -rf $f
@@ -23,7 +22,9 @@ if hash port 2>/dev/null || [[ $(find /opt/local -iname macports 2>/dev/null) ]]
     /Library/Tcl/darwinports1.0 \
     /Library/Tcl/macports1.0 \
     ~/.macports
-    sudo find / | grep macports | sudo xargs rm
+  sudo find / | grep macports | sudo xargs rm
+
+  show "Complete!"
 else
-  echo "Macports is not installed. Moving on."
+  show "Macports is not installed. Moving on."
 fi

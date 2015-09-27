@@ -1,4 +1,4 @@
-# mac/setup_nvm.sh
+# mac/nvm_setup.sh
 
 inform "Preparing nvm installation by cleaning up current state of Node." true
 

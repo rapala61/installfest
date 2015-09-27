@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Install Homebrew version of Git & Hub (mac/install_git.sh)
+# Install Homebrew version of Git & Hub (mac/git_install_hb.sh)
 #-------------------------------------------------------------------------------
 
 inform "Installing Git & Hub via Homebrew..." true

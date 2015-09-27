@@ -8,56 +8,55 @@ utils/set_env_vars
 utils/screen_instructions
 utils/capture_password
 
-mac/determine_os_version
-mac/update_software
-mac/install_commandline_tools
-
-mac/repair_disk_permissions
+mac/os_version
+mac/os_update_software
+mac/os_install_commandline_tools
+mac/os_repair_permissions
 
 rbenv_remove_rvm
-mac/remove_macports
+mac/macports_remove
 
-capture_github_credentials
-add_ssh_key_to_github
+github_capture_credentials
+github_add_ssh_key
 
-clone_script_repo
+mac/homebrew_install
+mac/homebrew_install_core_tools
+# ^ the above is used to compile languages and libs, so must come first
 
-mac/install_homebrew
-mac/install_git
-mac/install_compilation_tools
-
-install_git_completion
-configure_git
+# the below uses brew, so must come after
+mac/git_install_hb
+git_completion
+git_configure
 
 rbenv_install
 rbenv_set_default_gems
-
 rbenv_install_version
 rbenv_set_version
 
-mac/setup_nvm
+mac/nvm_setup
 nvm_install
 nvm_install_version
 
+mac/homebrew_install_apps
+mac/homebrew_install_extra_tools
+
 # WORKING UP UNTIL HERE...
 
-mac/install_apps
+mac/postgres_install_hb
+
+# turned off for now, since students aren't asked to sign up
+# before welcome day
+# mac/heroku_install_toolbelt_hb
+# mac/heroku_add_ssh_key
+
+mac/os_configure
+
+clone_script_repo
+create_student_folders
 
 # FIXME (PJ) NOT WORKING!
-# mac/configure_sublime
+# mac/sublime_configure
+# copy_over_dotfiles
+# mac/copy_terminal_theme
 
-# TODO (phlco) are these *system* packages?
-mac/install_system_packages
-# mac/set_up_heroku
-# mac/add_heroku_key
-
-mac/install_postgres
-
-mac/run_osx_tweeks
-
-create_student_folders
-copy_over_dotfiles
-mac/copy_terminal_theme
-
-utils/fin
-
+utils/script_footer

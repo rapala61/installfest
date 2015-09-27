@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sat Sep 26 16:44:40 PDT 2015'
+COMPILED_AT='Sat Sep 26 17:38:09 PDT 2015'
 
 #
 #  _           _        _ _  __           _
@@ -143,10 +143,13 @@ else
 fi
 
 # the downloaded repo
-SRC_DIR="$HOME/.wdi/installfest"
-SETTINGS="$SRC_DIR/settings"
-DOTFILES=("$SETTINGS/dotfiles/*")
-THEMES_DIR=("$SETTINGS/terminal")
+SCRIPT_DIR="$HOME/.wdi/installfest"
+SCRIPT_SETTINGS="$SCRIPT_DIR/settings"
+
+SCRIPT_DOTFILES=($SCRIPT_SETTINGS/dotfiles/*)
+SCRIPT_FONTS=($SCRIPT_SETTINGS/fonts/*)
+SCRIPT_SUBL_PREFS=($SCRIPT_SETTINGS/sublime/*)
+SCRIPT_THEMES=($SCRIPT_SETTINGS/terminal/*)
 
 # the working folder
 STUDENT_FOLDER="$HOME/code/wdi"
@@ -176,24 +179,24 @@ inform "Enter your computer's password so that " true
 inform "  we can make the necessary changes. "
 inform "  The password will not be visible as you type: "
 
-sudo -p "Password:" echo "Thank you!"
+sudo -p "Password:" show "Thank you!"
 
-# mac/determine_os_version.sh
+# mac/os_version.sh
 
 # Determine OS version
 OS_VERSION=$(sw_vers -productVersion)
 
 #-------------------------------------------------------------------------------
-# Update software on Mac (mac/update_software.sh)
+# Update software on Mac (mac/os_update_software.sh)
 #-------------------------------------------------------------------------------
 
 # Check for recommended software updates
 inform "Running software update on Mac OS... " true
 sudo softwareupdate -i -r --ignore iTunes > /dev/null 2>&1
-echo "Software updated!"
+show "Software updated!"
 
 #-------------------------------------------------------------------------------
-# Check for & install commandline tools (mac/install_commandline_tools.sh)
+# Check for & install commandline tools (mac/os_install_commandline_tools.sh)
 #-------------------------------------------------------------------------------
 
 inform "Checking for XCode Command Line Tools..." true
@@ -213,7 +216,7 @@ esac
 
 # Check for Command Line Tools based on OS versions
 if [ ! -z $(pkgutil --pkgs=com.apple.pkg.$cmdline_version) ]; then
-  echo "Command Line Tools are installed!"
+  show "Command Line Tools are installed!"
 elif [[ $OS_VERSION == *10.6** ]]; then
   warn "Command Line Tools are not installed!" true
   warn "  Downloading and installing the GCC compiler."
@@ -237,7 +240,7 @@ else
 fi
 
 #-------------------------------------------------------------------------------
-# Repair disk permissions (mac/repair_disk_permissions.sh)
+# Repair disk permissions (mac/os_repair_permissions.sh)
 #-------------------------------------------------------------------------------
 
 # Ensure user has full control over their folder
@@ -261,17 +264,16 @@ if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
   yes | rvm implode
   rm -rf ~/.rvm
 else
-  echo "RVM is not installed. Moving on."
+  show "RVM is not installed. Moving on."
 fi
 
-# mac/remove_macports.sh
+# mac/macports_remove.sh
 
 inform "Removing Macports..." true
 
 # Uninstall Macports b/c we are using Homebrew
 # http://guide.macports.org/chunked/installing.macports.uninstalling.html
 if hash port 2>/dev/null || [[ $(find /opt/local -iname macports 2>/dev/null) ]]; then
-  echo "Removing MacPorts"
     macports=$(find /opt/local -iname macports)
     for f in $macports; do
       rm -rf $f
@@ -289,13 +291,15 @@ if hash port 2>/dev/null || [[ $(find /opt/local -iname macports 2>/dev/null) ]]
     /Library/Tcl/darwinports1.0 \
     /Library/Tcl/macports1.0 \
     ~/.macports
-    sudo find / | grep macports | sudo xargs rm
+  sudo find / | grep macports | sudo xargs rm
+
+  show "Complete!"
 else
-  echo "Macports is not installed. Moving on."
+  show "Macports is not installed. Moving on."
 fi
 
 #-------------------------------------------------------------------------------
-# Capture GitHub credentials (capture_github_credentials.sh)
+# Capture GitHub credentials (github_capture_credentials.sh)
 #-------------------------------------------------------------------------------
 
 inform "Enter information to set up your GitHub configuration." true
@@ -308,7 +312,7 @@ read -p "Enter your (real) first name: "  fname
 read -p "Enter your (real) last name: "   lname
 
 #-------------------------------------------------------------------------------
-# Create and Upload SSH key (add_ssh_key_to_github.sh)
+# Create and Upload SSH key (github_add_ssh_key.sh)
 #-------------------------------------------------------------------------------
 
 # SSH keys establish a secure connection between your computer and GitHub
@@ -345,46 +349,14 @@ curl https://api.github.com/user/keys \
 echo ""
 echo "Key uploaded!"
 
-# ------------------------------------------------------------------------------
-# Clone the script repo locally in order to copy dotfiles etc. directly from it.
-# (clone_script_repo.sh)
-# ------------------------------------------------------------------------------
-
-# TODO (PJ) this needs to be more robust, BY FAR!
-INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
-BRANCH=master
-
-inform "Downloading the Installfest repo..." true
-# download the repo for the absolute paths
-
-if [[ $OS_VERSION == *10.6** ]]; then
-  # 10.6 doesn't have git so download the zip and rename it installfest
-  curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
-  unzip $BRANCH.zip -d ~/.wdi
-  mv ~/.wdi/installfest_script-$BRANCH/ ~/.wdi/installfest
-else
-  if [[ ! -d $SRC_DIR ]]; then
-    echo 'Downloading Installfest repo...'
-    # autoupdate bootstrap file
-    git clone -b $BRANCH $INSTALL_REPO $SRC_DIR
-  else
-    # update repo
-    echo 'Updating repo...'
-    cd $SRC_DIR
-    git pull origin $BRANCH
-  fi
-fi
-
-echo "Repo downloaded!"
-
 #-------------------------------------------------------------------------------
-# Install Homebrew (mac/install_homebrew.sh)
+# Install Homebrew (mac/homebrew_install.sh)
 #-------------------------------------------------------------------------------
 
 inform "Installing the Homebrew package manager..." true
 
 # Set up ownership for /usr/local to anyone with admin permissions!
-echo "Setting ownership of the Homebrew directory."
+echo "Setting ownership of the Homebrew directory..."
 sudo mkdir -p /usr/local
 sudo chgrp -R admin /usr/local
 sudo chmod -R g+w /usr/local
@@ -398,11 +370,11 @@ if [[ $? != 0 ]]; then
   # piping echo to simulate hitting return in the brew install script
   echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 else
-  echo "Homebrew is already installed!"
+  show "Homebrew is already installed!"
 fi
 
 # Set up ownership for /usr/local to anyone with admin permissions!
-echo "Setting ownership of the Homebrew library."
+echo "Setting ownership of the Homebrew library..."
 mkdir -p /Library/Caches/Homebrew
 sudo chgrp -R admin /Library/Caches/Homebrew
 sudo chmod -R g+w /Library/Caches/Homebrew
@@ -419,7 +391,7 @@ inform "Adding Homebrew taps..." true
 # though may provide more recent or bugfix versions, and
 # extra versions (other than default) of certain packages.
 brew tap homebrew/dupes
-brew tap homebrew/versions # necessary for Sublime Text 3
+brew tap homebrew/versions # necessary for specific versions of libs
 
 # Ensures all tapped formula are symlinked into Library/Formula
 # and prunes dead formula from Library/Formula.
@@ -430,17 +402,8 @@ brew cleanup
 show "Complete!"
 
 #-------------------------------------------------------------------------------
-# Install Homebrew version of Git & Hub (mac/install_git.sh)
-#-------------------------------------------------------------------------------
-
-inform "Installing Git & Hub via Homebrew..." true
-brew install git
-brew install hub # additional Git commands
-show "Complete!"
-
-#-------------------------------------------------------------------------------
 # Use Homebrew to install basic libs and compilation tools
-# (mac/install_compilation_tools.sh)
+# (mac/homebrew_install_core_tools.sh)
 #-------------------------------------------------------------------------------
 
 inform "Installing basic libraries and tools via Homebrew..." true
@@ -492,7 +455,16 @@ brew install ${packagelist[@]}
 show "Complete!"
 
 #-------------------------------------------------------------------------------
-# Install Git Completion (install_git_completion.sh)
+# Install Homebrew version of Git & Hub (mac/git_install_hb.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing Git & Hub via Homebrew..." true
+brew install git
+brew install hub # additional Git commands
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Install Git Completion (git_completion.sh)
 #-------------------------------------------------------------------------------
 
 inform "Installing a bash script to support Git CLI tab-completion..." true
@@ -503,14 +475,14 @@ GIT_COMPLETION_FILE="$HOME/.git-completion.bash"
 curl -o "$GIT_COMPLETION_FILE" "$GIT_COMPLETION_URL"
 
 if [[ -e "$GIT_COMPLETION_FILE" ]]; then
-  echo "$GIT_COMPLETION_FILE created!"
+  show "File '$GIT_COMPLETION_FILE' created!"
 else
   warn "${GIT_COMPLETION_FILE} not created... " true
   pause_awhile "Ask an instructor for help if necessary. "
 fi
 
 #-------------------------------------------------------------------------------
-# Add user's Git info to ~/.gitconfig (configure_git.sh)
+# Add user's Git info to ~/.gitconfig (git_configure.sh)
 #-------------------------------------------------------------------------------
 
 inform "Setting Git configurations..." true
@@ -564,7 +536,7 @@ inform "Installing rbenv, our Ruby version manager..." true
 RBENV_DIR="$HOME/.rbenv"
 
 if [[ -e "$RBENV_DIR" ]]; then
-  echo "Already installed! Moving on..."
+  show "Already installed! Moving on..."
 else
   # Not using brew install (on Mac) because it is problematic...
   git clone https://github.com/sstephenson/rbenv.git "$RBENV_DIR"
@@ -582,21 +554,21 @@ RBENV_DEFAULT="${RBENV_DIR}/plugins/rbenv-default-gems"
 RBENV_BUILD="${RBENV_DIR}/plugins/rbenv-gem-rehash"
 
 if [[ -e "$RBENV_REHASH" ]]; then
-  echo "Rehash plugin already installed! Moving on..."
+  show "Rehash plugin already installed! Moving on..."
 else
   # Automatically install gems every time you install a new version of Ruby
   git clone https://github.com/sstephenson/rbenv-default-gems.git "$RBENV_REHASH"
 fi
 
 if [[ -e "$RBENV_DEFAULT" ]]; then
-  echo "Default gems plugin installed! Moving on..."
+  show "Default gems plugin installed! Moving on..."
 else
   # Automatically runs rbenv rehash every time you install or uninstall a gem
   git clone https://github.com/sstephenson/rbenv-gem-rehash.git "$RBENV_DEFAULT"
 fi
 
 if [[ -e "$RBENV_BUILD" ]]; then
-  echo "Ruby build plugin already installed! Moving on..."
+  show "Ruby build plugin already installed! Moving on..."
 else
   # Provides an `rbenv install` command
   # ruby-build is a dependency of rbenv-default-gems, so it gets installed
@@ -652,7 +624,7 @@ inform "  Note: this may take a VERY LONG TIME!"
 ruby_check=$(rbenv versions | grep $BELOVED_RUBY_VERSION)
 
 if [[ "$ruby_check" == *$BELOVED_RUBY_VERSION* ]]; then
-  echo "$BELOVED_RUBY_VERSION is installed! Moving on..."
+  show "$BELOVED_RUBY_VERSION is installed! Moving on..."
 else
   rbenv install $BELOVED_RUBY_VERSION
 fi
@@ -662,7 +634,7 @@ fi
 rbenv global $BELOVED_RUBY_VERSION
 rbenv rehash
 
-# mac/setup_nvm.sh
+# mac/nvm_setup.sh
 
 inform "Preparing nvm installation by cleaning up current state of Node." true
 
@@ -707,15 +679,20 @@ npm install npm -g
 show "Complete!"
 
 #-------------------------------------------------------------------------------
-# Use Brew Cask to install application images (mac/install_apps.sh)
+# Use Brew Cask to install application images (mac/homebrew_install_apps.sh)
 #-------------------------------------------------------------------------------
 
+inform "Installing Homebrew Cask, to handle Mac binaries (apps)..." true
 # a CLI workflow for the administration of Mac applications
 # distributed as binaries
 brew tap phinze/homebrew-cask
 brew install brew-cask
 
+# load a tap of different versions of apps (for Sublime Text 3)
 brew tap caskroom/versions
+show "Complete!"
+
+inform "Using Homebrew Cask to install apps..." true
 
 # The Browser
 brew cask install google-chrome
@@ -769,6 +746,14 @@ if [[ $OS_VERSION == *10.6** ]]; then
   brew cask install xquartz
 fi
 
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Use Brew to install a final set of tools (mac/homebrew_install_extra_tools.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing extra libraries via Homebrew..." true
+
 # Useful packages
 packagelist=(
   # ASCII ART!!!!
@@ -807,8 +792,10 @@ brew install ${packagelist[@]}
 # NOTE (phlco) necessary?
 # brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql webp-quicklook suspicious-package
 
+show "Complete!"
+
 #-------------------------------------------------------------------------------
-# Install Postgres (mac/install_postgres.sh)
+# Install Postgres (mac/postgres_install_hb.sh)
 #-------------------------------------------------------------------------------
 
 # Set up Postgres
@@ -894,33 +881,43 @@ defaults write com.apple.terminal StringEncodings -array 4
 # -e 'tell application "System Events" to tell process "Terminal" to keystroke "w" using command down'
 # -e 'tell application "System Events" to tell process "Terminal" to tell window 1 to close'
 
+# ------------------------------------------------------------------------------
+# Clone the script repo locally in order to copy dotfiles etc. directly from it.
+# (clone_script_repo.sh)
+# ------------------------------------------------------------------------------
+
+# TODO (PJ) this needs to be more robust, BY FAR!
+INSTALL_REPO=https://github.com/GA-WDI/installfest_script.git
+BRANCH=master
+
+inform "Downloading the Installfest repo..." true
+# download the repo for the absolute paths
+
+if [[ $OS_VERSION == *10.6** ]]; then
+  # 10.6 doesn't have git so download the zip and rename it installfest
+  curl -LO https://github.com/ga-instructors/installfest_script/archive/$BRANCH.zip
+  unzip $BRANCH.zip -d ~/.wdi
+  mv ~/.wdi/installfest_script-$BRANCH/ ~/.wdi/installfest
+else
+  if [[ ! -d $SRC_DIR ]]; then
+    echo 'Downloading Installfest repo...'
+    # autoupdate bootstrap file
+    git clone -b $BRANCH $INSTALL_REPO $SRC_DIR
+  else
+    # update repo
+    echo 'Updating repo...'
+    cd $SRC_DIR
+    git pull origin $BRANCH
+  fi
+fi
+
+echo "Repo downloaded!"
+
 # create_student_folders.sh
 
 inform "Creating directory for wdi: $STUDENT_FOLDER" true
 
 mkdir -p $STUDENT_FOLDER
-
-TIMESTAMP=$(date +%s)
-mkdir -p "$HOME/.wdi/backups_$TIMESTAMP"
-
-for FILEPATH in "${DOTFILES[@]}"; do
-
-  DOTFILE=".$(basename $FILEPATH)"
-
-  if [[ -a "$HOME/$DOTFILE" ]] && [[ ! $DOTFILE == *"NOT-USING"* ]]; then
-    cp "$HOME/$DOTFILE" "$HOME/.wdi/backups_$timestamp/$DOTFILE"
-  fi
-
-  cp "$FILEPATH" "$HOME/$DOTFILE"
-done
-
-#-------------------------------------------------------------------------------
-# Copy over the terminal theme (mac/copy_terminal_theme.sh)
-#-------------------------------------------------------------------------------
-
-inform "Copying terminal theme to ~/Desktop..."
-
-cp "$THEMES_DIR/Tomorrow Night.terminal" ~/Desktop
 
 #-------------------------------------------------------------------------------
 # We're done! (utils/fin.sh)

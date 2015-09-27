@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Create and Upload SSH key (add_ssh_key_to_github.sh)
+# Create and Upload SSH key (github_add_ssh_key.sh)
 #-------------------------------------------------------------------------------
 
 # SSH keys establish a secure connection between your computer and GitHub

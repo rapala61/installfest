@@ -30,10 +30,13 @@ else
 fi
 
 # the downloaded repo
-SRC_DIR="$HOME/.wdi/installfest"
-SETTINGS="$SRC_DIR/settings"
-DOTFILES=("$SETTINGS/dotfiles/*")
-THEMES_DIR=("$SETTINGS/terminal")
+SCRIPT_DIR="$HOME/.wdi/installfest"
+SCRIPT_SETTINGS="$SCRIPT_DIR/settings"
+
+SCRIPT_DOTFILES=($SCRIPT_SETTINGS/dotfiles/*)
+SCRIPT_FONTS=($SCRIPT_SETTINGS/fonts/*)
+SCRIPT_SUBL_PREFS=($SCRIPT_SETTINGS/sublime/*)
+SCRIPT_THEMES=($SCRIPT_SETTINGS/terminal/*)
 
 # the working folder
 STUDENT_FOLDER="$HOME/code/wdi"

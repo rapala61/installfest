@@ -8,7 +8,7 @@ inform "  Note: this may take a VERY LONG TIME!"
 ruby_check=$(rbenv versions | grep $BELOVED_RUBY_VERSION)
 
 if [[ "$ruby_check" == *$BELOVED_RUBY_VERSION* ]]; then
-  echo "$BELOVED_RUBY_VERSION is installed! Moving on..."
+  show "$BELOVED_RUBY_VERSION is installed! Moving on..."
 else
   rbenv install $BELOVED_RUBY_VERSION
 fi
