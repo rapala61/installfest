@@ -29,18 +29,21 @@ else
   BASH_FILE=".bashrc"
 fi
 
+SCRIPT_ROOT="$HOME/.wdi"
+
 # TODO (PJ) this needs to be more robust, BY FAR!
 SCRIPT_REPO="https://github.com/GA-WDI/installfest_script.git"
 SCRIPT_REPO_BRANCH="master"
 
 # the downloaded repo
-SCRIPT_DIR="$HOME/.wdi/installfest"
+SCRIPT_DIR="$SCRIPT_ROOT/installfest"
 SCRIPT_SETTINGS="$SCRIPT_DIR/settings"
 
-SCRIPT_DOTFILES=($SCRIPT_SETTINGS/dotfiles/*)
-SCRIPT_FONTS=($SCRIPT_SETTINGS/fonts/*)
-SCRIPT_SUBL_PREFS=($SCRIPT_SETTINGS/sublime/*)
-SCRIPT_THEMES=($SCRIPT_SETTINGS/terminal/*)
+SCRIPT_DOTFILES=$SCRIPT_SETTINGS/dotfiles/*
+SCRIPT_FONTS=$SCRIPT_SETTINGS/fonts/*
+SCRIPT_SUBL_SETTINGS=$SCRIPT_SETTINGS/sublime_settings/*
+SCRIPT_SUBL_PACKAGES=$SCRIPT_SETTINGS/sublime_packages/*
+SCRIPT_THEMES=$SCRIPT_SETTINGS/terminal/*
 
 # the working folder
 STUDENT_FOLDER="$HOME/code/wdi"
@@ -49,3 +52,5 @@ STUDENT_FOLDER="$HOME/code/wdi"
 # TODO (PJ) update how reporting is done?
 # OWNER="ga-students"
 # REPO="wdi_melville_instructors"
+
+mkdir -p "$SCRIPT_ROOT"

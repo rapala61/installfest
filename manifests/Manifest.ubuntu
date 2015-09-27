@@ -1,9 +1,9 @@
 utils/script_header
 
+utils/script_env_vars
 utils/define_terminal_colors
 utils/log_file
 utils/log_screen
-utils/script_env_vars
 
 utils/script_instructions
 utils/password_capture

@@ -2,7 +2,7 @@
 # Final OS-specific Mac tweeks (mac/os_configure.sh)
 # ------------------------------------------------------------------------------
 
-inform "Setting OS configurations..."
+inform "Setting OS configurations..." true
 
 # # Disable the "Are you sure you want to open this application?" dialog
 # defaults write com.apple.LaunchServices LSQuarantine -bool false

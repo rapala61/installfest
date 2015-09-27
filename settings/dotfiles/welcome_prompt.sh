@@ -7,7 +7,6 @@
 WELCOME_PROMPT=true
 
 welcome_msg() {
-  # GA General Assembly Webdevelopment Immersive
   echo ${BG_RED}${WHITE} \
       GA${RESET}${WHITE}${BG_BLACK} \
       General Assembly ${RESET}${BG_YELLOW}${BLACK} \
@@ -21,8 +20,10 @@ welcome_msg() {
   echo "node $(node --version)"
   echo $(psql --version)
   # echo $(heroku --version)
+  # TODO (PJ) add tests for MongoDB, that there is a PG db for the current user
   echo "------------------------------------------"
   echo "type ${BOLD}unwelcome${RESET} to remove this message"
 }
 
 if [[ $WELCOME_PROMPT == true ]]; then welcome_msg; fi
+

@@ -5,10 +5,7 @@
 clear
 
 # set up logfile
-LOGFOLDER="$HOME/.wdi";
-LOGFILE="$LOGFOLDER/install.log"
-
-mkdir -p $LOGFOLDER
+LOGFILE="$SCRIPT_ROOT/install.log"
 
 exec > >(tee $LOGFILE); exec 2>&1
 
