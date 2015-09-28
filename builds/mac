@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sun Sep 27 01:34:58 PDT 2015'
+COMPILED_AT='Mon Sep 28 10:14:15 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -164,6 +164,715 @@ function pause_awhile () {
   read -p "${BG_YELLOW}${WHITE}${BOLD}Press <Enter> to continue.${RESET}"
 }
 
+#-------------------------------------------------------------------------------
+# We begin! (utils/script_instructions.sh)
+#-------------------------------------------------------------------------------
+
+show "${BOLD}Welcome to the Installfest! ${RESET}"
+show ""
+show "Throughout the script you will be asked to enter your password. "
+show "Unless otherwise stated, this is asking for your "
+show "${BOLD}computer's password. ${RESET}"
+show ""
+show "This script will install, update, and configure files and "
+show "applications that you will use in class."
+
+# utils/password_capture.sh
+
+# capture the user's password
+inform "Enter your computer's password so that " true
+inform "  we can make the necessary changes. "
+inform "  The password will not be visible as you type: "
+
+sudo -p "Password:" echo "${BG_WHITE}> Thank you! ${RESET}"
+
+# mac/os_version.sh
+
+# Determine OS version
+OS_VERSION=$(sw_vers -productVersion)
+
+#-------------------------------------------------------------------------------
+# Update software on Mac (mac/os_update_software.sh)
+#-------------------------------------------------------------------------------
+
+# Check for recommended software updates
+inform "Running software update on Mac OS... " true
+sudo softwareupdate -i -r --ignore iTunes > /dev/null 2>&1
+show "Software updated!"
+
+#-------------------------------------------------------------------------------
+# Check for & install commandline tools (mac/os_install_commandline_tools.sh)
+#-------------------------------------------------------------------------------
+
+inform "Checking for XCode Command Line Tools..." true
+
+# Check that command line tools are installed
+case $OS_VERSION in
+  *10.11*) cmdline_version="CLTools_Executables" ;; # El Capitan
+  *10.10*) cmdline_version="CLTools_Executables" ;; # Yosemite
+  *10.9*)  cmdline_version="CLTools_Executables" ;; # Mavericks
+  *10.8*)  cmdline_version="DeveloperToolsCLI"   ;; # Mountain Lion
+  *10.7*)  cmdline_version="DeveloperToolsCLI"   ;; # Lion
+  *10.6*)  cmdline_version="DeveloperToolsCLILeo"
+           warn "Outdated OS. Considering upgrading before continuing." true;; # Snow Leopard
+           # Force the user to upgrade if they're below 10.6
+  *) warn "Sorry! You'll have to upgrade your OS to $MINIMUM_MAC_OS or above." true; exit 1;;
+esac
+
+# Check for Command Line Tools based on OS versions
+if [ ! -z $(pkgutil --pkgs=com.apple.pkg.$cmdline_version) ]; then
+  show "Command Line Tools are installed!"
+elif [[ $OS_VERSION == *10.6** ]]; then
+  warn "Command Line Tools are not installed!" true
+  warn "  Downloading and installing the GCC compiler."
+  warn "  When you're done rerun the Installfest script..."
+  curl -OLk https://github.com/downloads/kennethreitz/osx-gcc-installer/GCC-10.6.pkg
+  open GCC-10.6.pkg
+  exit 1
+elif [[ $OS_VERSION == *10.7* ]] || [[ $OS_VERSION == *10.8* ]]; then
+  warn "Command Line Tools are not installed!" true
+  warn "Register for a Developer Account"
+  warn "  Download the Command Lion Tools from:"
+  warn "    https://developer.apple.com/downloads/index.action"
+  warn "  and then rerun the Installfest script..."
+  exit 1
+else
+  warn "Command Line Tools are not installed!" true
+  warn "  Running 'xcode-select --install' Please click continue!"
+  warn "  After installing please rerun the Installfest script..."
+  xcode-select --install
+  exit 1
+fi
+
+#-------------------------------------------------------------------------------
+# Repair disk permissions (mac/os_repair_permissions.sh)
+#-------------------------------------------------------------------------------
+
+# Ensure user has full control over their folder
+inform "Ensuring the current user owns their home folder." true
+sudo chown -R ${USER} ~
+show "Complete!"
+
+# Repair disk permission
+inform "Running repair permissions..." true
+inform "  Note: this may take a VERY LONG TIME!"
+diskutil repairPermissions /
+show "Complete!"
+
+# rbenv_remove_rvm.sh
+
+inform "Removing RVM..." true
+
+# Uninstall RVM, so that we can use rbenv
+# http://stackoverflow.com/questions/3950260/howto-uninstall-rvm
+if hash rvm 2>/dev/null || [ -d ~/.rvm ]; then
+  yes | rvm implode
+  rm -rf ~/.rvm
+else
+  show "RVM is not installed. Moving on."
+fi
+
+# mac/macports_remove.sh
+
+inform "Removing Macports..." true
+
+# Uninstall Macports b/c we are using Homebrew
+# http://guide.macports.org/chunked/installing.macports.uninstalling.html
+if hash port 2>/dev/null || [[ $(find /opt/local -iname macports 2>/dev/null) ]]; then
+    macports=$(find /opt/local -iname macports)
+    for f in $macports; do
+      rm -rf $f
+    done
+  # carthago delenda est
+  sudo port -fp uninstall installed
+  sudo rm -rf \
+    /opt/local \
+    /Applications/DarwinPorts \
+    /Applications/MacPorts \
+    /Library/LaunchDaemons/org.macports.* \
+    /Library/Receipts/DarwinPorts*.pkg \
+    /Library/Receipts/MacPorts*.pkg \
+    /Library/StartupItems/DarwinPortsStartup \
+    /Library/Tcl/darwinports1.0 \
+    /Library/Tcl/macports1.0 \
+    ~/.macports
+  sudo find / | grep macports | sudo xargs rm
+
+  show "Complete!"
+else
+  show "Macports is not installed. Moving on."
+fi
+
+#-------------------------------------------------------------------------------
+# Capture GitHub credentials (github_capture_credentials.sh)
+#-------------------------------------------------------------------------------
+
+inform "Enter information to set up your GitHub configuration." true
+
+read -p "Enter your Github Username: "    github_name
+read -p "Enter your Github Email: "       github_email
+read -s -p "Enter your Github Password: " github_password
+echo ""
+read -p "Enter your (real) first name: "  fname
+read -p "Enter your (real) last name: "   lname
+
+show "Thank you!"
+
+#-------------------------------------------------------------------------------
+# Create and Upload SSH key (github_add_ssh_key.sh)
+#-------------------------------------------------------------------------------
+
+# SSH keys establish a secure connection between your computer and GitHub
+# This script follows these instructions
+# `https://help.github.com/articles/generating-ssh-keys`
+
+# SSH Keygen
+inform "Generating an SSH key to establish a secure connection " true
+inform "  your computer and GitHub. "
+
+pause_awhile "Note: when you see the prompts:
+        'Enter a file in which to save the key (...)', and
+        'Enter passphrase (empty for no passphrase)',
+      ${BOLD}just press Enter!
+" true
+
+ssh-keygen -t rsa -b 4096 -C $github_email
+ssh-add ~/.ssh/id_rsa
+
+public_key=$(cat ~/.ssh/id_rsa.pub)
+
+# TODO (PJ) test if this fails or not!
+show "SSH key created..."
+
+# Upload to GitHub
+inform "Uploading SSH key to GitHub..." true
+
+# TODO (PJ) test if this fails or not!
+curl https://api.github.com/user/keys \
+  -H "User-Agent: WDIInstallFest" \
+  -H "Accept: application/vnd.github.v3+json" \
+  -u "$github_name:$github_password" \
+  -d '{"title":"WDI Installfest", "key":"'"$public_key"'"}'
+
+echo ""
+show "Key uploaded!" true
+
+#-------------------------------------------------------------------------------
+# Install Homebrew (mac/homebrew_install.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing the Homebrew package manager..." true
+
+# Set up ownership for /usr/local to anyone with admin permissions!
+echo "Setting ownership of the Homebrew directory..."
+sudo mkdir -p /usr/local
+sudo chgrp -R admin /usr/local
+sudo chmod -R g+w /usr/local
+show "Complete!"
+
+# Installs Homebrew, our package manager
+# http://brew.sh/
+$(which -s brew)
+if [[ $? != 0 ]]; then
+  echo "Loading Homebrew installation script..."
+  # piping echo to simulate hitting return in the brew install script
+  echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+else
+  show "Homebrew is already installed!"
+fi
+
+# Set up ownership for /usr/local to anyone with admin permissions!
+echo "Setting ownership of the Homebrew library..."
+mkdir -p /Library/Caches/Homebrew
+sudo chgrp -R admin /Library/Caches/Homebrew
+sudo chmod -R g+w /Library/Caches/Homebrew
+show "Complete!"
+
+
+inform "Updating Homebrew and formulae..." true
+brew update # Make sure we're using the latest Homebrew
+brew upgrade # Upgrade any already-installed formulae
+show "Complete!"
+
+inform "Adding Homebrew taps..." true
+# These formulae duplicate software provided by OS X
+# though may provide more recent or bugfix versions, and
+# extra versions (other than default) of certain packages.
+brew tap homebrew/dupes
+brew tap homebrew/versions # necessary for specific versions of libs
+
+# Ensures all tapped formula are symlinked into Library/Formula
+# and prunes dead formula from Library/Formula.
+brew tap --repair
+
+# Remove outdated versions from the cellar
+brew cleanup
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Use Homebrew to install basic libs and compilation tools
+# (mac/homebrew_install_core_tools.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing basic libraries and tools via Homebrew..." true
+packagelist=(
+  # Autoconf is an extensible package of M4 macros that produce shell scripts to
+  # automatically configure software source code packages.
+  autoconf
+
+  # Automake is a tool for automatically generating Makefile.in
+  automake
+
+  # generic library support script
+  libtool
+
+  # a YAML 1.1 parser and emitter
+  libyaml
+
+  # neon is an HTTP and WebDAV client library
+  # neon
+
+  # A toolkit implementing SSL v2/v3 and TLS protocols with full-strength
+  # cryptography world-wide.
+  openssl
+
+  # pkg-config is a helper tool used when compiling applications and libraries.
+  pkg-config
+
+  # a script that uses ssh to log into a remote machine
+  ssh-copy-id
+
+  # XML C parser and toolkit
+  libxml2
+
+  # a language for transforming XML documents into other XML documents.
+  libxslt
+
+  # a conversion library between Unicode and traditional encoding
+  libiconv
+
+  # generates an index file of names found in source files of various programming
+  # languages.
+  ctags
+
+  # Adds history for node repl
+  readline
+)
+
+brew install ${packagelist[@]}
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Install Homebrew version of Git & Hub (mac/git_install_hb.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing Git & Hub via Homebrew..." true
+brew install git
+brew install hub # additional Git commands
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Install Git Completion (git_completion.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing a bash script to support Git CLI tab-completion..." true
+
+GIT_COMPLETION_URL="https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash"
+GIT_COMPLETION_FILE="$HOME/.git-completion.bash"
+
+curl -o "$GIT_COMPLETION_FILE" "$GIT_COMPLETION_URL"
+
+if [[ -e "$GIT_COMPLETION_FILE" ]]; then
+  show "File '$GIT_COMPLETION_FILE' created!"
+else
+  warn "${GIT_COMPLETION_FILE} not created... " true
+  pause_awhile "Ask an instructor for help if necessary. "
+fi
+
+#-------------------------------------------------------------------------------
+# Add user's Git info to ~/.gitconfig (git_configure.sh)
+#-------------------------------------------------------------------------------
+
+inform "Setting Git configurations..." true
+
+# https://www.kernel.org/pub/software/scm/git/docs/git-config.html
+git config --global user.name    "$fname $lname"
+git config --global user.github  $github_name
+git config --global user.email   $github_email
+
+# set colors
+git config --global color.ui always
+
+git config --global color.branch.current   "green reverse"
+git config --global color.branch.local     green
+git config --global color.branch.remote    yellow
+
+git config --global color.status.added     green
+git config --global color.status.changed   yellow
+git config --global color.status.untracked red
+
+# set editor
+# change to `subl -w` if you want to open merge messages in Sublime.
+git config --global core.editor "nano"
+
+# default branch to push to
+git config --global push.default current
+
+# set global gitignore
+git config --global core.excludesfile ~/.gitignore_global
+
+# add commit template
+git config --global commit.template ~/.gitmessage.txt
+
+# add some useful shortcuts
+git config --global alias.sha 'rev-parse HEAD'
+git config --global alias.last 'log -1 HEAD --oneline --decorate'
+git config --global alias.ll 'log --oneline --decorate'
+git config --global alias.set-master 'branch --set-upstream-to=origin/master master'
+git config --global alias.back 'reset --soft HEAD~1'
+git config --global alias.again 'commit -c ORIG_HEAD'
+git config --global alias.deploy 'subtree push --prefix dist/ origin gh-pages'
+
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Install rbenv (rbenv_install.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing rbenv, our Ruby version manager..." true
+
+RBENV_DIR="$HOME/.rbenv"
+
+if [[ -e "$RBENV_DIR" ]]; then
+  show "Already installed! Moving on..."
+else
+  # Not using brew install (on Mac) because it is problematic...
+  git clone https://github.com/sstephenson/rbenv.git "$RBENV_DIR"
+fi
+
+# enable shims and autocompletion for the rest of this script...
+# this also needs to run in the bash_profile
+export PATH="${RBENV_DIR}/bin:$PATH"
+eval "$(rbenv init -)"
+
+inform "Installing rbenv plugins..." true
+
+RBENV_REHASH="${RBENV_DIR}/plugins/rbenv-gem-rehash"
+RBENV_DEFAULT="${RBENV_DIR}/plugins/rbenv-default-gems"
+RBENV_BUILD="${RBENV_DIR}/plugins/rbenv-gem-rehash"
+
+if [[ -e "$RBENV_REHASH" ]]; then
+  show "Rehash plugin already installed! Moving on..."
+else
+  # Automatically install gems every time you install a new version of Ruby
+  git clone https://github.com/sstephenson/rbenv-default-gems.git "$RBENV_REHASH"
+fi
+
+if [[ -e "$RBENV_DEFAULT" ]]; then
+  show "Default gems plugin installed! Moving on..."
+else
+  # Automatically runs rbenv rehash every time you install or uninstall a gem
+  git clone https://github.com/sstephenson/rbenv-gem-rehash.git "$RBENV_DEFAULT"
+fi
+
+if [[ -e "$RBENV_BUILD" ]]; then
+  show "Ruby build plugin already installed! Moving on..."
+else
+  # Provides an `rbenv install` command
+  # ruby-build is a dependency of rbenv-default-gems, so it gets installed
+  # TODO (PJ) remove then?
+  git clone https://github.com/sstephenson/ruby-build.git "$RBENV_BUILD"
+fi
+
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Set default gems to install by rbenv (rbenv_set_default_gems.sh)
+#-------------------------------------------------------------------------------
+
+inform "Setting default gems to install with Ruby versions..." true
+
+# Make sure we skip documentation installation during install...
+# There is a more full .gemrc that will be installed with dotfiles later.
+echo "gem: --no-ri --no-rdoc" > ~/.gemrc
+
+touch "${RBENV_DIR}/default-gems"
+
+# Our gems to install
+GEMLIST=(
+  bundler         # Maintains a consistent environment for ruby applications.
+  # capybara        # Acceptance test framework for web applications
+  # guard           # handle events on file system modifications
+  # jasmine         # JavaScript testing
+  pry             # alternative to the standard IRB shell
+  # pry-coolline    # live syntax highlighting for the Pry REPL
+  # rails           # full stack, Web application framework
+  # rspec           # testing tool for Ruby
+  # sinatra         # a DSL for quickly creating web applications in Ruby
+  # sinatra-contrib # common Sinatra extensions
+  github_api      # Ruby interface to github API v3
+  # hipchat         # HipChat HTTP API Wrapper
+  awesome_print   # pretty print your Ruby objects with style
+  rainbow         # colorizing printed text on ANSI terminals
+)
+
+for gem in ${GEMLIST[@]}; do
+  echo "${gem}" >> "${RBENV_DIR}/default-gems"
+done
+
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Install Ruby (rbenv_install_version.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing correct Ruby version and optimizing for your system..." true
+inform "  Note: this may take a VERY LONG TIME!"
+
+ruby_check=$(rbenv versions | grep $BELOVED_RUBY_VERSION)
+
+if [[ "$ruby_check" == *$BELOVED_RUBY_VERSION* ]]; then
+  show "$BELOVED_RUBY_VERSION is installed! Moving on..."
+else
+  rbenv install $BELOVED_RUBY_VERSION
+fi
+
+# rbenv_set_version.sh
+
+rbenv global $BELOVED_RUBY_VERSION
+rbenv rehash
+
+# mac/nvm_setup.sh
+
+inform "Preparing nvm installation by cleaning up current state of Node." true
+
+# Remove any Node brew installation and any global npm modules from it
+brew remove --force node
+sudo rm -r /usr/local/lib/node_modules >/dev/null 2>&1
+
+show "Done!"
+
+#-------------------------------------------------------------------------------
+# Install NVM (nvm_install.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing nvm, our Node version manager..." true
+
+NVM_DIR="$HOME/.nvm"
+
+if [[ -e "$NVM_DIR" ]]; then
+  show "Already installed. Moving on..."
+else
+  # install Node Version Manager
+  git clone https://github.com/creationix/nvm.git "$NVM_DIR" && cd "$NVM_DIR" && git checkout `git describe --abbrev=0 --tags`
+  show "Complete!"
+fi
+
+#-------------------------------------------------------------------------------
+# Install Node (nvm_install_version.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing correct Node version and updated NPM..." true
+
+# load nvm command in the script
+# will do this and more in the bash_profile for the users
+source ~/.nvm/nvm.sh
+
+# Install and use version using NVM
+nvm install "$NODE_VERSION"
+
+# Ensure we have the most recent version of npm
+npm install npm -g
+
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Use Brew Cask to install application images (mac/homebrew_install_apps.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing Homebrew Cask, to handle Mac binaries (apps)..." true
+# a CLI workflow for the administration of Mac applications
+# distributed as binaries
+brew tap phinze/homebrew-cask
+brew install brew-cask
+
+# load a tap of different versions of apps (for Sublime Text 3)
+brew tap caskroom/versions
+show "Complete!"
+
+inform "Using Homebrew Cask to install apps..." true
+
+# The Browser
+brew cask install google-chrome
+# brew cask install google-chrome-canary
+
+# A Browser
+brew cask install firefox
+# brew cask install firefox-nightly
+
+# The Text Editor, Sublime Text 2
+# (phlco) sublime text 3 is still in beta, therefore we'll stick to stable.
+# (phlco) atom won't support files over 2mb therefore we'll hold off.
+# brew cask install sublime-text
+
+# PJ: fuck it, v3
+brew cask install sublime-text3
+
+# Flux, makes the color of your computer's display adapt to the time of day
+# brew cask install flux
+
+# Alternative Terminal
+# brew cask install iterm2
+
+# for fonts
+# https://github.com/caskroom/homebrew-fonts/tree/master/Casks
+# brew tap caskroom/fonts
+#
+# brew cask install font-source-code-pro
+# brew cask install font-source-sans-pro
+# brew cask install font-inconsolata
+
+# Git extensions to provide high-level repository operations
+# brew install git-flow
+if [[ $OS_VERSION == *10.6** ]]; then
+  # spectacle
+  curl -OL https://s3.amazonaws.com/spectacle/downloads/Spectacle+0.7.zip
+  unzip Spectacle+0.7.zip
+  mv Spectacle.app/ /Applications
+  rm Spectacle+0.7.zip
+
+  echo "Slack requires 10.7 or higher. Please bookmark and use the browser version."
+
+ else
+  # The Window Manager
+  brew cask install spectacle
+
+  # Our class chat client
+  brew cask install slack
+
+  # The X Window Server
+  brew cask install xquartz
+fi
+
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Use Brew to install a final set of tools (mac/homebrew_install_extra_tools.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing extra libraries via Homebrew..." true
+
+# Useful packages
+packagelist=(
+  # ASCII ART!!!!
+  figlet
+
+  # visualization tool for ERDs
+  graphviz
+
+  # image resizing
+  imagemagick
+
+  # PhantomJS is a headless WebKit scriptable with a JavaScript API.
+  phantomjs
+
+  # WebKit implementation of qt for Capybara testing
+  qt
+
+  # qt for mavericks
+  qt4
+
+  # Advanced in-memory key-value store that persists on disk
+  redis
+
+  # essential UNIX commands
+  # TODO (phlco) ensure they're aliased in the path correctly
+  coreutils
+
+  # a self-contained, serverless, zero-configuration, transactional SQL database
+  # engine.
+  sqlite
+)
+
+brew install ${packagelist[@]}
+
+# List of useful Quick Look plugins for developers
+# NOTE (phlco) necessary?
+# brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql webp-quicklook suspicious-package
+
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Install Postgres (mac/postgres_install_hb.sh)
+#-------------------------------------------------------------------------------
+
+inform "Installing Postgres RDBMS via Homewbrew..." true
+brew install postgresql
+show "Complete!"
+
+
+inform "Installing Ruby interface/genm for Postgres..." true
+# from brew: "When installing the postgres gem, including ARCHFLAGS is
+# recommended:"
+ARCHFLAGS="-arch x86_64" gem install pg
+show "Complete!"
+
+inform "Creating Postgres data directory..." true
+PGDATA="/usr/local/var/postgres"
+initdb "$PGDATA" -E utf8
+# TODO (PJ) set PGDATA env var in bash_profile?
+show "Data directory initialized in ${PGDATA}"
+
+inform "Attempting further configurations to ensure Postgres runs correctly..." true
+# NOTE! https://coderwall.com/p/rjioeg
+# Yosemite problems:
+# for some reasons yosemite cleaned up some files/directories in /usr/local
+# for postgres installed via homebrew the following directories were missing to
+# start postgres properly:
+sudo mkdir -p /usr/local/var/postgres/{pg_tblspc,pg_twophase,pg_stat_tmp}
+# May also need this.
+sudo chmod -R 0700 /usr/local/var/postgres
+sudo chown -R ${USER} /usr/local/var/postgres
+show "Complete!"
+
+inform "Setting Postgres to launch at login..." true
+mkdir -p ~/Library/LaunchAgents
+cp /usr/local/Cellar/postgresql/9.*/homebrew.mxcl.postgresql.plist ~/Library/LaunchAgents/
+show "Complete!"
+
+
+inform "Starting Postgres now..." true
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+# give postgres time to load
+sleep 5s
+show "Complete!"
+
+inform "Creating a default user for Postgres..." true
+# create db matching user name so we can log in by just typing psql
+createdb ${USER}
+show "Complete!"
+
+# ------------------------------------------------------------------------------
+# Final OS-specific Mac tweeks (mac/os_configure.sh)
+# ------------------------------------------------------------------------------
+
+inform "Setting OS configurations..." true
+
+# # Disable the "Are you sure you want to open this application?" dialog
+# defaults write com.apple.LaunchServices LSQuarantine -bool false
+
+# Reveal IP address, hostname, OS version, etc. when clicking the clock
+# in the login window
+sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
+
+# Disable the warning when changing a file extension
+sudo defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+# Only use UTF-8 in Terminal.app
+sudo defaults write com.apple.terminal StringEncodings -array 4
+
+show "Complete!"
+
 # ------------------------------------------------------------------------------
 # Clone the script repo locally in order to copy dotfiles etc. directly from it.
 # (settings/script_repo_clone.sh)
@@ -275,47 +984,6 @@ show "Complete!"
 inform "Copying terminal theme to Desktop..." true
 copy_files themes "$HOME/Desktop" "$SCRIPT_SETTINGS/terminal/TommorrowNight.terminal"
 show "Complete!"
-
-#-------------------------------------------------------------------------------
-# Copy over Sublime settiings & packages (settings/sublime_settings_settings.sh)
-#-------------------------------------------------------------------------------
-
-SUBLIME_DIR="${HOME}/Library/Application\ Support/Sublime\ Text\ 3"
-SUBLIME_SETTINGS_DIR="${SUBLIME_DIR}/Packages/User"
-SUBLIME_PACKAGES_DIR="${SUBLIME_DIR}/Installed \Packages"
-
-# if [[ $os_version == *10.6* ]]; then
-#   # skip for now
-#   subl_app_support="${HOME}/Library/Application\ Support/Sublime\ Text\ 2"
-# else
-#   # Setup Sublime Preferences
-#   subl_app_support="${HOME}/Library/Application\ Support/Sublime\ Text\ 2"
-# fi
-
-# ensure files exist before copying for 10.6
-mkdir -p "SUBLIME_SETTINGS_DIR"
-mkdir -p "SUBLIME_PACKAGES_DIR"
-
-inform "Copying Sublime settings..." true
-copy_files subl_settings "$SUBLIME_SETTINGS_DIR" "$SCRIPT_SUBL_SETTINGS"
-show "Complete!"
-
-inform "Copying Sublime packages..." true
-copy_files subl_packages "$SUBLIME_PACKAGES_DIR" "$SCRIPT_SUBL_PACKAGES"
-show "Complete!"
-
-# Installing Package Control
-
-# pkg_url="https://sublime.wbond.net/Package%20Control.sublime-package"
-# pkg_control="Package Control.sublime-package"
-# pkg_settings="Package Control.sublime-settings"
-# backup "$subl_app_support/Installed Packages/$pkg_settings"
-
-# # NOTE (phlco) curling then mving because curl gave a malformed url in 10.6
-# mkdir -p "$SRC_DIR/../packages"
-
-# curl -O "$SRC_DIR/../packages" $pkg_url
-# mv "$SRC_DIR/../packages" "$subl_app_support/Installed\ Packages/$pkg_control"
 
 # code_dir_create.sh
 

@@ -1,0 +1,334 @@
+#!/usr/bin/env bash
+
+COMPILED_AT='Mon Sep 28 10:14:15 PDT 2015'
+#
+#  _           _        _ _  __           _
+# (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
+# | | '_ \/ __| __/ _` | | | |_ / _ \/ __| __|
+# | | | | \__ \ || (_| | | |  _|  __/\__ \ |_
+# |_|_| |_|___/\__\__,_|_|_|_|  \___||___/\__|
+#
+# Installation, Setup and Dotfile Creation Script
+# for Students of General Assemb.ly's WDI Program
+
+# Authors: Phillip Lamplugh, GA Instructor (2014),
+#          PJ Hughes, GA Instructor (2014 & 2015)
+
+# Resources:
+#
+# https://github.com/thoughtbot/laptop
+# https://github.com/toranb/ubuntu-development-machine
+# https://github.com/divio/osx-bootstrap
+# https://github.com/paulirish/dotfiles
+# https://github.com/mathiasbynens/dotfiles/
+# https://github.com/ndbroadbent/dotfiles
+
+# References:
+#
+# http://www.sudo.ws/
+# http://www.gnu.org/software/bash/manual/bashref.html
+# http://www.shellcheck.net
+# http://explainshell.com/
+
+#-------------------------------------------------------------------------------
+# Set up basic env vars (utils/script_env_vars.sh)
+#-------------------------------------------------------------------------------
+
+# Standard Bash Variables
+# `OSTYPE` A string describing the operating system Bash is running on.
+# `MACHTYPE` system type in cpu-company-system
+# `SECONDS` number of seconds since the shell was started.
+
+# FIXME (PJ) should have a better place to decide these versions:
+#   Ruby (rbenv), Python (pyenv), Node (nvm)
+BELOVED_RUBY_VERSION="2.2.3"
+CURRENT_STABLE_RUBY_VERSION="2.2.3"
+
+# TODO (pj) decide what the python versions should really be...
+#   and maybe come up with a bigger, better place to hang this info
+BELOVED_PYTHON_VERSION="anaconda-2.0.1"
+CURRENT_STABLE_PYTHON_VERSION="3.4.1"
+
+# NOT BEING USED YET, BUT SHOULD!
+NODE_VERSION="stable" # using nvm's language...
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  SYSTEM="mac"
+  BASH_FILE=".bash_profile"
+  MINIMUM_MAC_OS="10.7.0"
+else
+  SYSTEM="ubuntu"
+  BASH_FILE=".bashrc"
+fi
+
+SCRIPT_ROOT="$HOME/.wdi"
+
+# TODO (PJ) this needs to be more robust, BY FAR!
+SCRIPT_REPO="https://github.com/GA-WDI/installfest_script.git"
+SCRIPT_REPO_BRANCH="master"
+
+# the downloaded repo
+SCRIPT_DIR="$SCRIPT_ROOT/installfest"
+SCRIPT_SETTINGS="$SCRIPT_DIR/settings"
+
+SCRIPT_DOTFILES=$SCRIPT_SETTINGS/dotfiles/*
+SCRIPT_FONTS=$SCRIPT_SETTINGS/fonts/*
+SCRIPT_SUBL_SETTINGS=$SCRIPT_SETTINGS/sublime_settings/*
+SCRIPT_SUBL_PACKAGES=$SCRIPT_SETTINGS/sublime_packages/*
+SCRIPT_THEMES=$SCRIPT_SETTINGS/terminal/*
+
+# the working folder
+STUDENT_FOLDER="$HOME/code/wdi"
+
+# Deprecated as part of the utils/report_log.sh system...
+# TODO (PJ) update how reporting is done?
+# OWNER="ga-students"
+# REPO="wdi_melville_instructors"
+
+mkdir -p "$SCRIPT_ROOT"
+
+#-------------------------------------------------------------------------------
+# Set text formatting (utils/define_terminal_colors.sh)
+#-------------------------------------------------------------------------------
+
+# set 256 color profile where possible
+if [[ $COLORTERM == gnome-* && $TERM == xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
+  export TERM=gnome-256color
+elif infocmp xterm-256color >/dev/null 2>&1; then
+  export TERM=xterm-256color
+fi
+
+# Reset formatting
+RESET=$(      tput sgr0)
+
+# Foreground color
+BLACK=$(      tput setaf 0)
+RED=$(        tput setaf 1)
+GREEN=$(      tput setaf 2)
+YELLOW=$(     tput setaf 3)
+BLUE=$(       tput setaf 4)
+MAGENTA=$(    tput setaf 5)
+CYAN=$(       tput setaf 6)
+WHITE=$(      tput setaf 7)
+
+# Background color
+BG_BLACK=$(   tput setab 0)
+BG_RED=$(     tput setab 1)
+BG_GREEN=$(   tput setab 2)
+BG_YELLOW=$(  tput setab 3)
+BG_BLUE=$(    tput setab 4)
+BG_MAGENTA=$( tput setab 5)
+BG_CYAN=$(    tput setab 6)
+BG_WHITE=$(   tput setab 7)
+
+# Style
+UNDERLINE=$(  tput smul)
+NOUNDERLINE=$(tput rmul)
+BOLD=$(       tput bold)
+ITALIC=$(     tput sitm)
+
+#-------------------------------------------------------------------------------
+# Logging (utils/log_file.sh)
+#-------------------------------------------------------------------------------
+
+clear
+
+# set up logfile
+LOGFILE="$SCRIPT_ROOT/install.log"
+
+exec > >(tee $LOGFILE); exec 2>&1
+
+echo "Script compiled at: ${COMPILED_AT}"
+echo "Script execution begun: $(date)"
+echo ""
+
+# utils/log_screen.sh
+
+function show () {
+  echo -e "${BG_WHITE}${BLACK}> $* ${RESET}"
+}
+
+function inform () {
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_GREEN}${BLACK}${BOLD}>>>>  $1 ${RESET}"
+}
+
+function warn () {
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_RED}${WHITE}${BOLD}>>>>  $1 ${RESET}"
+}
+
+function pause_awhile () {
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_YELLOW}${WHITE}${BOLD}>>>>  $1 ${RESET}"
+  read -p "${BG_YELLOW}${WHITE}${BOLD}Press <Enter> to continue.${RESET}"
+}
+
+# ------------------------------------------------------------------------------
+# Clone the script repo locally in order to copy dotfiles etc. directly from it.
+# (settings/script_repo_clone.sh)
+# ------------------------------------------------------------------------------
+
+inform "Downloading the Installfest repo, in order to copy files..." true
+# download the repo for the absolute paths
+
+if [[ $OS_VERSION == *10.6** ]]; then
+  # 10.6 doesn't have git so download the zip and rename it installfest
+  curl -LO https://github.com/ga-instructors/installfest_script/archive/$SCRIPT_REPO_BRANCH.zip
+  unzip $SCRIPT_REPO_BRANCH.zip -d "$SCRIPT_ROOT"
+  mv "$SCRIPT_ROOT/installfest-$SCRIPT_REPO_BRANCH/" "$SCRIPT_DIR"
+else
+  if [[ ! -d $SCRIPT_DIR ]]; then
+    # autoupdate bootstrap file
+    git clone -b $SCRIPT_REPO_BRANCH $SCRIPT_REPO $SCRIPT_DIR
+  else
+    # update repo
+    echo 'Repo already downloaded; updating...'
+    cd $SCRIPT_DIR
+    git pull origin $SCRIPT_REPO_BRANCH
+  fi
+fi
+
+show "Repo downloaded!"
+
+#-------------------------------------------------------------------------------
+# Define a utility function to copy over files (settings/util_copy_files.sh)
+#-------------------------------------------------------------------------------
+
+function copy_files () {
+  # params
+  local TYPE_DIR="$1"
+  local TARGET_DIR="$2"
+  local FILE_LIST="$3"
+
+  # placeholder vars
+  local CURRENT_FILE=""
+  local TARGET_FILE=""
+  local BACKUP_FILE=""
+  local DOTFILES=""
+  local BACKED_UP=""
+  local PRINT_LN=""
+
+  local TIMESTAMP=$(date +%s)
+  local PAD="                                       "
+  local BACKUP_DIR="${SCRIPT_ROOT}/${TYPE_DIR}_backups_${TIMESTAMP}"
+
+  # check if the type of files is dotfiles
+  if [[ "$TYPE_DIR" == "dotfiles" ]]; then
+    DOTFILES=true
+  fi
+
+  for FILE_PATH in $FILE_LIST; do
+    CURRENT_FILE="$(basename $FILE_PATH)"
+    if [[ "$DOTFILES" == true ]]; then
+      CURRENT_FILE=".$CURRENT_FILE" # add a dot to dotfiles
+    fi
+
+    # skip NOT-USING files
+    if [[ ! $CURRENT_FILE == *"NOT-USING"* ]]; then
+
+      # print a formatted line describing
+      PRINT_LN="Copying file $CURRENT_FILE... "
+      printf "%s %s" "$PRINT_LN" "${PAD:${#PRINT_LN}}"
+
+      TARGET_FILE="${TARGET_DIR}/${CURRENT_FILE}"
+      BACKUP_FILE="${BACKUP_DIR}/${CURRENT_FILE}"
+
+      # back up files already in the target dir
+      if [[ -e "$TARGET_FILE" ]]; then
+        printf "(File exists! Backing up...)"
+        BACKED_UP=true # save for a final message below
+
+        # ensure the backup dir exists
+        mkdir -p "$BACKUP_DIR"
+        cp "$TARGET_FILE" "$BACKUP_FILE"
+      fi
+
+      # copy the file!
+      cp "$FILE_PATH" "$TARGET_FILE"
+
+      echo "" # flush printed line
+    fi
+  done
+
+  if [[ "$BACKED_UP" == true ]]; then
+    echo "${BOLD}Note: you can find backed-up files in ${BACKUP_DIR}${RESET}"
+  fi
+}
+
+# Usage:
+# copy_files dotfiles "$HOME" "$(echo $SCRIPT_DOTFILES)"
+# copy_files themes "$HOME/Desktop" "TommorrowNight.theme"
+
+#-------------------------------------------------------------------------------
+# Copy over dotfiles (settings/copy_dotfiles.sh)
+#-------------------------------------------------------------------------------
+
+inform "Copying over configuration and preference files (dotfiles)..." true
+copy_files "dotfiles" "$HOME" "$(echo $SCRIPT_DOTFILES)"
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Copy over the terminal theme (settings/copy_terminal_theme.sh)
+#-------------------------------------------------------------------------------
+
+inform "Copying terminal theme to Desktop..." true
+copy_files themes "$HOME/Desktop" "$SCRIPT_SETTINGS/terminal/TommorrowNight.terminal"
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Copy over Sublime settiings & packages (settings/sublime_settings_settings.sh)
+#-------------------------------------------------------------------------------
+
+SUBLIME_DIR="${HOME}/Library/Application\ Support/Sublime\ Text\ 3"
+SUBLIME_SETTINGS_DIR="${SUBLIME_DIR}/Packages/User"
+SUBLIME_PACKAGES_DIR="${SUBLIME_DIR}/Installed \Packages"
+
+# if [[ $os_version == *10.6* ]]; then
+#   # skip for now
+#   subl_app_support="${HOME}/Library/Application\ Support/Sublime\ Text\ 2"
+# else
+#   # Setup Sublime Preferences
+#   subl_app_support="${HOME}/Library/Application\ Support/Sublime\ Text\ 2"
+# fi
+
+# ensure files exist before copying for 10.6
+mkdir -p "SUBLIME_SETTINGS_DIR"
+mkdir -p "SUBLIME_PACKAGES_DIR"
+
+inform "Copying Sublime settings..." true
+copy_files subl_settings "$SUBLIME_SETTINGS_DIR" "$SCRIPT_SUBL_SETTINGS"
+show "Complete!"
+
+inform "Copying Sublime packages..." true
+copy_files subl_packages "$SUBLIME_PACKAGES_DIR" "$SCRIPT_SUBL_PACKAGES"
+show "Complete!"
+
+# Installing Package Control
+
+# pkg_url="https://sublime.wbond.net/Package%20Control.sublime-package"
+# pkg_control="Package Control.sublime-package"
+# pkg_settings="Package Control.sublime-settings"
+# backup "$subl_app_support/Installed Packages/$pkg_settings"
+
+# # NOTE (phlco) curling then mving because curl gave a malformed url in 10.6
+# mkdir -p "$SRC_DIR/../packages"
+
+# curl -O "$SRC_DIR/../packages" $pkg_url
+# mv "$SRC_DIR/../packages" "$subl_app_support/Installed\ Packages/$pkg_control"
+
+# code_dir_create.sh
+
+inform "Creating directory for wdi: $STUDENT_FOLDER" true
+mkdir -p $STUDENT_FOLDER
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# We're done! (utils/script_footer.sh)
+#-------------------------------------------------------------------------------
+
+inform "We're done!" true
+echo "#-- fin -- #"
+
+warn "Please quit and re-open your terminal!" true
+
