@@ -559,7 +559,7 @@ inform "Installing rbenv plugins..." true
 
 RBENV_REHASH="${RBENV_DIR}/plugins/rbenv-gem-rehash"
 RBENV_DEFAULT="${RBENV_DIR}/plugins/rbenv-default-gems"
-RBENV_BUILD="${RBENV_DIR}/plugins/rbenv-gem-rehash"
+RBENV_BUILD="${RBENV_DIR}/plugins/ruby-build"
 
 if [[ -e "$RBENV_REHASH" ]]; then
   show "Rehash plugin already installed! Moving on..."
