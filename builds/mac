@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Mon Sep 28 10:14:15 PDT 2015'
+COMPILED_AT='Tue Oct 06 16:22:42 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -565,14 +565,14 @@ if [[ -e "$RBENV_REHASH" ]]; then
   show "Rehash plugin already installed! Moving on..."
 else
   # Automatically install gems every time you install a new version of Ruby
-  git clone https://github.com/sstephenson/rbenv-default-gems.git "$RBENV_REHASH"
+  git clone https://github.com/sstephenson/rbenv-gem-rehash.git "$RBENV_REHASH"
 fi
 
 if [[ -e "$RBENV_DEFAULT" ]]; then
   show "Default gems plugin installed! Moving on..."
 else
   # Automatically runs rbenv rehash every time you install or uninstall a gem
-  git clone https://github.com/sstephenson/rbenv-gem-rehash.git "$RBENV_DEFAULT"
+  git clone https://github.com/sstephenson/rbenv-default-gems.git "$RBENV_DEFAULT"
 fi
 
 if [[ -e "$RBENV_BUILD" ]]; then
