@@ -2,19 +2,11 @@
 # Copy over Sublime settiings & packages (settings/sublime_settings_settings.sh)
 #-------------------------------------------------------------------------------
 
-SUBLIME_DIR="${HOME}/Library/Application\ Support/Sublime\ Text\ 3"
+SUBLIME_DIR="${HOME}/Library/Application Support/Sublime Text 3"
 SUBLIME_SETTINGS_DIR="${SUBLIME_DIR}/Packages/User"
-SUBLIME_PACKAGES_DIR="${SUBLIME_DIR}/Installed \Packages"
+SUBLIME_PACKAGES_DIR="${SUBLIME_DIR}/Installed Packages"
 
-# if [[ $os_version == *10.6* ]]; then
-#   # skip for now
-#   subl_app_support="${HOME}/Library/Application\ Support/Sublime\ Text\ 2"
-# else
-#   # Setup Sublime Preferences
-#   subl_app_support="${HOME}/Library/Application\ Support/Sublime\ Text\ 2"
-# fi
-
-# ensure files exist before copying for 10.6
+# ensure files exist before copying
 mkdir -p "SUBLIME_SETTINGS_DIR"
 mkdir -p "SUBLIME_PACKAGES_DIR"
 
