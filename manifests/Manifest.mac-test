@@ -55,8 +55,7 @@ settings/util_copy_files
 # settings/copy_terminal_theme
 # settings/copy_sublime_settings
 # settings/copy_install_sublime_packages
-
-mac/os_install_fonts
+settings/mac_install_fonts
 
 # code_dir_create
 

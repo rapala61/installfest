@@ -36,7 +36,7 @@
 
 MAC_FONTS="source-code-pro dejavu-sans-mono inconsolata"
 
-inform "Copying preferred programming fonts..."
+inform "Copying preferred programming fonts..." true
 
 for FONT_ZIP in $SCRIPT_FONTS; do
   for MAC_FONT in $MAC_FONTS; do
@@ -49,9 +49,9 @@ for FONT_ZIP in $SCRIPT_FONTS; do
       TTF_FILE_LIST=$(find "$FONT_DIR" ! -type d | grep .ttf$ | grep -v .woff | grep -v "._")
 
       if [ -n "$OTF_FILE_LIST" ]; then
-        copy_files fonts "${HOME}/Library/Fonts" "$OTF_FILE_LIST"
+        copy_files fonts_otf "${HOME}/Library/Fonts" "$OTF_FILE_LIST"
       else
-        copy_files fonts "${HOME}/Library/Fonts" "$TTF_FILE_LIST"
+        copy_files fonts_ttf "${HOME}/Library/Fonts" "$TTF_FILE_LIST"
       fi
 
       rm -rf "$FONT_DIR"
