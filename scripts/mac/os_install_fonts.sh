@@ -36,6 +36,8 @@
 
 MAC_FONTS="source-code-pro dejavu-sans-mono inconsolata"
 
+inform "Copying preferred programming fonts..."
+
 for FONT_ZIP in $SCRIPT_FONTS; do
   for MAC_FONT in $MAC_FONTS; do
     if [[ $FONT_ZIP == *"$MAC_FONT"* ]]; then
@@ -56,5 +58,7 @@ for FONT_ZIP in $SCRIPT_FONTS; do
     fi
   done
 done
+
+show "Complete!"
 
 
