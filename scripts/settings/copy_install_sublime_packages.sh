@@ -13,3 +13,17 @@ copy_files subl_packages "$SUBLIME_PACKAGES_DIR" "$SCRIPT_SUBL_PACKAGES"
 show "Complete!"
 
 # TODO (pj) get Package Control up and running with settings, etc.
+
+# Install Package Control
+
+PKG_CNTRL_URI="https://sublime.wbond.net/Package%20Control.sublime-package"
+PKG_CNTRL_FILE="Package Control.sublime-package"
+
+# # NOTE (phlco) curling then mving because curl gave a malformed url in 10.6
+# mkdir -p "$SRC_DIR/../packages"
+# curl -O "$SRC_DIR/../packages" $PKG_CNTRL_URI
+# mv "$SRC_DIR/../packages" "$SUBLIME_PACKAGES_DIR/$PKG_CNTRL_FILE"
+
+inform "Downloading Sublime Package Control..." true
+curl -O "${SUBLIME_PACKAGES_DIR}/$PKG_CNTRL_FILE" PKG_CNTRL_URI
+show "Complete!"
