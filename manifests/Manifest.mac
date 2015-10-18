@@ -56,7 +56,8 @@ settings/copy_terminal_theme
 
 ## not working yet!
 ## need to install package control!
-settings/copy_sublime_settings
+# settings/copy_sublime_settings
+# settings/copy_install_sublime_packages
 
 code_dir_create
 
