@@ -2,13 +2,27 @@
 # Install Homebrew (mac/homebrew_install.sh)
 #-------------------------------------------------------------------------------
 
+allow_group() {
+  local GROUP_NAME="$1"
+  local TARGET_DIR="$2"
+  local PERMISSIONS="read,write,delete,add_file,add_subdirectory"
+  local INHERITANCE="file_inherit,directory_inherit"
+
+  sudo mkdir -p "$TARGET_DIR"
+  sudo /bin/chmod -R -N "$TARGET_DIR"
+  sudo /bin/chmod -R +a "group:$GROUP_NAME:allow $PERMISSIONS,$INHERITANCE" "$TARGET_DIR"
+}
+
 inform "Installing the Homebrew package manager..." true
 
-# Set up ownership for /usr/local to anyone with admin permissions!
-echo "Setting ownership of the Homebrew directory..."
-sudo mkdir -p /usr/local
-sudo chgrp -R admin /usr/local
-sudo chmod -R g+w /usr/local
+# Set up permissions for /usr/local to anyone in admin group!
+echo "Setting ACL permissions of the Homebrew directory..."
+allow_group admin /usr/local
+show "Complete!"
+
+# Set up permissions for /Library/Caches/Homebrew to anyone in admin group!
+echo "Setting ACL permissions of the Homebrew library cache..."
+allow_group admin /Library/Caches/Homebrew
 show "Complete!"
 
 # Installs Homebrew, our package manager
@@ -21,14 +35,6 @@ if [[ $? != 0 ]]; then
 else
   show "Homebrew is already installed!"
 fi
-
-# Set up ownership for /usr/local to anyone with admin permissions!
-echo "Setting ownership of the Homebrew library..."
-mkdir -p /Library/Caches/Homebrew
-sudo chgrp -R admin /Library/Caches/Homebrew
-sudo chmod -R g+w /Library/Caches/Homebrew
-show "Complete!"
-
 
 inform "Updating Homebrew and formulae..." true
 brew update # Make sure we're using the latest Homebrew
