@@ -25,5 +25,5 @@ PKG_CNTRL_FILE="Package Control.sublime-package"
 # mv "$SRC_DIR/../packages" "$SUBLIME_PACKAGES_DIR/$PKG_CNTRL_FILE"
 
 inform "Downloading Sublime Package Control..." true
-curl -O "${SUBLIME_PACKAGES_DIR}/$PKG_CNTRL_FILE" PKG_CNTRL_URI
+curl -o "${SUBLIME_PACKAGES_DIR}/$PKG_CNTRL_FILE" PKG_CNTRL_URI
 show "Complete!"

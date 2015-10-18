@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sun Oct 18 00:25:00 PDT 2015'
+COMPILED_AT='Sun Oct 18 00:32:17 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -317,7 +317,7 @@ PKG_CNTRL_FILE="Package Control.sublime-package"
 # mv "$SRC_DIR/../packages" "$SUBLIME_PACKAGES_DIR/$PKG_CNTRL_FILE"
 
 inform "Downloading Sublime Package Control..." true
-curl -O "${SUBLIME_PACKAGES_DIR}/$PKG_CNTRL_FILE" PKG_CNTRL_URI
+curl -o "${SUBLIME_PACKAGES_DIR}/$PKG_CNTRL_FILE" PKG_CNTRL_URI
 show "Complete!"
 
 # code_dir_create.sh
