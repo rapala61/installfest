@@ -32,6 +32,7 @@ if [[ $? != 0 ]]; then
   echo "Loading Homebrew installation script..."
   # piping echo to simulate hitting return in the brew install script
   echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  show "Complete!"
 else
   show "Homebrew is already installed!"
 fi

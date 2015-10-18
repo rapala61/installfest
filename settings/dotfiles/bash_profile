@@ -27,11 +27,11 @@
 # --------------------
 # System Settings
 # --------------------
-#  Path List
+#  Path
 #  Settings
 #  History
 #  Aliases
-#  Other System Settings
+#  Change System Settings
 # --------------------
 # Application Settings
 # --------------------
@@ -41,16 +41,16 @@
 # --------------------
 # Other Settings
 # --------------------
-#  Shortcuts
-#  Source Files
+#  Functions
+#  Sourced Files
 #  Environmental Variables and API Keys
-#  Colophon
 
-# -----------------------------------------------------------------------------
+# =================
 # Path
-# A list of all directories in which to look for commands, scripts and programs
-# -----------------------------------------------------------------------------
+# =================
 
+# A list of all directories in which to look for commands,
+# scripts and programs
 PATH="$HOME/.rbenv/bin:$PATH"                              # RBENV
 PATH="/usr/local/share/npm/bin:$PATH"                      # NPM
 PATH="/usr/local/bin:/usr/local/sbin:$PATH"                # Homebrew
@@ -96,14 +96,27 @@ export HISTIGNORE="h"
 # Aliases
 # ====================
 
-# LS lists information about files.
-# show slashes for directories.
+## 'ls' lists information about files.
+# By default, show slashes for directories.
 alias ls='ls -F'
 
-# long list format including hidden files and include unit size
-alias ll='ls -la'
+# Enhanced ls, grouping directories and using colors.
+alias lf='ls --color -h --group-directories-first -F'
 
-# go back one directory
+# Long list format including hidden files and file information.
+alias ll='ls --color -h --group-directories-first -Fla'
+
+# List ACLs (finer-grained permissions that can be inherited).
+# ACLs are a necessary part of OSX fs since 10.6; see
+# - ACLs on OSX: https://goo.gl/PhkcA2
+# - OSX chmod manpage: https://goo.gl/vJqgZ9
+#
+# Note: The default ls on 10.7+ OSX is the GNU coreutils version at:
+# /usr/local/opt/coreutils/libexec/gnubin/ls; in order to see the
+# ACL permissions, we must use the BSD version available at: /bin/ls
+alias lacl='/bin/ls -GFlae'
+
+# Go back one directory
 alias b='cd ..'
 
 # History lists your previously entered commands
@@ -112,14 +125,14 @@ alias h='history'
 # If we make a change to our bash profile we need to reload it
 alias reload="clear; source ~/.bash_profile"
 
-# confirm before executing and be verbose
-alias cp='cp -iv'
-alias mv='mv -iv'
-alias rm='rm -iv'
+# Execute verbosely
+alias cp='cp -v'
+alias mv='mv -v'
+alias rm='rm -v'
 alias mkdir='mkdir -pv'
 
 # =================
-# Additional Aliases
+# Change System Settings
 # =================
 
 # Hide/show all desktop icons (useful when presenting)
@@ -129,13 +142,6 @@ alias show_desktop="defaults write com.apple.finder CreateDesktop -bool true && 
 # Hide/show hidden files in Finder
 alias hide_files="defaults write com.apple.finder AppleShowAllFiles FALSE && killall Finder"
 alias show_files="defaults write com.apple.finder AppleShowAllFiles TRUE && killall Finder"
-
-# List any open internet sockets on several popular ports.
-# Useful if a rogue server is running
-# http://www.akadia.com/services/lsof_intro.html
-# http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
-alias rogue='lsof -i TCP:3000 -i TCP:4567 -i TCP:8000 -i TCP:8888 -i TCP:6379'
-
 
 # ================
 # Application Aliases
@@ -168,28 +174,32 @@ nvm use stable > /dev/null
 
 #######################################
 # Quick Jump To Today's WDI Folder
-#
-# Required Environmental Variables:
-#   1) `export WDI_WORK_DIR_PATH`
-#       Epoch Time of Program W01/D01 (6:00 AM PST)
-#       (http://www.epochconverter.com/)
-#   2) `export WDI_COURSE_START_TIME`
-#       Root Directories Path (Ex: ~/user/code/WDI_DTLA_5/work)
-#
-# HOW TO USE...
-#   To be directed to todays folder (if it has been created):
-#   $ wdi
-#
-#   To be directed to a specific weeks folder (week 2 in this case):
-#   $ wdi 2
-#
-#   To be directed to a specific days folder (week 2 / day 3)
-#
-#   $ wdi 2 3
-#
+# See the script for usage.
 #######################################
 
-source ~/.bash_wdi_command.sh
+if [ -f ~/.bash_wdi_command.sh ]; then
+  source ~/.bash_wdi_command.sh
+fi
+
+#######################################
+# Set ACL permissions to inherit and
+# allow read, write and update actions.
+#
+# Arguments:
+#   1. Group Name
+#   2. Directory Path
+#######################################
+
+allow_group() {
+  local GROUP_NAME="$1"
+  local TARGET_DIR="$2"
+  local PERMISSIONS="read,write,delete,add_file,add_subdirectory"
+  local INHERITANCE="file_inherit,directory_inherit"
+
+  sudo mkdir -p "$TARGET_DIR"
+  sudo /bin/chmod -R -N "$TARGET_DIR"
+  sudo /bin/chmod -R +a "group:$GROUP_NAME:allow $PERMISSIONS,$INHERITANCE" "$TARGET_DIR"
+}
 
 #######################################
 # Start an HTTP server from a directory
@@ -199,9 +209,7 @@ source ~/.bash_wdi_command.sh
 
 server() {
   local port="${1:-8000}"
-  open "http://localhost:${port}/"
-  # Set the default Content-Type to `text/plain` instead of `application/octet-stream`
-  # And serve everything as UTF-8 (although not technically correct, this doesn’t break anything for binary files)
+  (sleep 2 && open "http://localhost:${port}/")&
 
   # Simple Pythong Server:
   # python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port"
@@ -210,12 +218,45 @@ server() {
   ruby -e "require 'webrick';server = WEBrick::HTTPServer.new(:Port=>${port},:DocumentRoot=>Dir::pwd );trap('INT'){ server.shutdown };server.start"
 }
 
+#######################################
+# List any open internet sockets on
+# several popular ports. Useful if a
+# rogue server is running.
+# - http://www.akadia.com/services/lsof_intro.html
+# - http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
+#
+# No Arguments.
+#######################################
+
+rogue() {
+  # add or remove ports to check here!
+  local PORTS="3000 4567 6379 8000 8888"
+  local MESSAGE="> Checking for processes on ports"
+  local COMMAND="lsof"
+
+  for PORT in $PORTS; do
+    MESSAGE="${MESSAGE} ${PORT},"
+    COMMAND="${COMMAND} -i TCP:${PORT}"
+  done
+
+  echo "${MESSAGE%?}..."
+  local OUTPUT="$(${COMMAND})"
+
+  if [ -z "$OUTPUT" ]; then
+    echo "> Nothing running!"
+  else
+    echo "> Processes found:"
+    printf "\n$OUTPUT\n\n"
+  fi
+}
+
 # =================
 # Tab Improvements
 # =================
 
+## PJ: Might not need?
+
 ## Tab improvements
-# ## Might not need?
 # bind 'set completion-ignore-case on'
 # # make completions appear immediately after pressing TAB once
 # bind 'set show-all-if-ambiguous on'
@@ -247,3 +288,6 @@ fi
 # Below here is an area for other commands added by outside programs or
 # commands. Attempt to reserve this area for their use!
 ##########################################################################
+
+export HOMEBREW_EDITOR=nano
+export NODE_REPL_HISTORY_FILE=~/.node_repl_history
