@@ -53,10 +53,10 @@ settings/script_repo_clone
 settings/util_copy_files
 settings/copy_dotfiles
 settings/copy_terminal_theme
-settings/copy_sublime_settings
-## not working yet!
 
+## not working yet!
 ## need to install package control!
+settings/copy_sublime_settings
 
 code_dir_create
 

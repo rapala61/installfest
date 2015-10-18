@@ -25,8 +25,11 @@ function copy_files () {
     DOTFILES=true
   fi
 
+  echo "Copying: $FILE_LIST"
+
   for FILE_PATH in $FILE_LIST; do
     CURRENT_FILE="$(basename $FILE_PATH)"
+    echo "Current file: $FILE_PATH"
     if [[ "$DOTFILES" == true ]]; then
       CURRENT_FILE=".$CURRENT_FILE" # add a dot to dotfiles
     fi

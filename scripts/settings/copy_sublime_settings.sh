@@ -14,9 +14,14 @@ inform "Copying Sublime settings..." true
 copy_files subl_settings "$SUBLIME_SETTINGS_DIR" "$SCRIPT_SUBL_SETTINGS"
 show "Complete!"
 
-inform "Copying Sublime packages..." true
-copy_files subl_packages "$SUBLIME_PACKAGES_DIR" "$SCRIPT_SUBL_PACKAGES"
-show "Complete!"
+# FIXME (pj) the utility fails on the Package Control setting since the
+#            name has a space in it...
+
+# TODO (pj) get Package Control up and running with settings, etc.
+
+# inform "Copying Sublime packages..." true
+# copy_files subl_packages "$SUBLIME_PACKAGES_DIR" "$SCRIPT_SUBL_PACKAGES"
+# show "Complete!"
 
 # Installing Package Control
 
