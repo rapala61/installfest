@@ -16,7 +16,7 @@ show "Complete!"
 
 # Install Package Control
 
-PKG_CNTRL_URI="https://sublime.wbond.net/Package%20Control.sublime-package"
+PKG_CNTRL_URI="https://packagecontrol.io/Package%20Control.sublime-package"
 PKG_CNTRL_FILE="Package Control.sublime-package"
 
 # # NOTE (phlco) curling then mving because curl gave a malformed url in 10.6

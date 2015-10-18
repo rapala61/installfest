@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sun Oct 18 00:39:21 PDT 2015'
+COMPILED_AT='Sun Oct 18 00:52:14 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -308,7 +308,7 @@ show "Complete!"
 
 # Install Package Control
 
-PKG_CNTRL_URI="https://sublime.wbond.net/Package%20Control.sublime-package"
+PKG_CNTRL_URI="https://packagecontrol.io/Package%20Control.sublime-package"
 PKG_CNTRL_FILE="Package Control.sublime-package"
 
 # # NOTE (phlco) curling then mving because curl gave a malformed url in 10.6
