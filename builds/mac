@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sun Oct 18 12:50:23 PDT 2015'
+COMPILED_AT='Sun Oct 18 15:56:58 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -331,9 +331,10 @@ inform "Generating an SSH key to establish a secure connection " true
 inform "  your computer and GitHub. "
 
 pause_awhile "Note: when you see the prompts:
-        'Enter a file in which to save the key (...)', and
-        'Enter passphrase (empty for no passphrase)',
-      ${BOLD}just press Enter!
+        'Enter a file in which to save the key (...)',
+        'Enter passphrase (empty for no passphrase)', and
+        'Enter passphrase again'
+      ${BOLD}just press Enter! Do NOT input anything!
 " true
 
 ssh-keygen -t rsa -b 4096 -C $github_email
@@ -391,6 +392,7 @@ if [[ $? != 0 ]]; then
   echo "Loading Homebrew installation script..."
   # piping echo to simulate hitting return in the brew install script
   echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  show "Complete!"
 else
   show "Homebrew is already installed!"
 fi
@@ -1034,19 +1036,4 @@ PKG_CNTRL_FILE="Package Control.sublime-package"
 inform "Downloading Sublime Package Control..." true
 curl -o "${SUBLIME_PACKAGES_DIR}/$PKG_CNTRL_FILE" PKG_CNTRL_URI
 show "Complete!"
-
-# code_dir_create.sh
-
-inform "Creating directory for wdi: $STUDENT_FOLDER" true
-mkdir -p $STUDENT_FOLDER
-show "Complete!"
-
-#-------------------------------------------------------------------------------
-# We're done! (utils/script_footer.sh)
-#-------------------------------------------------------------------------------
-
-inform "We're done!" true
-echo "#-- fin -- #"
-
-warn "Please quit and re-open your terminal!" true
 

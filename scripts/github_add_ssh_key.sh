@@ -11,9 +11,10 @@ inform "Generating an SSH key to establish a secure connection " true
 inform "  your computer and GitHub. "
 
 pause_awhile "Note: when you see the prompts:
-        'Enter a file in which to save the key (...)', and
-        'Enter passphrase (empty for no passphrase)',
-      ${BOLD}just press Enter!
+        'Enter a file in which to save the key (...)',
+        'Enter passphrase (empty for no passphrase)', and
+        'Enter passphrase again'
+      ${BOLD}just press Enter! Do NOT input anything!
 " true
 
 ssh-keygen -t rsa -b 4096 -C $github_email
