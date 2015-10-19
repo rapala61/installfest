@@ -18,6 +18,7 @@ DESCRIPTION=`cat << EOFS
       Computer name:  $COMP_NAME
       LocalHost name: $LOCL_NAME
       Full Hostname:  $HOST_NAME
+      Connection MAC: $MAC_ADDRS
 EOFS`
 
 inform "Loading your computer's information." true
