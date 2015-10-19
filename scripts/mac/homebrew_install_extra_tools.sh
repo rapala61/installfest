@@ -6,6 +6,9 @@ inform "Installing extra libraries via Homebrew..." true
 
 # Useful packages
 packagelist=(
+  # directory visualizer
+  tree
+
   # ASCII ART!!!!
   figlet
 
