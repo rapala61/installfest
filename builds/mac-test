@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Sun Oct 18 16:30:32 PDT 2015'
+COMPILED_AT='Mon Oct 19 11:47:51 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -164,6 +164,42 @@ function pause_awhile () {
   read -p "${BG_YELLOW}${WHITE}${BOLD}Press <Enter> to continue.${RESET}"
 }
 
+#-------------------------------------------------------------------------------
+# Ensure that the user's computer set up works (mac/os_ensure_valid_setup.sh)
+#-------------------------------------------------------------------------------
+
+OS_VERSION="10.7.5"
+
+COMP_NAME=$(scutil --get ComputerName)
+LOCL_NAME=$(scutil --get LocalHostName)
+HOST_NAME=$(hostname)
+USER_NAME=$(whoami)
+USER_GRPS=$(id -Gn $USER_NAME)
+OS_NUMBER=$(echo $OS_VERSION | cut -d "." -f 2)
+
+# OS_VERSION="10.8.5"
+#
+# echo "$OS_VERSION"
+# echo "$USER_NAME"
+# echo "$USER_GRPS"
+
+if [ "$OS_NUMBER" -lt "6" ]; then
+  echo "fail"
+fi
+
+if [ "$OS_NUMBER" -eq "6" ]; then
+  echo "warn"
+fi
+
+# check username is valid
+C# warn if is mixed case, can stop and re set
+# fail if spaces, force stop and re set
+
+# check computer names etc and print
+
+# check if is admin
+# fail if not, either make admin or etc. (ask instructor)
+
 # ------------------------------------------------------------------------------
 # Clone the script repo locally in order to copy dotfiles etc. directly from it.
 # (settings/script_repo_clone.sh)
@@ -259,6 +295,52 @@ function copy_files () {
 # Usage:
 # copy_files dotfiles "$HOME" "$(echo $SCRIPT_DOTFILES)"
 # copy_files themes "$HOME/Desktop" "TommorrowNight.theme"
+
+#-------------------------------------------------------------------------------
+# Copy over Sublime settiings & packages (settings/sublime_settings_settings.sh)
+#-------------------------------------------------------------------------------
+
+SUBLIME_DIR="${HOME}/Library/Application Support/Sublime Text 3"
+SUBLIME_SETTINGS_DIR="${SUBLIME_DIR}/Packages/User"
+
+# ensure files exist before copying
+mkdir -p "$SUBLIME_SETTINGS_DIR"
+
+inform "Copying Sublime settings..." true
+copy_files subl_settings "$SUBLIME_SETTINGS_DIR" "$SCRIPT_SUBL_SETTINGS"
+show "Complete!"
+
+#-------------------------------------------------------------------------------
+# Copy and install Subl packages (settings/copy_install_sublime_packages.sh)
+#-------------------------------------------------------------------------------
+
+SUBLIME_DIR="${HOME}/Library/Application Support/Sublime Text 3"
+SUBLIME_PACKAGES_DIR="${SUBLIME_DIR}/Installed Packages"
+SUBLIME_SETTINGS_DIR="${SUBLIME_DIR}/Packages/User"
+
+# ensure files exist before copying
+mkdir -p "$SUBLIME_PACKAGES_DIR"
+mkdir -p "$SUBLIME_SETTINGS_DIR"
+
+inform "Copying Sublime packages..." true
+copy_files subl_packages "$SUBLIME_SETTINGS_DIR" "$SCRIPT_SUBL_PACKAGES"
+show "Complete!"
+
+# TODO (pj) get Package Control up and running with settings, etc.
+
+# Install Package Control
+
+PKG_CNTRL_URI="https://packagecontrol.io/Package%20Control.sublime-package"
+PKG_CNTRL_FILE="Package Control.sublime-package"
+
+# # NOTE (phlco) curling then mving because curl gave a malformed url in 10.6
+# mkdir -p "$SRC_DIR/../packages"
+# curl -O "$SRC_DIR/../packages" $PKG_CNTRL_URI
+# mv "$SRC_DIR/../packages" "$SUBLIME_PACKAGES_DIR/$PKG_CNTRL_FILE"
+
+inform "Downloading Sublime Package Control..." true
+curl -o "${SUBLIME_PACKAGES_DIR}/$PKG_CNTRL_FILE" $PKG_CNTRL_URI
+show "Complete!"
 
 #-------------------------------------------------------------------------------
 # Install the cross-platform fonts (mac/os_install_fonts.sh)

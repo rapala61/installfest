@@ -14,8 +14,9 @@
     // "Sublime-JSHint",
     "Package Control",
     "Sass",
-    "SCSS"
+    "SCSS",
     // "SideBarEnhancements",
-    // "SublimeLinter"
+    // "SublimeLinter",
+    "Themr"
   ]
 }
