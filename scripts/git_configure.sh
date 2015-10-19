@@ -34,12 +34,15 @@ git config --global core.excludesfile ~/.gitignore_global
 git config --global commit.template ~/.gitmessage.txt
 
 # add some useful shortcuts
+git config --global alias.s 'status -sb -uall'
 git config --global alias.sha 'rev-parse HEAD'
 git config --global alias.last 'log -1 HEAD --oneline --decorate'
 git config --global alias.ll 'log --oneline --decorate'
 git config --global alias.set-master 'branch --set-upstream-to=origin/master master'
 git config --global alias.back 'reset --soft HEAD~1'
 git config --global alias.again 'commit -c ORIG_HEAD'
-git config --global alias.deploy 'subtree push --prefix dist/ origin gh-pages'
-
+git config --global alias.set-deploy = "!git config --local alias.deploy \"subtree push --prefix $1 origin gh-pages\""
+git config --global alias.co 'checkout'
+git config --global alias.bs 'branch -v'
+git config --global alias.rs 'remote -v'
 show "Complete!"
