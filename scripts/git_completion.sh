@@ -12,6 +12,6 @@ curl -o "$GIT_COMPLETION_FILE" "$GIT_COMPLETION_URL"
 if [[ -e "$GIT_COMPLETION_FILE" ]]; then
   show "File '$GIT_COMPLETION_FILE' created!"
 else
-  warn "${GIT_COMPLETION_FILE} not created... " true
+  fail "${GIT_COMPLETION_FILE} not created... " true
   pause_awhile "Ask an instructor for help if necessary. "
 fi

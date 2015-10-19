@@ -5,12 +5,11 @@ utils/define_terminal_colors
 utils/log_file
 utils/log_screen
 
-mac/os_ensure_valid_setup
-
 # utils/script_instructions
 # utils/password_capture
 #
-# mac/os_version
+mac/os_version
+mac/os_ensure_valid_setup
 # mac/os_update_software
 # mac/os_install_commandline_tools
 # mac/os_repair_permissions
@@ -50,14 +49,14 @@ mac/os_ensure_valid_setup
 #
 # mac/os_configure
 
-settings/script_repo_clone
-
-settings/util_copy_files
-# settings/copy_dotfiles
-# settings/copy_terminal_theme
-settings/copy_sublime_settings
-settings/copy_install_sublime_packages
-settings/mac_install_fonts
+# settings/script_repo_clone
+#
+# settings/util_copy_files
+# # settings/copy_dotfiles
+# # settings/copy_terminal_theme
+# settings/copy_sublime_settings
+# settings/copy_install_sublime_packages
+# settings/mac_install_fonts
 
 # code_dir_create
 

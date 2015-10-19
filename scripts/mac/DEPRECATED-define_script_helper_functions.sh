@@ -14,6 +14,6 @@ allow_control() {
       fi
     done
   else
-    warn "allow_control works only on Mavericks or newer..."
+    fail "allow_control works only on Mavericks or newer..."
   fi
 }

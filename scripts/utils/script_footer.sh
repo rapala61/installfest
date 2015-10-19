@@ -5,4 +5,4 @@
 inform "We're done!" true
 echo "#-- fin -- #"
 
-warn "Please quit and re-open your terminal!" true
+fail "Please close your terminal and open a new one!" true

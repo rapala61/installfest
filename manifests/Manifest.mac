@@ -9,6 +9,8 @@ utils/script_instructions
 utils/password_capture
 
 mac/os_version
+mac/os_ensure_valid_setup
+
 mac/os_update_software
 mac/os_install_commandline_tools
 mac/os_repair_permissions

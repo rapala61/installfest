@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Mon Oct 19 11:47:51 PDT 2015'
+COMPILED_AT='Mon Oct 19 15:27:29 PDT 2015'
 #
 #  _           _        _ _  __           _
 # (_)_ __  ___| |_ __ _| | |/ _| ___  ___| |_
@@ -155,13 +155,30 @@ function inform () {
 
 function warn () {
   if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_YELLOW}${BLACK}${BOLD}>>>>  $1 ${RESET}"
+}
+
+function fail () {
+  if [[ $2 ]]; then echo ""; fi
   echo -e "${BG_RED}${WHITE}${BOLD}>>>>  $1 ${RESET}"
 }
 
 function pause_awhile () {
   if [[ $2 ]]; then echo ""; fi
-  echo -e "${BG_YELLOW}${WHITE}${BOLD}>>>>  $1 ${RESET}"
-  read -p "${BG_YELLOW}${WHITE}${BOLD}Press <Enter> to continue.${RESET}"
+  echo -e "${BG_YELLOW}${BLACK}${BOLD}>>>>  $1 ${RESET}"
+  read -p "${BG_YELLOW}${BLACK}${BOLD}Press <Enter> to continue.${RESET}"
+}
+
+function pause_and_warn () {
+  if [[ $2 ]]; then echo ""; fi
+  echo -e "${BG_YELLOW}${BLACK}${BOLD}>>>>  $1 ${RESET}"
+  echo -e "${BG_YELLOW}${BLACK}${BOLD}>>>> ${RESET}"
+  read -p "${BG_YELLOW}${BLACK}${BOLD}>>>>  Continue? [Yy] ${RESET} " -n 1 -r
+
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    fail "Exiting..." true
+    exit 1;
+  fi
 }
 
 #-------------------------------------------------------------------------------
@@ -192,6 +209,86 @@ sudo -p "Password:" echo "${BG_WHITE}> Thank you! ${RESET}"
 OS_VERSION=$(sw_vers -productVersion)
 
 #-------------------------------------------------------------------------------
+# Ensure that the user's computer set up works (mac/os_ensure_valid_setup.sh)
+#-------------------------------------------------------------------------------
+
+COMP_NAME=$(scutil --get ComputerName)
+LOCL_NAME=$(scutil --get LocalHostName)
+HOST_NAME=$(hostname)
+USER_NAME=$(id -un)
+FULL_NAME=$(finger "$USER_NAME" | awk '/Name:/ {print $4" "$5}')
+USER_GRPS=$(id -Gn $USER_NAME)
+OS_NUMBER=$(echo $OS_VERSION | cut -d "." -f 2)
+MAC_ADDRS=$(ifconfig en0 | grep ether | sed -e 's/^[ \t|ether|\s|\n]*//')
+
+DESCRIPTION=`cat << EOFS
+      Computer Type:  Mac OSX $OS_VERSION
+      Long user name: $FULL_NAME
+      Short username: $USER_NAME
+      Computer name:  $COMP_NAME
+      LocalHost name: $LOCL_NAME
+      Full Hostname:  $HOST_NAME
+EOFS`
+
+inform "Loading your computer's information." true
+inform "Your current setup is:"
+printf "$DESCRIPTION\n"
+inform "Checking the validity of this set up."
+inform "If it is not valid, it will fail or warn you."
+echo "..."
+
+# Check if current user is admin.
+
+if echo "$USER_GRPS" | grep -q -w admin; then
+  echo "" > /dev/null
+else
+  fail "The current user does not have administrator privileges. You must " true
+  fail "  run this program from an admin user. Ask an instructor for help."
+  fail "Exiting..." true
+  exit 1
+fi
+
+# Check if OS version is valid.
+
+if [ "$OS_NUMBER" -lt "6" ]; then
+  fail "You need to have Mac OS X 10.6 (Snow Leopard) or higher installed" true
+  fail "  in order to take WDI. Please contact an instructor or producer."
+  fail "Exiting..." true
+  exit 1
+fi
+
+if [ "$OS_NUMBER" -eq "6" ]; then
+  warn "Warning!" true
+  warn "While you can take WDI with  Mac OS X 10.6 (Snow Leopard), it is "
+  warn "  not supported by this script. You can continue to run the      "
+  warn "  script, but any problems need to be taken care of by your      "
+  warn "  instructional team. It is recommended that you upgrade your    "
+  pause_and_warn "  computer.                                                      "
+fi
+
+# Check if username is valid.
+
+if [[ "$USER_NAME" =~ " " ]]; then
+  fail "Your username '${USER_NAME}' has a space. This complictes using " true
+  fail "  command line tools, and can even break some programs. Change  "
+  fail "  your username before continuing.                              "
+  fail "Exiting..." true
+  exit 1
+fi
+
+LOWERCASE=$(echo "$USER_NAME" | tr '[A-Z]' '[a-z]')
+if [ "$USER_NAME" != "$LOWERCASE" ]; then
+  warn "Warning!" true
+  warn "Your username '${USER_NAME}' has 'mixed-case'; it should be entirely in "
+  warn "  lowercase. This could lead to some issues where certain tools "
+  warn "  that are case-sensitive, and others that are not, don't work  "
+  warn "  well together. It is suggested that you change your username. "
+  pause_and_warn "  PS: this also goes for your GitHub username!                  "
+fi
+
+show "Setup is valid!"
+
+#-------------------------------------------------------------------------------
 # Update software on Mac (mac/os_update_software.sh)
 #-------------------------------------------------------------------------------
 
@@ -214,32 +311,32 @@ case $OS_VERSION in
   *10.8*)  cmdline_version="DeveloperToolsCLI"   ;; # Mountain Lion
   *10.7*)  cmdline_version="DeveloperToolsCLI"   ;; # Lion
   *10.6*)  cmdline_version="DeveloperToolsCLILeo"
-           warn "Outdated OS. Considering upgrading before continuing." true;; # Snow Leopard
+           fail "Outdated OS. Considering upgrading before continuing." true;; # Snow Leopard
            # Force the user to upgrade if they're below 10.6
-  *) warn "Sorry! You'll have to upgrade your OS to $MINIMUM_MAC_OS or above." true; exit 1;;
+  *) fail "Sorry! You'll have to upgrade your OS to $MINIMUM_MAC_OS or above." true; exit 1;;
 esac
 
 # Check for Command Line Tools based on OS versions
 if [ ! -z $(pkgutil --pkgs=com.apple.pkg.$cmdline_version) ]; then
   show "Command Line Tools are installed!"
 elif [[ $OS_VERSION == *10.6** ]]; then
-  warn "Command Line Tools are not installed!" true
-  warn "  Downloading and installing the GCC compiler."
-  warn "  When you're done rerun the Installfest script..."
+  fail "Command Line Tools are not installed!" true
+  fail "  Downloading and installing the GCC compiler."
+  fail "  When you're done rerun the Installfest script..."
   curl -OLk https://github.com/downloads/kennethreitz/osx-gcc-installer/GCC-10.6.pkg
   open GCC-10.6.pkg
   exit 1
 elif [[ $OS_VERSION == *10.7* ]] || [[ $OS_VERSION == *10.8* ]]; then
-  warn "Command Line Tools are not installed!" true
-  warn "Register for a Developer Account"
-  warn "  Download the Command Lion Tools from:"
-  warn "    https://developer.apple.com/downloads/index.action"
-  warn "  and then rerun the Installfest script..."
+  fail "Command Line Tools are not installed!" true
+  fail "Register for a Developer Account"
+  fail "  Download the Command Lion Tools from:"
+  fail "    https://developer.apple.com/downloads/index.action"
+  fail "  and then rerun the Installfest script..."
   exit 1
 else
-  warn "Command Line Tools are not installed!" true
-  warn "  Running 'xcode-select --install' Please click continue!"
-  warn "  After installing please rerun the Installfest script..."
+  fail "Command Line Tools are not installed!" true
+  fail "  Running 'xcode-select --install' Please click continue!"
+  fail "  After installing please rerun the Installfest script..."
   xcode-select --install
   exit 1
 fi
@@ -493,7 +590,7 @@ curl -o "$GIT_COMPLETION_FILE" "$GIT_COMPLETION_URL"
 if [[ -e "$GIT_COMPLETION_FILE" ]]; then
   show "File '$GIT_COMPLETION_FILE' created!"
 else
-  warn "${GIT_COMPLETION_FILE} not created... " true
+  fail "${GIT_COMPLETION_FILE} not created... " true
   pause_awhile "Ask an instructor for help if necessary. "
 fi
 
@@ -1098,5 +1195,5 @@ show "Complete!"
 inform "We're done!" true
 echo "#-- fin -- #"
 
-warn "Please quit and re-open your terminal!" true
+fail "Please close your terminal and open a new one!" true
 
