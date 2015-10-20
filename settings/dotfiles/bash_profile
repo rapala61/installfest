@@ -163,10 +163,9 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 # nvm (load io.js as node)
 # =================
 
-# TODO (phlco) could we set this with ~/.nvmrc ?
 export NVM_DIR=~/.nvm
 source ~/.nvm/nvm.sh
-nvm use stable > /dev/null
+# nvm use stable > /dev/null # PJ: using .nvmrc to set this... uncomment if not working
 
 # =================
 # Functions
