@@ -29,6 +29,9 @@ brew cask install firefox
 # PJ: fuck it, v3
 brew cask install sublime-text3
 
+# The atom text editor
+brew cask install atom
+
 # A Screenshot Sharing Tool
 brew cask install mac2imgur
 
