@@ -289,4 +289,4 @@ fi
 ##########################################################################
 
 export HOMEBREW_EDITOR=nano
-export NODE_REPL_HISTORY_FILE=~/.node_repl_history
+# export NODE_REPL_HISTORY_FILE=~/.node_repl_history
