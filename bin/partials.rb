@@ -2,12 +2,11 @@
 # Builds installfest script from Manifest files.
 # TODO(phlco) allow arguments?
 # build = ARGV[0]
-
-Dir["manifests/Manifest*"].each do |manifest|
+Dir["manifests/partials/partial.*"].each do |manifest|
   puts manifest
-  filename = manifest.gsub(/manifest./i, '')
+  filename = manifest.gsub(/manifests\/partial.|partial./i, '')
   puts filename
-  File.open("builds/#{filename}", 'w') do |file|
+  File.open("builds/partials/#{filename}", 'w') do |file|
     file << "#!/usr/bin/env bash\n"
     file << "\n"
     file << "COMPILED_AT='#{Time.now.strftime "%a %b %d %H:%M:%S %Z %Y"}'\n"

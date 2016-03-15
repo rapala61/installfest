@@ -18,6 +18,12 @@ namespace :installer do
     puts "Finished!"
   end
 
+  task :build_partials do
+    puts "Building partial packages"
+    system("./bin/partials.rb")
+    puts "Finished!"
+  end
+
   desc "Adds built files for committing"
   task :add do
     system("git add .")
