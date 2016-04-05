@@ -34,7 +34,7 @@ have multiple users, let the instructors know!
 Paste this script into a Terminal prompt:
 
 ```
-bash <(curl -sL https://github.com/rapala61/installfest/blob/master/builds/mac)
+bash <(curl -sL https://raw.githubusercontent.com/rapala61/installfest/master/builds/mac)
 ```
 
 ##### For Ubuntu Linux
@@ -44,6 +44,24 @@ Paste this script into a Terminal prompt:
 ```
 bash <(wget -qO- https://raw.githubusercontent.com/ga-instructors/installfest_script/master/builds/ubuntu)
 ```
+
+##### PARTIALS SUPPORT
+
+Homebrew:
+
+```
+bash <(curl -sL https://raw.githubusercontent.com/rapala61/installfest/master/builds/partials/homebrew)
+```
+
+Postgres:
+
+```
+bash <(curl -sL https://raw.githubusercontent.com/rapala61/installfest/master/builds/partials/postgres)
+```
+
+
+
+
 
 ##### Run the script
 
