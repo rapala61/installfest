@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COMPILED_AT='Tue Mar 15 10:36:35 EDT 2016'
+COMPILED_AT='Mon Apr 04 21:20:33 EDT 2016'
 #-------------------------------------------------------------------------------
 # Capture GitHub credentials (github_capture_credentials.sh)
 #-------------------------------------------------------------------------------
